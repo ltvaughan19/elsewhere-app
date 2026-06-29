@@ -1,0 +1,38 @@
+---
+description: Expat Atlas project rules — trust-first expat planning platform
+globs:
+  - "**/*"
+alwaysApply: true
+---
+
+# Expat Atlas — Cursor Rules
+
+Read `AGENTS.md` and planning docs before substantive changes.
+
+## Product
+- Expat transition OS, not a travel blog
+- Every page answers: "What do I do next?"
+- Build house now, furniture later — full structure, no fake partnerships
+
+## Trust (non-negotiable)
+- No legal/immigration/tax advice as final authority
+- No fake verified partners, sponsors, or attorneys
+- Label demo data, affiliates, sponsored placements
+- Source claims require metadata or `needs_review` state
+
+## Stack
+- Next.js App Router, TypeScript, Tailwind, shadcn, Supabase, Drizzle
+- Monorepo: apps/web, packages/*
+- Follow `ROADMAP.md` phase order
+
+## Code
+- Minimize scope; match existing conventions
+- Shared logic in packages (not duplicated in web/mobile)
+- Lazy-load Three.js and heavy animations
+- Respect `prefers-reduced-motion`
+
+## Skills
+- Use GStack for plan/review/qa/ship at phase boundaries
+- Design: frontend-design, theme-factory, scroll-experience, threejs-interaction
+- DB: supabase-postgres-best-practices
+- QA: playwright-best-practices, webapp-testing
