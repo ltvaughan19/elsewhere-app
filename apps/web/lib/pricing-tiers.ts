@@ -1,0 +1,77 @@
+import type { PricingTier } from "@expat-atlas/types";
+
+export const PRICING_TIERS: PricingTier[] = [
+  {
+    id: "free",
+    name: "Free",
+    price: "$0",
+    period: "forever",
+    description: "Start exploring without commitment.",
+    features: [
+      "Country browsing",
+      "Passport checklist",
+      "Basic budget calculator",
+      "Limited readiness quiz",
+    ],
+    cta: "Get started free",
+  },
+  {
+    id: "explorer",
+    name: "Explorer",
+    price: "$12",
+    period: "/ month",
+    description: "For serious researchers comparing destinations.",
+    features: [
+      "Full country comparison",
+      "Saved plans",
+      "Full budget tool",
+      "Visa overview cards",
+      "Change alerts",
+    ],
+    cta: "Start Explorer",
+    highlighted: true,
+  },
+  {
+    id: "builder",
+    name: "Builder",
+    price: "$29",
+    period: "/ month",
+    description: "Build and track your personalized move roadmap.",
+    features: [
+      "Personalized move roadmap",
+      "AI Expat Coach (beta)",
+      "Housing strategy module",
+      "Insurance comparison hub",
+      "Community cohorts",
+      "Advanced checklists",
+    ],
+    cta: "Start Builder",
+  },
+  {
+    id: "serious_move",
+    name: "Serious Move",
+    price: "$149",
+    period: "one-time",
+    description: "A focused 30/60/90-day action plan for your move.",
+    features: [
+      "30/60/90-day plan",
+      "Risk checklist",
+      "Savings target report",
+      "Country recommendation report",
+    ],
+    cta: "Get Serious Move plan",
+  },
+  {
+    id: "concierge",
+    name: "Concierge",
+    price: "Waitlist",
+    period: "",
+    description: "Future partner-assisted planning. Not live at launch.",
+    features: [
+      "Human-assisted planning intake",
+      "Verified expert referrals (when available)",
+      "Priority support waitlist",
+    ],
+    cta: "Join waitlist",
+  },
+];

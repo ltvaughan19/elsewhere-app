@@ -146,23 +146,30 @@ flowchart TB
 
 ### Ship now
 - [x] This GStack plan document
-- [ ] `packages/db` — Drizzle schema starter (countries, source_claims, users)
-- [ ] `packages/source-engine` — confidence badges + manual adapter
-- [ ] Functional `/budget-calculator`
-- [ ] Functional `/passport-checklist`
-- [ ] `/privacy` + `/terms`
-- [ ] `/about`
-- [ ] Globe component (lazy) on landing
-- [ ] PostHog provider stub + `lib/analytics.ts`
-- [ ] Playwright config + home smoke test
-- [ ] Update `ROADMAP.md` progress
+- [x] `packages/db` — Drizzle schema starter (countries, source_claims, users)
+- [x] `packages/source-engine` — confidence badges + manual adapter
+- [x] Functional `/budget-calculator`
+- [x] Functional `/passport-checklist`
+- [x] `/privacy` + `/terms`
+- [x] `/about`
+- [x] Globe component (lazy) on landing
+- [x] PostHog provider stub + `lib/analytics.ts`
+- [x] Playwright config + home smoke test
+- [x] Update `ROADMAP.md` progress
 
-### Next session
-- Compare tool (side-by-side)
-- Visa compass seed cards
-- Pricing tier UI (no Stripe)
-- Vercel preview deploy
+### Sprint 2 (completed locally)
+- [x] Compare tool (side-by-side)
+- [x] Visa compass seed cards
+- [x] Pricing tier UI (no Stripe)
+- [x] Custom 404 page
+- [x] Housing/property/insurance/community/blog stubs
+- [ ] Vercel deploy (push + verify Root Directory = `apps/web`)
+
+### Next session (Phase 2 kickoff)
 - Supabase project + migrations
+- Supabase Auth + `/app/onboarding` readiness quiz
+- `/app/dashboard`, persisted budget/passport
+- Cinematic landing polish (scroll animations, design review fixes)
 
 ---
 

@@ -34,3 +34,30 @@ export interface CountryCardData {
   longStayPotential: string;
   demoData?: boolean;
 }
+
+export interface VisaCardData {
+  id: string;
+  countrySlug: string;
+  countryName: string;
+  flagEmoji: string;
+  name: string;
+  category: string;
+  overview: string;
+  typicalStay: string;
+  estimatedFees: string;
+  riskLevel: "low" | "medium" | "high";
+  reviewStatus: ReviewStatus;
+  confidenceLevel: ConfidenceLevel;
+  sourceName?: string;
+}
+
+export interface PricingTier {
+  id: PlanTier | "concierge";
+  name: string;
+  price: string;
+  period: string;
+  description: string;
+  features: string[];
+  cta: string;
+  highlighted?: boolean;
+}

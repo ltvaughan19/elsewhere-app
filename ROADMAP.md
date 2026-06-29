@@ -1,7 +1,7 @@
 # Expat Atlas — Roadmap
 
 **Last updated:** 2026-06-29  
-**Current phase:** 1 in progress (GStack execution sprint)
+**Current phase:** 1 complete locally — deploy triggers on push to `main`
 
 ---
 
@@ -29,22 +29,24 @@
 ### Pages
 - [x] `/` landing (globe + dashboard preview + journey)
 - [x] `/countries` index + `/countries/[slug]` template
-- [ ] `/compare` (functional side-by-side)
-- [ ] `/visa-compass` (seed cards)
+- [x] `/compare` (functional side-by-side)
+- [x] `/visa-compass` (seed cards)
 - [x] `/passport-checklist` (interactive)
 - [x] `/budget-calculator` (interactive)
 - [x] `/trust` — sourcing model
-- [ ] `/pricing` (tier UI)
+- [x] `/pricing` (tier UI)
 - [x] `/become-a-partner` + `/partners` placeholder
 - [x] `/about`
 - [x] `/privacy` + `/terms`
+- [x] `/housing`, `/property`, `/insurance`, `/community`, `/blog` stubs
+- [x] Custom 404 (`not-found.tsx`)
 
 ### Data & QA
 - [x] Seed 9 countries (TS module)
-- [ ] Demo visa cards with `needs_review` claims
+- [x] Demo visa cards with `needs_review` claims
 - [x] robots.txt + sitemap.xml
 - [x] Playwright smoke tests (config)
-- [ ] Vercel preview deploy
+- [ ] Vercel production deploy (auto on push to `main`)
 
 **Exit criteria:** Landing deploys to Vercel preview; Lighthouse mobile ≥ 80; trust disclaimers on all legal-adjacent pages.
 

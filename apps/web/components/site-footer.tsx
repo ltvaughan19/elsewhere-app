@@ -30,6 +30,26 @@ export function SiteFooter() {
                   Budget calculator
                 </Link>
               </li>
+              <li>
+                <Link href="/compare" className="hover:text-ocean-400">
+                  Compare countries
+                </Link>
+              </li>
+              <li>
+                <Link href="/visa-compass" className="hover:text-ocean-400">
+                  Visa Compass
+                </Link>
+              </li>
+              <li>
+                <Link href="/housing" className="hover:text-ocean-400">
+                  Housing strategy
+                </Link>
+              </li>
+              <li>
+                <Link href="/insurance" className="hover:text-ocean-400">
+                  Insurance guide
+                </Link>
+              </li>
             </ul>
           </div>
           <div className="text-sm text-ivory-50/80">
