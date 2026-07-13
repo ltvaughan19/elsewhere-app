@@ -7,7 +7,7 @@ export default function PrivacyPage() {
       <p className="text-sm text-navy-800/70">Last updated: June 2026 · Draft for MVP</p>
       <div className="mt-8 space-y-4 text-navy-800/80">
         <p>
-          Expat Atlas collects account information, planning preferences, and usage
+          Elsewhere collects account information, planning preferences, and usage
           analytics to provide relocation planning tools. We do not store passport
           scans, government ID images, or sensitive legal documents in the MVP.
         </p>

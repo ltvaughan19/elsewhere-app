@@ -3,17 +3,15 @@ import { TrustDisclaimer } from "@expat-atlas/ui";
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-sand-200 bg-navy-950 text-ivory-50">
+    <footer className="border-t border-sand-200 bg-[var(--color-void-elevated)] text-navy-950">
       <div className="mx-auto max-w-6xl px-6 py-12">
         <div className="grid gap-8 md:grid-cols-3">
           <div>
-            <p className="font-display text-2xl">Expat Atlas</p>
-            <p className="mt-2 text-sm text-ivory-50/70">
-              A calmer way to plan your move abroad.
-            </p>
+            <p className="font-display text-2xl">Elsewhere</p>
+            <p className="mt-2 text-sm text-navy-800">One calm path abroad.</p>
           </div>
-          <div className="text-sm text-ivory-50/80">
-            <p className="mb-2 font-medium text-ivory-50">Explore</p>
+          <div className="text-sm text-navy-800">
+            <p className="mb-2 font-medium text-navy-950">Explore</p>
             <ul className="space-y-1">
               <li>
                 <Link href="/countries" className="hover:text-ocean-400">
@@ -28,6 +26,11 @@ export function SiteFooter() {
               <li>
                 <Link href="/budget-calculator" className="hover:text-ocean-400">
                   Budget calculator
+                </Link>
+              </li>
+              <li>
+                <Link href="/corridors" className="hover:text-ocean-400">
+                  Launch corridors
                 </Link>
               </li>
               <li>
@@ -52,8 +55,8 @@ export function SiteFooter() {
               </li>
             </ul>
           </div>
-          <div className="text-sm text-ivory-50/80">
-            <p className="mb-2 font-medium text-ivory-50">Trust</p>
+          <div className="text-sm text-navy-800">
+            <p className="mb-2 font-medium text-navy-950">Trust</p>
             <ul className="space-y-1">
               <li>
                 <Link href="/trust" className="hover:text-ocean-400">
@@ -83,8 +86,8 @@ export function SiteFooter() {
             </ul>
           </div>
         </div>
-        <div className="mt-8 border-t border-ivory-50/10 pt-6">
-          <TrustDisclaimer className="text-ivory-50/60" />
+        <div className="mt-8 border-t border-sand-200 pt-6">
+          <TrustDisclaimer className="text-navy-800/80" />
         </div>
       </div>
     </footer>

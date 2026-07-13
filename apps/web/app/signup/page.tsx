@@ -1,10 +1,5 @@
-import { MarketingStub } from "@/components/marketing-stub";
+import { SignupForm } from "@/components/signup-form";
 
 export default function SignupPage() {
-  return (
-    <MarketingStub
-      title="Create your account"
-      description="Sign up to save your plan, track your passport checklist, and build your expat roadmap."
-    />
-  );
+  return <SignupForm />;
 }

@@ -1,21 +1,43 @@
 @import "tailwindcss";
 
+/**
+ * Elsewhere design tokens
+ * Source of truth: docs/plans/STYLING_RULES.md
+ *
+ * Legacy Tailwind color names are bridged to the dark Elsewhere palette
+ * so existing utilities (bg-ivory-50, text-navy-950, bg-jungle-600) follow
+ * the new brand without a big-bang class rewrite.
+ */
 @theme {
-  --color-navy-950: #0a1628;
-  --color-navy-900: #0f2140;
-  --color-navy-800: #1a3358;
-  --color-sand-100: #f5f0e8;
-  --color-sand-200: #e8dfd2;
-  --color-sand-300: #d4c4a8;
-  --color-jungle-500: #40916c;
-  --color-jungle-600: #2d6a4f;
-  --color-ivory-50: #faf9f6;
-  --color-gold-400: #c9a227;
-  --color-gold-500: #b8941f;
-  --color-ocean-400: #4a90a4;
-  --color-ocean-500: #3a7a8c;
-  --font-display: "Cormorant Garamond", Georgia, serif;
-  --font-sans: Manrope, system-ui, sans-serif;
+  /* Canonical Elsewhere */
+  --color-void: #07090d;
+  --color-void-elevated: #0e1218;
+  --color-void-card: #12161e;
+  --color-cream: #f4f1ea;
+  --color-accent-sand: #c8b48a;
+  --color-accent-sand-hover: #d4c49a;
+  --color-accent-cool: #7eb8c9;
+  --color-glow: rgba(126, 184, 201, 0.28);
+
+  /* Bridged legacy names → Elsewhere */
+  --color-ivory-50: #07090d;
+  --color-navy-950: #f4f1ea;
+  --color-navy-900: #e8e4dc;
+  --color-navy-800: rgba(244, 241, 234, 0.72);
+  --color-sand-100: #0e1218;
+  --color-sand-200: rgba(244, 241, 234, 0.12);
+  --color-sand-300: rgba(244, 241, 234, 0.22);
+  --color-jungle-500: #d4c49a;
+  --color-jungle-600: #c8b48a;
+  --color-gold-400: #c8b48a;
+  --color-gold-500: #b8a47a;
+  --color-ocean-400: #7eb8c9;
+  --color-ocean-500: #5fa8bc;
+
+  --font-display: "Instrument Serif", Georgia, serif;
+  --font-sans: "Outfit", system-ui, sans-serif;
+
+  --ease-elsewhere: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 html {
@@ -37,11 +59,26 @@ html {
 }
 
 body {
-  background: var(--color-ivory-50);
-  color: var(--color-navy-950);
+  background: var(--color-void);
+  color: var(--color-cream);
   font-family: var(--font-sans);
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
 }
 
 .font-display {
   font-family: var(--font-display);
+}
+
+::selection {
+  background: rgba(200, 180, 138, 0.35);
+  color: #fff;
+}
+
+/* App / marketing shared helpers */
+.elsewhere-eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-accent-sand);
 }

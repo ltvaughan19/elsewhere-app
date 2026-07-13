@@ -1,4 +1,8 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useState } from "react";
 
 const links = [
   { href: "/countries", label: "Countries" },
@@ -9,11 +13,14 @@ const links = [
 ];
 
 export function SiteHeader() {
+  const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+
   return (
     <header className="sticky top-0 z-50 border-b border-sand-200/80 bg-ivory-50/90 backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         <Link href="/" className="font-display text-2xl text-navy-950">
-          Expat Atlas
+          Elsewhere
         </Link>
         <nav className="hidden items-center gap-6 text-sm text-navy-800 md:flex">
           {links.map((link) => (
@@ -34,13 +41,64 @@ export function SiteHeader() {
             Log in
           </Link>
           <Link
-            href="/signup"
-            className="rounded-full bg-jungle-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-jungle-500"
+            href="/app/onboarding"
+            className="hidden rounded-md bg-jungle-600 px-4 py-2 text-sm font-medium text-[var(--color-void)] transition hover:bg-jungle-500 sm:inline"
           >
-            Build My Expat Plan
+            Start Fit Quiz
           </Link>
+          <button
+            type="button"
+            className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-sand-200 text-navy-900 md:hidden"
+            aria-expanded={open}
+            aria-label={open ? "Close menu" : "Open menu"}
+            onClick={() => setOpen((v) => !v)}
+          >
+            <span className="sr-only">Menu</span>
+            <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              {open ? (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              ) : (
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+              )}
+            </svg>
+          </button>
         </div>
       </div>
+      {open ? (
+        <nav className="border-t border-sand-200 bg-ivory-50 px-6 py-4 md:hidden">
+          <ul className="space-y-3 text-sm">
+            {links.map((link) => (
+              <li key={link.href}>
+                <Link
+                  href={link.href}
+                  className={
+                    pathname === link.href
+                      ? "font-medium text-jungle-600"
+                      : "text-navy-800"
+                  }
+                  onClick={() => setOpen(false)}
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+            <li className="border-t border-sand-200 pt-3">
+              <Link href="/login" className="text-navy-800" onClick={() => setOpen(false)}>
+                Log in
+              </Link>
+            </li>
+            <li>
+              <Link
+                href="/app/onboarding"
+                className="inline-block rounded-md bg-jungle-600 px-4 py-2 font-medium text-[var(--color-void)]"
+                onClick={() => setOpen(false)}
+              >
+                Start Fit Quiz
+              </Link>
+            </li>
+          </ul>
+        </nav>
+      ) : null}
     </header>
   );
 }

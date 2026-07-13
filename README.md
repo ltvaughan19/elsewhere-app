@@ -1,10 +1,14 @@
-# Expat Atlas
+# Elsewhere
 
-**Your life abroad, turned into a step-by-step plan.**
+**One calm path from pressure to a real plan abroad.**
 
-Expat Atlas is an expat transition operating system for first-time expats, long-stay travelers, and remote workers who want to relocate abroad without drowning in scattered research.
+Public brand: **Elsewhere**. This GitHub repo is still named `expat-atlas` until rename; packages remain `@expat-atlas/*` for now.
+
+Expat transition OS for first-time movers — structure, corridors (US → PH / TH / MX), and a next step. Not a travel blog.
 
 > General planning information only. Always verify legal, visa, tax, insurance, and property decisions with official sources or licensed professionals.
+
+**Work ↔ home:** End every session with `git push`. Start with `git pull`. See [HANDOFF.md](./HANDOFF.md).
 
 ---
 
@@ -13,10 +17,11 @@ Expat Atlas is an expat transition operating system for first-time expats, long-
 | Phase | State |
 |-------|-------|
 | Phase 0 — Planning | ✅ Complete |
-| Phase 1 — Public site | 🚧 In progress (scaffold + landing) |
-| Phase 2+ | See `ROADMAP.md` |
+| Phase 1 — Public site | ✅ Scaffold + Elsewhere landing |
+| Phase 2 — App shell | 🚧 Demo `/app/*` (localStorage; Supabase next) |
+| Docs / consolidation | See `docs/plans/` |
 
-**Phase 1 scaffold is live.** Run `pnpm dev` from the repo root to preview the landing page at http://localhost:3000
+Run `pnpm dev` → http://localhost:3000
 
 ---
 

@@ -1,27 +1,86 @@
-# Expat Atlas — Handoff Notes
+# Elsewhere — Handoff Notes (Work ↔ Home)
 
-**Last updated:** 2026-06-29  
-**Repo:** `C:\Users\brenden.vaughan\expat-atlas`  
-**GitHub:** https://github.com/ltvaughan19/expat-atlas  
-**Live (Vercel):** https://expat-atlas-web.vercel.app
+**Last updated:** 2026-07-13 (work PC end-of-day)  
+**Brand:** Elsewhere (public) · local folder still `expat-atlas` until GitHub rename  
+**Repo (GitHub):** https://github.com/ltvaughan19/expat-atlas  
+**Live (Vercel):** https://expat-atlas-web.vercel.app  
+**Also live (legacy Vite landing):** https://elsewhere-mu.vercel.app — archive after Next landing parity  
+**Quiz prototype:** https://elsewhere-app-theta.vercel.app — merge into this monorepo (source not on work PC)
 
 ---
 
-## What shipped (Phase 1 / GStack Sprint 2)
+## Dual-PC rule (non-negotiable)
 
-| Route / feature | Status |
-|-----------------|--------|
-| `/compare` | Functional side-by-side country picker |
-| `/visa-compass` | Seed visa cards with trust badges |
-| `/pricing` | Tier UI (no Stripe) |
-| `/housing`, `/property`, `/insurance`, `/community`, `/blog` | Marketing stubs |
-| `not-found.tsx` | Custom 404 |
-| Budget + passport tools | Interactive (localStorage for passport) |
-| Monorepo packages | `types`, `ui` (VisaCard), `db`, `source-engine` |
-| SEO | `robots.ts`, `sitemap.ts` (25 routes) |
-| Tests | 6 Playwright smoke tests in `apps/web/e2e/` |
+You build from **work** and **home**. End of every session:
 
-**Build:** `pnpm --filter @expat-atlas/web build` — 25 static routes, passes.
+1. Commit meaningful work  
+2. **Push to `origin/main`** (or your feature branch)  
+3. Update this file’s “Last session” section if anything non-obvious happened  
+
+Next machine: `git pull origin main` before coding.
+
+Do **not** leave unpushed work on either PC overnight.
+
+---
+
+## Last session (2026-07-13 — work)
+
+### Shipped / committed in this push
+
+- Elsewhere foundation docs (`docs/plans/*`)
+- Dark design tokens + Instrument Serif / Outfit
+- User-facing rebrand Expat Atlas → Elsewhere
+- New cinematic `/` landing (brand-first, Fit Quiz CTA, PH/TH/MX corridors)
+- App shell demo: `/app/*` (onboarding quiz, dashboard, plan, etc.) — localStorage, no Supabase yet
+- Corridors page + source claim UI pieces
+- CI workflow `.github/workflows/ci.yml`
+- Partner application form, report outdated stub, sticky mobile CTA
+
+### Package names
+
+Still `@expat-atlas/*` internally. Rename to `@elsewhere/*` later with GitHub repo rename.
+
+### Not done yet
+
+- [ ] Port Spline Earth from Vite `Elsewhere` repo into Next `/`
+- [ ] Port elsewhere-app Fit Quiz / Path / Checklist source into Next
+- [ ] Supabase project + real auth
+- [ ] GitHub rename `expat-atlas` → `elsewhere` (YOU approve timing)
+- [ ] Single Vercel project + production domain
+
+---
+
+## Start-of-day checklist (either PC)
+
+```powershell
+# Work PC Path bootstrap (if needed)
+$env:Path += ";$env:USERPROFILE\.local\node\node-v24.18.0-win-x64"
+$env:Path += ";$env:USERPROFILE\AppData\Local\Programs\Git\cmd"
+
+cd C:\Users\brenden.vaughan\expat-atlas   # adjust home path
+git pull origin main
+pnpm.cmd install                          # or pnpm install on home
+pnpm.cmd dev
+```
+
+Open http://localhost:3000 — confirm Elsewhere landing + Start Fit Quiz.
+
+---
+
+## End-of-day checklist (either PC)
+
+```powershell
+cd C:\Users\brenden.vaughan\expat-atlas
+git status
+git add -A
+# write a clear message, then:
+git commit -m "your message"
+git push origin main
+```
+
+If you cannot push (auth), leave a note in chat and retry — do not assume the other PC has your files.
+
+Update **Last session** above when the day ends with unfinished context.
 
 ---
 
@@ -35,31 +94,31 @@ $env:Path += ";$env:USERPROFILE\.local\node\node-v24.18.0-win-x64"
 $env:Path += ";$env:USERPROFILE\AppData\Local\Programs\Git\cmd"
 
 pnpm.cmd install
-pnpm.cmd dev                              # from repo root → http://localhost:3000
-pnpm.cmd --filter @expat-atlas/web build  # production build check
+pnpm.cmd dev
+pnpm.cmd --filter @expat-atlas/web build
 ```
 
-### E2E tests (dev server must be running)
+### Home PC
+
+```bash
+cd expat-atlas   # or wherever cloned
+git pull origin main
+pnpm install
+pnpm dev
+pnpm --filter @expat-atlas/web build
+```
+
+### E2E
 
 ```powershell
 cd apps\web
 $env:PORT = "3005"
-pnpm.cmd dev   # in one terminal
+pnpm.cmd dev   # terminal 1
 
-# second terminal:
+# terminal 2
 $env:PLAYWRIGHT_SKIP_WEBSERVER = "1"
 $env:PLAYWRIGHT_BASE_URL = "http://localhost:3005"
 pnpm.cmd exec playwright test
-```
-
-### Home PC (normal Node/Git install)
-
-```bash
-cd expat-atlas
-pnpm install
-pnpm dev
-pnpm --filter @expat-atlas/web build
-cd apps/web && pnpm test:e2e
 ```
 
 ---
@@ -69,68 +128,49 @@ cd apps/web && pnpm test:e2e
 | Issue | Workaround |
 |-------|------------|
 | `npm` / `pnpm` PSSecurityException | Use `npm.cmd` and `pnpm.cmd` |
-| Node not on PATH | Portable Node at `~/.local/node/node-v24.18.0-win-x64` — add to user PATH or prepend per session |
+| Node not on PATH | Portable Node at `~/.local/node/node-v24.18.0-win-x64` |
 | Git not on PATH | `AppData\Local\Programs\Git\cmd` |
-| Wrong directory | Always `cd` to `C:\Users\brenden.vaughan\expat-atlas` — **not** the Cursor metadata folder under `.cursor\projects\` |
-| `next start` error | Use `pnpm dev` for local preview; Vercel handles production |
-| Port 3000 busy | Set `$env:PORT = "3005"` before `pnpm.cmd dev` |
+| Wrong directory | Repo is `...\expat-atlas` — **not** `.cursor\projects\...` |
+| Port 3000 busy | `$env:PORT = "3005"` |
 
 ---
 
-## Vercel deploy checklist
+## Key product locks
 
-1. **Root Directory** in Vercel project settings = `apps/web`
-2. **Build config** lives in `apps/web/vercel.json`:
-   - `installCommand`: `cd ../.. && pnpm install`
-   - `buildCommand`: `cd ../.. && pnpm turbo build --filter=@expat-atlas/web`
-3. **Root `vercel.json` removed** — it caused failed builds from repo root
-4. **Git push to `main`** triggers auto-deploy via GitHub integration
-5. After deploy, verify:
-   - https://expat-atlas-web.vercel.app/compare — country picker (not "Coming in Phase 1" stub)
-   - `/visa-compass` — visa cards with "Needs verification" badges
-   - `/pricing` — Free / Explorer / Builder tiers
+| Decision | Value |
+|----------|--------|
+| Brand | Elsewhere |
+| Surfaces | One web site · one mobile app (later) · one monorepo |
+| v1 corridors | US → PH, TH, MX |
+| Trust | No fake partners; no “you qualify”; source claims |
+| Strategy | Wide data model, narrow published content, freemium |
 
-### If deploy fails
-
-- Confirm Vercel is linked to `ltvaughan19/expat-atlas` and branch `main`
-- Check build logs for missing workspace packages (monorepo install must run from root)
-- Env vars: none required for Phase 1 public site
+Docs: `docs/plans/ELSEWHERE_FOUNDATION.md`, `BUSINESS_PLAN_AND_LAUNCH_REPORT.md`, `BUILD_CHECKLIST.md`, `STYLING_RULES.md`, `REPO_CONSOLIDATION.md`
 
 ---
 
-## Phase 2 kickoff (GStack: autoplan → execute)
+## YOUR queue (blocking / external)
 
-**Goal:** Authenticated app shell — users sign up, complete readiness quiz, see dashboard.
-
-| Step | Task |
-|------|------|
-| 1 | Create Supabase project; add env vars to Vercel + `.env.local` |
-| 2 | Drizzle migrations from `packages/db` |
-| 3 | Supabase Auth (email magic link or password) |
-| 4 | `/app/onboarding` — readiness quiz |
-| 5 | `/app/dashboard`, `/app/my-plan`, persisted budget + passport |
-| 6 | Feature gates by plan tier (metadata only; no live Stripe) |
-
-**GStack commands:** `office-hours` (if wedge changes) → `autoplan` → `plan-eng-review` → build → `review` → `qa` → `ship`
-
-**CEO HOLD SCOPE (unchanged):** No fake partners, no live payments, no AI visa advice until RAG + source claims.
+1. Choose production domain  
+2. Create Supabase project when ready for real auth  
+3. Grant elsewhere-app source access for quiz port  
+4. Approve GitHub rename timing (`expat-atlas` → `elsewhere`)  
+5. Official immigration URLs for PH / TH / MX claims  
+6. Skim Privacy / Terms before real users  
 
 ---
 
-## Key docs
+## Vercel
 
-- `ROADMAP.md` — phase progress
-- `docs/plans/GSTACK_EXECUTION_PLAN.md` — GStack decisions
-- `AGENTS.md` — trust rules for AI agents
-- `ARCHITECTURE.md` — stack and routes
+- Root Directory = `apps/web`  
+- Push to `main` deploys  
+- After this push: verify `/`, `/app/onboarding`, `/corridors`, `/compare`
 
 ---
 
-## When you're home
+## Next coding priority (home or work)
 
-1. Pull latest: `git pull origin main`
-2. Open https://expat-atlas-web.vercel.app/compare — confirm Sprint 2 is live
-3. Install Node LTS + pnpm normally if you want faster dev (optional)
-4. Run `pnpm dev` and click through `/compare`, `/visa-compass`, `/pricing`
-5. Start Phase 2: create Supabase project, copy connection string to `.env.local`
-6. In Cursor, say: **"Use gstack autoplan for Phase 2 — Supabase auth and /app shell"**
+1. Pull this push  
+2. Port cinematic Earth (Spline) from Vite Elsewhere if available on that PC  
+3. Or: wire Fit Quiz persistence toward corridors scoring  
+4. Or: Supabase + auth scaffold  

@@ -8,6 +8,7 @@ const staticRoutes = [
   "/visa-compass",
   "/passport-checklist",
   "/budget-calculator",
+  "/corridors",
   "/housing",
   "/property",
   "/insurance",

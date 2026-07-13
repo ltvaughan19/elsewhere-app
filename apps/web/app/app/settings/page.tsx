@@ -1,0 +1,62 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import type { UserPlan } from "@expat-atlas/types";
+import { clearPlan, loadPlan } from "@/lib/plan-store";
+
+export default function SettingsPage() {
+  const [plan, setPlan] = useState<UserPlan | null>(null);
+
+  useEffect(() => {
+    setPlan(loadPlan());
+  }, []);
+
+  const reset = () => {
+    if (confirm("Clear your local plan and start over?")) {
+      clearPlan();
+      window.location.href = "/signup";
+    }
+  };
+
+  return (
+    <div className="mx-auto max-w-xl">
+      <h1 className="font-display text-4xl text-navy-950">Settings</h1>
+      <dl className="mt-8 space-y-4 rounded-xl border border-sand-200 bg-white p-6 text-sm">
+        <div>
+          <dt className="text-navy-800/60">Email</dt>
+          <dd className="text-navy-950">{plan?.email || "—"}</dd>
+        </div>
+        <div>
+          <dt className="text-navy-800/60">Plan tier</dt>
+          <dd className="capitalize text-navy-950">{plan?.planTier ?? "free"}</dd>
+        </div>
+        <div>
+          <dt className="text-navy-800/60">Onboarding</dt>
+          <dd className="text-navy-950">
+            {plan?.onboardingCompleted ? "Complete" : "Not started"}
+          </dd>
+        </div>
+      </dl>
+      <p className="mt-6 text-sm text-navy-800/70">
+        Supabase sync is not configured yet. Add keys in{" "}
+        <code className="rounded bg-sand-100 px-1">.env.local</code> when ready.
+      </p>
+      <div className="mt-8 flex flex-wrap gap-3">
+        <Link
+          href="/app/onboarding"
+          className="rounded-full border border-sand-200 px-4 py-2 text-sm"
+        >
+          Retake quiz
+        </Link>
+        <button
+          type="button"
+          onClick={reset}
+          className="rounded-full border border-red-200 px-4 py-2 text-sm text-red-800"
+        >
+          Clear local plan
+        </button>
+      </div>
+    </div>
+  );
+}

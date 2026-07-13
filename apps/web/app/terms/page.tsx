@@ -7,7 +7,7 @@ export default function TermsPage() {
       <p className="mt-2 text-sm text-navy-800/70">Last updated: June 2026 · Draft for MVP</p>
       <div className="mt-8 space-y-4 text-navy-800/80">
         <p>
-          Expat Atlas provides general planning information only. We do not provide
+          Elsewhere provides general planning information only. We do not provide
           legal, immigration, tax, insurance, medical, investment, or real estate
           advice.
         </p>

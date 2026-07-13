@@ -13,7 +13,7 @@ export function MarketingStub({
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
       <p className="text-sm font-medium uppercase tracking-wide text-jungle-600">
-        Expat Atlas
+        Elsewhere
       </p>
       <h1 className="mt-2 font-display text-4xl text-navy-950">{title}</h1>
       <p className="mt-4 text-lg text-navy-800/80">{description}</p>

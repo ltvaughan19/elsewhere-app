@@ -4,9 +4,9 @@ import { TrustDisclaimer } from "@expat-atlas/ui";
 export default function AboutPage() {
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
-      <h1 className="font-display text-4xl text-navy-950">About Expat Atlas</h1>
+      <h1 className="font-display text-4xl text-navy-950">About Elsewhere</h1>
       <p className="mt-6 text-lg text-navy-800/80">
-        Expat Atlas is a guided relocation and long-stay planning system for people
+        Elsewhere is a guided relocation and long-stay planning system for people
         who want to live abroad but feel overwhelmed by visas, money, housing, and
         scattered research.
       </p>

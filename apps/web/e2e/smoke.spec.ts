@@ -1,12 +1,15 @@
 import { test, expect } from "@playwright/test";
 
-test("home page loads with primary CTA", async ({ page }) => {
+test("home page loads with Elsewhere brand and Fit Quiz CTA", async ({
+  page,
+}) => {
   await page.goto("/");
+  await expect(page.getByText("Elsewhere").first()).toBeVisible();
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    "Step-by-Step Plan",
+    "One calm path",
   );
   await expect(
-    page.getByRole("link", { name: "Build My Expat Plan" }).first(),
+    page.getByRole("link", { name: "Start Fit Quiz" }).first(),
   ).toBeVisible();
 });
 
@@ -41,4 +44,12 @@ test("pricing page shows tiers", async ({ page }) => {
 test("404 page for unknown country slug", async ({ page }) => {
   await page.goto("/countries/not-a-real-country");
   await expect(page.getByText("Page not found")).toBeVisible();
+});
+
+test("signup flow reaches onboarding", async ({ page }) => {
+  await page.goto("/signup");
+  await page.getByLabel("Email").fill("test@example.com");
+  await page.getByRole("button", { name: "Continue to readiness quiz" }).click();
+  await expect(page).toHaveURL(/\/app\/onboarding/);
+  await expect(page.getByText("Build your expat profile")).toBeVisible();
 });

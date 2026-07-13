@@ -1,24 +1,24 @@
 import type { Metadata } from "next";
-import { Cormorant_Garamond, Manrope } from "next/font/google";
-import { SiteFooter } from "@/components/site-footer";
-import { SiteHeader } from "@/components/site-header";
+import { Instrument_Serif, Outfit } from "next/font/google";
+import { LayoutChrome } from "@/components/layout-chrome";
 import "./globals.css";
 
-const display = Cormorant_Garamond({
+const display = Instrument_Serif({
   subsets: ["latin"],
   variable: "--font-display",
-  weight: ["400", "500", "600", "700"],
+  weight: ["400"],
 });
 
-const sans = Manrope({
+const sans = Outfit({
   subsets: ["latin"],
   variable: "--font-sans",
+  weight: ["300", "400", "500", "600"],
 });
 
 export const metadata: Metadata = {
-  title: "Expat Atlas — Your life abroad, turned into a step-by-step plan",
+  title: "Elsewhere — One calm path abroad",
   description:
-    "Compare countries, understand visas, plan your money, and know what to do next. General planning information only.",
+    "Elsewhere turns pressure to move abroad into a clear path: structure, verified research avenues, and a next step. General planning only — not legal advice.",
 };
 
 export default function RootLayout({
@@ -29,9 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${display.variable} ${sans.variable}`}>
       <body className="min-h-screen antialiased">
-        <SiteHeader />
-        <main>{children}</main>
-        <SiteFooter />
+        <LayoutChrome>{children}</LayoutChrome>
       </body>
     </html>
   );
