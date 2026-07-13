@@ -6,7 +6,7 @@ test("home page loads with Elsewhere brand and Fit Quiz CTA", async ({
   await page.goto("/");
   await expect(page.getByText("Elsewhere").first()).toBeVisible();
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    "One calm path",
+    "one calm path",
   );
   await expect(
     page.getByRole("link", { name: "Start Fit Quiz" }).first(),

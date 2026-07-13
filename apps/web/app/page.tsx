@@ -1,12 +1,12 @@
 import Link from "next/link";
 import { TrustDisclaimer } from "@expat-atlas/ui";
-import { GlobeHero } from "@/components/globe-hero";
+import { EarthSplineLazy } from "@/components/earth-spline-lazy";
 
 const questions = [
-  "Where do I actually fit?",
-  "Can I afford the first year?",
-  "What visa path is realistic?",
-  "What should I do next?",
+  "Where can I actually afford to live?",
+  "Is this even possible for me?",
+  "What if I mess this up?",
+  "Which visa is even real?",
 ];
 
 const corridors = [
@@ -33,24 +33,25 @@ const corridors = [
 export default function HomePage() {
   return (
     <>
-      {/* First viewport: brand + one line + CTAs + Earth */}
       <section className="relative min-h-[100svh] overflow-hidden bg-void text-cream">
         <div className="pointer-events-none absolute inset-0">
           <div className="absolute left-1/2 top-1/3 h-[42rem] w-[42rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-accent-cool/10 blur-3xl" />
           <div className="absolute bottom-0 right-0 h-80 w-80 rounded-full bg-accent-sand/10 blur-3xl" />
         </div>
 
-        <div className="relative mx-auto flex min-h-[100svh] max-w-6xl flex-col justify-center gap-14 px-6 py-24 lg:flex-row lg:items-center lg:gap-20">
+        <div className="relative mx-auto flex min-h-[100svh] max-w-6xl flex-col justify-center gap-10 px-6 py-24 lg:flex-row lg:items-center lg:gap-16">
           <div className="max-w-xl flex-1">
             <p className="font-display text-5xl tracking-tight text-cream md:text-6xl lg:text-7xl">
               Elsewhere
             </p>
-            <h1 className="mt-6 font-sans text-xl font-light leading-relaxed text-cream/80 md:text-2xl">
-              One calm path from pressure to a real plan abroad.
+            <h1 className="mt-6 font-display text-2xl font-normal leading-snug text-cream/90 md:text-3xl">
+              The world is closer than it feels.{" "}
+              <em className="text-accent-sand not-italic">You need one calm path.</em>
             </h1>
             <p className="mt-4 max-w-md text-sm leading-relaxed text-cream/55">
-              Structure, verified research avenues, and a next step — not another
-              advice feed. Planning estimates only.
+              When pressure says “go,” research multiplies into forty tabs.
+              Elsewhere is the quiet center: structure, verified avenues, and a
+              next step. Planning estimates only.
             </p>
             <div className="mt-10 flex flex-wrap gap-3">
               <Link
@@ -69,9 +70,9 @@ export default function HomePage() {
             <TrustDisclaimer className="mt-8 max-w-md text-cream/45" />
           </div>
 
-          <div className="flex flex-1 flex-col items-center gap-8">
-            <GlobeHero />
-            <ul className="flex flex-wrap justify-center gap-2">
+          <div className="flex flex-1 flex-col items-stretch gap-6">
+            <EarthSplineLazy className="w-full" />
+            <ul className="flex flex-wrap justify-center gap-2 lg:justify-start">
               {questions.map((q) => (
                 <li
                   key={q}

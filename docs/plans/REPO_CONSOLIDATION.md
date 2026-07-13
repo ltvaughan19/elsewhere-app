@@ -120,8 +120,8 @@ Two deploys, two design systems, duplicate nav, brand drift. One site = one CI, 
 ### Phase B — Visual unification
 - [x] Port `globals.css` to Elsewhere tokens  
 - [x] Restyle header/footer/app shell to dark system  
-- [x] Elsewhere brand-first landing on Next `/` (CSS Earth placeholder)  
-- [ ] Port Spline Earth from Vite Elsewhere into Next `/`
+- [x] Elsewhere brand-first landing on Next `/` (Spline Earth + reduced-motion fallback)  
+- [x] Port Spline Earth from Vite Elsewhere into Next `/` (idle spin; scroll-camera polish next)
 
 ### Phase C — Product unification
 - [ ] Port elsewhere-app quiz/path/checklist into Next  
@@ -165,7 +165,7 @@ Legacy `expat-atlas-web.vercel.app` and `elsewhere-mu.vercel.app` redirect to th
 
 1. [x] Approve: “expat-atlas repo becomes Elsewhere monorepo”  
 2. [ ] Choose production domain  
-3. [ ] Approve when to rename GitHub (now vs after landing port)  
+3. [x] Approve when to rename GitHub — **now** (YOU: Settings → Rename → `elsewhere`)  
 4. [ ] Grant elsewhere-app source access when we port the quiz  
 
 ---
