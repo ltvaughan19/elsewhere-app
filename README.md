@@ -2,7 +2,7 @@
 
 **One calm path from pressure to a real plan abroad.**
 
-Public brand: **Elsewhere**. This GitHub repo is still named `expat-atlas` until rename; packages remain `@expat-atlas/*` for now.
+Public brand: **Elsewhere**. GitHub repo: [`ltvaughan19/elsewhere-app`](https://github.com/ltvaughan19/elsewhere-app). Local folder may still be `expat-atlas`; packages remain `@expat-atlas/*` for now.
 
 Expat transition OS for first-time movers — structure, corridors (US → PH / TH / MX), and a next step. Not a travel blog.
 

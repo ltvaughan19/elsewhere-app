@@ -126,7 +126,7 @@
 - [x] **AGENT:** Country compare (seed)
 - [ ] **AGENT:** Apply Elsewhere dark tokens site-wide (globals + fonts)
 - [x] **AGENT:** Write `STYLING_RULES.md` + `REPO_CONSOLIDATION.md`
-- [ ] **YOU:** Approve rename of GitHub `expat-atlas` → `elsewhere`
+- [x] **YOU:** Approve rename of GitHub `expat-atlas` → `elsewhere-app`
 - [ ] **YOU:** Choose production domain
 - [ ] **AGENT:** Port cinematic landing into Next `/` (after approval)
 

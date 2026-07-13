@@ -1,8 +1,8 @@
 # Elsewhere — Handoff Notes (Work ↔ Home)
 
 **Last updated:** 2026-07-13 (work PC end-of-day)  
-**Brand:** Elsewhere (public) · local folder still `expat-atlas` until GitHub rename  
-**Repo (GitHub):** https://github.com/ltvaughan19/expat-atlas  
+**Brand:** Elsewhere (public) · local folder still `expat-atlas`  
+**Repo (GitHub):** https://github.com/ltvaughan19/elsewhere-app  
 **Live (Vercel):** https://expat-atlas-web.vercel.app  
 **Also live (legacy Vite landing):** https://elsewhere-mu.vercel.app — archive after Next landing parity  
 **Quiz prototype:** https://elsewhere-app-theta.vercel.app — merge into this monorepo (source not on work PC)
@@ -47,8 +47,9 @@ Still `@expat-atlas/*` internally. Rename to `@elsewhere/*` later with GitHub re
 - [ ] Scroll-scrub cinematic camera (port rest of Vite `splineScene.js`)
 - [ ] Port elsewhere-app Fit Quiz / Path / Checklist source into Next
 - [ ] Supabase project + real auth
-- [ ] GitHub rename `expat-atlas` → `elsewhere` (**approved** — YOU click Settings → Rename; then update remotes on both PCs)
+- [x] GitHub rename `expat-atlas` → `elsewhere-app` (YOU chose this name)  
 - [ ] Single Vercel project + production domain
+- [ ] Update GitHub repo description/README residual “Expat Atlas” copy on GitHub
 
 ---
 
@@ -156,29 +157,23 @@ Docs: `docs/plans/ELSEWHERE_FOUNDATION.md`, `BUSINESS_PLAN_AND_LAUNCH_REPORT.md`
 1. Choose production domain  
 2. Create Supabase project when ready for real auth  
 3. Grant elsewhere-app source access for quiz port  
-4. Approve GitHub rename timing (`expat-atlas` → `elsewhere`) — **approved now**; click Settings → Rename (see below)  
+4. GitHub rename (`expat-atlas` → **`elsewhere-app`**) — **done**  
 5. Official immigration URLs for PH / TH / MX claims  
 6. Skim Privacy / Terms before real users  
 
-### GitHub rename (YOU — 2 minutes)
+### GitHub remote (both PCs after rename)
 
-`gh` could not be installed on the work PC (UAC cancel / download blocked). Rename in the browser:
-
-1. Open https://github.com/ltvaughan19/expat-atlas/settings  
-2. Scroll to **Repository name** → change to `elsewhere` → **Rename**  
-3. On **both** PCs after rename:
+Repo is now: **https://github.com/ltvaughan19/elsewhere-app**
 
 ```powershell
 cd C:\Users\brenden.vaughan\expat-atlas
-git remote set-url origin https://github.com/ltvaughan19/elsewhere.git
+git remote set-url origin https://github.com/ltvaughan19/elsewhere-app.git
 git remote -v
 git pull origin main
 ```
 
-4. Tell Cursor/agent the new URL so docs + Vercel link can be updated.  
-5. Local folder can stay `expat-atlas` until you choose to rename it.
-
-Old URL redirects for a while, but update remotes promptly on home + work.
+Local folder can stay `expat-atlas` until you rename it.  
+Do not confuse with the Vite marketing repo `ltvaughan19/Elsewhere` or the Vercel quiz `elsewhere-app-theta`.
 ---
 
 ## Vercel

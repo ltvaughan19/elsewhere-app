@@ -8,7 +8,7 @@
 ## 1. The end state (locked)
 
 ```
-elsewhere/                          ← single GitHub repo (rename from expat-atlas)
+elsewhere-app/                      ← GitHub repo (renamed from expat-atlas)
 ├── apps/
 │   ├── web/                        ← THE site (Next.js)
 │   │   ├── app/(marketing)/        ← Landing + public pages
@@ -45,7 +45,7 @@ Vite-only `Elsewhere` folder, `elsewhere-app` Vercel project, or a second “Exp
 |--------|--------|
 | Delete and start over? | **No** — keep engineering value |
 | Keep name `expat-atlas` forever? | **No** — confuse brand |
-| **Path** | **Rename → `elsewhere`** (GitHub + local folder) when YOU approve |
+| **Path** | **Renamed → `elsewhere-app`** (GitHub). Local folder may stay `expat-atlas` for now. |
 
 ### Value we keep from expat-atlas
 
@@ -69,13 +69,13 @@ Vite-only `Elsewhere` folder, `elsewhere-app` Vercel project, or a second “Exp
 
 ### Rename steps (YOU when ready)
 
-1. Rename GitHub repo `expat-atlas` → `elsewhere` (Settings → Rename)  
-2. Update local folder / Cursor workspace root  
+1. Rename GitHub repo `expat-atlas` → **`elsewhere-app`** — **done**  
+2. Update local folder / Cursor workspace root (optional)  
 3. Update `package.json` names `@elsewhere/*` (can be gradual)  
 4. Point Vercel Root Directory at `apps/web`  
 5. Archive old Vercel aliases after DNS cutover  
 
-Until rename: keep coding in `expat-atlas` folder; public brand is already Elsewhere in docs.
+Until local rename: keep coding in `expat-atlas` folder; GitHub is `elsewhere-app`; public brand is Elsewhere.
 
 ---
 
@@ -165,7 +165,7 @@ Legacy `expat-atlas-web.vercel.app` and `elsewhere-mu.vercel.app` redirect to th
 
 1. [x] Approve: “expat-atlas repo becomes Elsewhere monorepo”  
 2. [ ] Choose production domain  
-3. [x] Approve when to rename GitHub — **now** (YOU: Settings → Rename → `elsewhere`)  
+3. [x] Approve when to rename GitHub — **done as `elsewhere-app`**  
 4. [ ] Grant elsewhere-app source access when we port the quiz  
 
 ---
