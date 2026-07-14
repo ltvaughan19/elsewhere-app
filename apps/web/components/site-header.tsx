@@ -41,6 +41,12 @@ export function SiteHeader() {
         <div className="flex items-center gap-2 sm:gap-3">
           <ThemeToggle />
           <Link
+            href="/start"
+            className="hidden text-sm text-navy-800 transition hover:text-cream sm:inline"
+          >
+            App
+          </Link>
+          <Link
             href="/login"
             className="hidden text-sm text-navy-800 transition hover:text-cream sm:inline"
           >
@@ -88,6 +94,11 @@ export function SiteHeader() {
               </li>
             ))}
             <li className="border-t border-sand-200 pt-3">
+              <Link href="/start" className="text-navy-800" onClick={() => setOpen(false)}>
+                App
+              </Link>
+            </li>
+            <li>
               <Link href="/login" className="text-navy-800" onClick={() => setOpen(false)}>
                 Log in
               </Link>

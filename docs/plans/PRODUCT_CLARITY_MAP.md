@@ -16,25 +16,32 @@ A **calm relocation planning OS** — Fit Quiz → research path → checklists 
 
 ---
 
-## 2. The three surfaces (which site is “real”?)
+## 2. The three surfaces → **one site now**
+
+**Locked 2026-07-14:** Marketing + product live in **one** Next app. One Supabase. See [ONE_SITE_ONE_AUTH.md](./ONE_SITE_ONE_AUTH.md).
 
 ```mermaid
 flowchart LR
-  marketing[Vite_marketing_elsewhere_mu]
-  product[Next_product_elsewhere_app_repo]
-  quizProto[Old_quiz_Vercel_prototype]
-  marketing -->|"emotion_waitlist_Earth"| brandFeel[Brand_feel]
-  product -->|"FitQuiz_Path_Tools"| realProduct[Canonical_product]
-  quizProto -->|"absorb_then_retire"| product
+  land["/_marketing_Earth"]
+  start["/start_hub"]
+  app["/app_product"]
+  land --> start
+  land --> app
+  start --> app
 ```
 
-| Surface | Where | Role |
-|---------|--------|------|
-| Marketing Earth landing | https://elsewhere-mu.vercel.app · Vite repo `Elsewhere` | Brand emotion + waitlist feel — **not** the product OS |
-| **This product (canonical)** | GitHub [`ltvaughan19/elsewhere-app`](https://github.com/ltvaughan19/elsewhere-app) · Vercel `expat-atlas-web` · local folder may still be `expat-atlas` | Fit Quiz → Path → tools — **build here** |
-| Old quiz prototype | https://elsewhere-app-theta.vercel.app | Sample UX to absorb later, then retire |
+| Route | Role |
+|-------|------|
+| `/` | Marketing (Spline Earth, waitlist, Log in → `/login`) |
+| `/start` | Product hub (“Your move plan”) |
+| `/app/*` | Fit Quiz, path, dashboard, tools |
+| `/login`, `/signup` | Auth on **this same origin** |
 
-**Locked rule:** One product monorepo. Do not copy the cinematic Earth hero into the product home. Marketing can later deep-link to this app’s Fit Quiz.
+| Legacy | Status |
+|--------|--------|
+| elsewhere-mu Vite | **Retire** after this deploy (redirect optional) |
+| elsewhere-app-theta | Absorb polish later; not a second home |
+| Second Supabase | **Never** for this brand |
 
 ---
 
@@ -53,7 +60,8 @@ flowchart LR
 
 | Route | Status | What it is |
 |-------|--------|------------|
-| `/` | Live | Product home — “Your move plan” + tool list (not marketing Earth) |
+| `/` | Live | Marketing home — Earth, waitlist, CTAs into app |
+| `/start` | Live | Product hub — tool list + Fit Quiz entry |
 | `/app/onboarding` | Demo-local | Fit Quiz (readiness profile) |
 | `/app/path` | Demo-local | Corridor research path + checklist + claim badges |
 | `/app/dashboard` | Demo-local | Score, best-fit, next step |
@@ -205,9 +213,10 @@ Forms + status enums (`pending_verification`, `verified`, `demo`, etc.). Verifie
 | 5 | **Legal entity** name in footer if not “Elsewhere” | Footer / Terms |
 | 6 | Confirm which **Vercel** project owns product production | Deploy clarity |
 | 7 | **Walk Fit Quiz once** and list friction | Product polish |
-| 8 | Optional: point marketing (elsewhere-mu) CTA → this Fit Quiz | One funnel |
+| 8 | Optional: DNS redirect elsewhere-mu → this site | Kill dual marketing |
 
-Repo rename to `elsewhere-app` is **done**. Local folder may stay `expat-atlas`.
+Repo rename to `elsewhere-app` is **done**. Local folder may stay `expat-atlas`.  
+**One site + one Supabase:** [ONE_SITE_ONE_AUTH.md](./ONE_SITE_ONE_AUTH.md).
 
 ---
 

@@ -15,6 +15,12 @@ const EarthSpline = dynamic(
   },
 );
 
-export function EarthSplineLazy({ className }: { className?: string }) {
-  return <EarthSpline className={className} />;
+export function EarthSplineLazy({
+  className,
+  fill = false,
+}: {
+  className?: string;
+  fill?: boolean;
+}) {
+  return <EarthSpline className={className} fill={fill} />;
 }

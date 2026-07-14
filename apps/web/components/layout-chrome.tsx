@@ -8,8 +8,9 @@ import { StickyMobileCta } from "@/components/sticky-mobile-cta";
 export function LayoutChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isApp = pathname?.startsWith("/app");
+  const isMarketingHome = pathname === "/";
 
-  if (isApp) {
+  if (isApp || isMarketingHome) {
     return <>{children}</>;
   }
 

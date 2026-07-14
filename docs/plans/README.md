@@ -5,6 +5,7 @@
 | Document | Purpose |
 |----------|---------|
 | [PRODUCT_CLARITY_MAP.md](./PRODUCT_CLARITY_MAP.md) | **Plain-language operating picture** |
+| [ONE_SITE_ONE_AUTH.md](./ONE_SITE_ONE_AUTH.md) | **Locked:** one Next site, one Supabase |
 | [STYLING_RULES.md](./STYLING_RULES.md) | Colors, type, light/dark, marketing vs product |
 | [REPO_CONSOLIDATION.md](./REPO_CONSOLIDATION.md) | One repo, one product site, marketing separate |
 | [ELSEWHERE_FOUNDATION.md](./ELSEWHERE_FOUNDATION.md) | Mission, values, scalable platform rules |

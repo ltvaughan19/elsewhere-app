@@ -7,7 +7,8 @@
 **Also live (legacy Vite landing):** https://elsewhere-mu.vercel.app — archive after Next landing parity  
 **Quiz prototype:** https://elsewhere-app-theta.vercel.app — merge into this monorepo (source not on work PC)
 
-**Confused about the product?** Read [`docs/plans/PRODUCT_CLARITY_MAP.md`](./docs/plans/PRODUCT_CLARITY_MAP.md) first.
+**Confused about the product?** Read [`docs/plans/PRODUCT_CLARITY_MAP.md`](./docs/plans/PRODUCT_CLARITY_MAP.md) first.  
+**One site / one Supabase:** [`docs/plans/ONE_SITE_ONE_AUTH.md`](./docs/plans/ONE_SITE_ONE_AUTH.md).
 
 ---
 
@@ -25,20 +26,22 @@ Do **not** leave unpushed work on either PC overnight.
 
 ---
 
-## Last session (2026-07-14 — work, clarity map)
+## Last session (2026-07-14 — work, one-site consolidate)
 
 ### Shipped
 
-- [`docs/plans/PRODUCT_CLARITY_MAP.md`](./docs/plans/PRODUCT_CLARITY_MAP.md) — surfaces, site map, features, data pipeline, YOUR decisions
-- Product light + dark themes; product `/` home (no Earth hero)
+- **One site:** `/` = marketing Earth; `/start` = product hub; `/app/*` = OS
+- Log in / Fit Quiz stay on **same origin** (one future Supabase)
+- Waitlist API `/api/waitlist` + `WAITLIST_WEBHOOK`
+- Docs: `ONE_SITE_ONE_AUTH.md`, updated clarity map
 
 ### Not done yet
 
-- [ ] Port elsewhere-app quiz visual polish when source available
-- [ ] Supabase project + real auth
-- [ ] Single Vercel project + production domain
-- [ ] Wire waitlist to real email provider (needs YOU webhook)
-- [ ] YOU: official URLs + domain (see clarity map §7)
+- [ ] YOU: create **one** Supabase project + paste keys (see ONE_SITE_ONE_AUTH)
+- [ ] YOU: set WAITLIST_WEBHOOK when ESP ready
+- [ ] YOU: retire elsewhere-mu redirect after verifying this `/`
+- [ ] Port full scroll-camera polish from Vite (optional visual depth)
+- [ ] Auth SDK wiring once Supabase keys exist
 ---
 
 ## Start-of-day checklist (either PC)

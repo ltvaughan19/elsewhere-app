@@ -1,15 +1,21 @@
 import { test, expect } from "@playwright/test";
 
-test("home page loads with product entry and Fit Quiz CTA", async ({
-  page,
-}) => {
+test("marketing home loads with Fit Quiz CTA", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    "Your move plan",
+    "one calm path",
   );
   await expect(
     page.getByRole("link", { name: "Start Fit Quiz" }).first(),
   ).toBeVisible();
+  await expect(page.getByRole("link", { name: "Log in" }).first()).toBeVisible();
+});
+
+test("product hub loads at /start", async ({ page }) => {
+  await page.goto("/start");
+  await expect(page.getByRole("heading", { level: 1 })).toContainText(
+    "Your move plan",
+  );
 });
 
 test("budget calculator computes runway", async ({ page }) => {

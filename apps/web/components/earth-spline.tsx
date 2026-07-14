@@ -10,14 +10,15 @@ export const SPLINE_SCENE_URL =
 
 type EarthSplineProps = {
   className?: string;
+  /** Full-bleed fixed marketing background */
+  fill?: boolean;
 };
 
 /**
- * Lazy Spline Earth for the marketing hero.
- * Respects prefers-reduced-motion (CSS globe fallback).
- * Does not rematerialize Earth — scene file is the authority.
+ * Spline Earth — marketing hero + inline product use.
+ * Respects prefers-reduced-motion. Does not rematerialize Earth textures.
  */
-export function EarthSpline({ className }: EarthSplineProps) {
+export function EarthSpline({ className, fill = false }: EarthSplineProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [failed, setFailed] = useState(false);
   const [ready, setReady] = useState(false);
@@ -50,7 +51,6 @@ export function EarthSpline({ className }: EarthSplineProps) {
         }
         setReady(true);
 
-        // Gentle idle spin — no material / texture remaps
         const tick = () => {
           if (disposed || !app) return;
           try {
@@ -96,15 +96,19 @@ export function EarthSpline({ className }: EarthSplineProps) {
   }
 
   return (
-    <div className={`relative ${className ?? ""}`}>
+    <div className={`relative h-full w-full ${className ?? ""}`}>
       {!ready ? (
-        <p className="absolute inset-0 flex items-center justify-center text-xs text-cream/40">
+        <p className="absolute inset-0 z-10 flex items-center justify-center text-xs text-[#f4f1ea]/55">
           Loading Earth…
         </p>
       ) : null}
       <canvas
         ref={canvasRef}
-        className="h-full min-h-[280px] w-full md:min-h-[420px]"
+        className={
+          fill
+            ? "h-full w-full"
+            : "h-full min-h-[280px] w-full md:min-h-[420px]"
+        }
         aria-hidden
       />
     </div>

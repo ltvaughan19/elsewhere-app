@@ -1,0 +1,324 @@
+/* Marketing landing — forced brand night (independent of product theme toggle) */
+.marketing-root {
+  --m-bg: #07090d;
+  --m-fg: #f4f1ea;
+  --m-muted: rgba(244, 241, 234, 0.72);
+  --m-accent: #c8b48a;
+  --m-accent-ink: #12141a;
+  --m-cool: #7eb8c9;
+  --m-border: rgba(244, 241, 234, 0.14);
+  --m-ease: cubic-bezier(0.22, 1, 0.36, 1);
+
+  position: relative;
+  min-height: 100svh;
+  color: var(--m-fg);
+  background: var(--m-bg);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+.marketing-earth {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.marketing-earth-inner,
+.marketing-earth-inner > div,
+.marketing-earth canvas {
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 100svh !important;
+}
+
+.marketing-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 70% 50% at 70% 40%, transparent 0%, rgba(7, 9, 13, 0.35) 55%, rgba(7, 9, 13, 0.82) 100%),
+    linear-gradient(90deg, rgba(7, 9, 13, 0.88) 0%, rgba(7, 9, 13, 0.45) 42%, rgba(7, 9, 13, 0.2) 100%);
+}
+
+.marketing-header,
+.marketing-panel,
+.marketing-footer {
+  position: relative;
+  z-index: 2;
+}
+
+.marketing-header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  background: rgba(7, 9, 13, 0.72);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--m-border);
+}
+
+.marketing-logo {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.5rem;
+  color: var(--m-fg);
+  text-decoration: none;
+}
+
+.marketing-nav {
+  display: none;
+  align-items: center;
+  gap: 1.25rem;
+  font-size: 0.875rem;
+}
+
+.marketing-nav a {
+  color: var(--m-muted);
+  text-decoration: none;
+  transition: color 160ms var(--m-ease);
+}
+
+.marketing-nav a:hover {
+  color: var(--m-fg);
+}
+
+.marketing-nav-cta {
+  border-radius: 0.375rem;
+  background: var(--m-accent) !important;
+  color: var(--m-accent-ink) !important;
+  padding: 0.5rem 0.9rem;
+  font-weight: 500;
+}
+
+@media (min-width: 768px) {
+  .marketing-nav {
+    display: flex;
+  }
+}
+
+.marketing-panel {
+  min-height: min(100svh, 900px);
+  display: flex;
+  align-items: center;
+  padding: 5rem 1.5rem;
+}
+
+.marketing-hero {
+  min-height: 100svh;
+}
+
+.marketing-copy {
+  max-width: 34rem;
+}
+
+.marketing-copy.left {
+  margin-right: auto;
+}
+
+.marketing-copy.right {
+  margin-left: auto;
+}
+
+.marketing-copy.wide {
+  max-width: 44rem;
+}
+
+.marketing-copy.center {
+  margin-inline: auto;
+  text-align: center;
+  max-width: 36rem;
+}
+
+.marketing-eyebrow {
+  font-size: 0.72rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--m-accent);
+  font-weight: 500;
+}
+
+.marketing-copy h1,
+.marketing-copy h2 {
+  font-family: var(--font-display), Georgia, serif;
+  font-weight: 400;
+  line-height: 1.15;
+  margin: 0.85rem 0 0;
+}
+
+.marketing-copy h1 {
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+}
+
+.marketing-copy h2 {
+  font-size: clamp(1.75rem, 3.5vw, 2.5rem);
+}
+
+.marketing-copy h1 em,
+.marketing-copy h2 em {
+  font-style: italic;
+  color: var(--m-accent);
+}
+
+.marketing-lede,
+.marketing-copy > p {
+  margin-top: 1rem;
+  color: var(--m-muted);
+  font-size: 1.05rem;
+  line-height: 1.6;
+}
+
+.marketing-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.75rem;
+}
+
+.marketing-actions.center {
+  justify-content: center;
+}
+
+.marketing-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.375rem;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition:
+    background 160ms var(--m-ease),
+    border-color 160ms var(--m-ease);
+}
+
+.marketing-btn.primary {
+  background: var(--m-accent);
+  color: var(--m-accent-ink);
+}
+
+.marketing-btn.primary:hover {
+  background: #d4c49a;
+}
+
+.marketing-btn.ghost {
+  border: 1px solid var(--m-border);
+  color: var(--m-fg);
+  background: transparent;
+}
+
+.marketing-btn.ghost:hover {
+  border-color: rgba(244, 241, 234, 0.35);
+}
+
+.marketing-fine,
+.marketing-footnote {
+  margin-top: 1.25rem;
+  font-size: 0.8rem;
+  line-height: 1.5;
+  color: var(--m-muted);
+}
+
+.marketing-wins {
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 1.75rem;
+}
+
+@media (min-width: 700px) {
+  .marketing-wins {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.marketing-wins article {
+  border-top: 1px solid var(--m-border);
+  padding-top: 1rem;
+}
+
+.marketing-wins h3 {
+  margin: 0;
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.marketing-wins p {
+  margin: 0.5rem 0 0;
+  font-size: 0.9rem;
+  color: var(--m-muted);
+}
+
+.marketing-clarity {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0 0;
+  display: grid;
+  gap: 0.75rem;
+}
+
+.marketing-clarity li {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: baseline;
+  border-bottom: 1px solid var(--m-border);
+  padding-bottom: 0.75rem;
+  font-size: 0.95rem;
+}
+
+.marketing-clarity .tag {
+  color: var(--m-cool);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.marketing-finale {
+  border-top: 1px solid var(--m-border);
+  background: rgba(14, 18, 24, 0.55);
+}
+
+.marketing-footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.5rem;
+  justify-content: space-between;
+  padding: 1.5rem;
+  border-top: 1px solid var(--m-border);
+  font-size: 0.8rem;
+  color: var(--m-muted);
+}
+
+.marketing-footer nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.marketing-footer a {
+  color: var(--m-muted);
+  text-decoration: none;
+}
+
+.marketing-footer a:hover {
+  color: var(--m-cool);
+}
+
+/* Waitlist on marketing: force readable dark inputs */
+.marketing-root input {
+  background: rgba(18, 22, 30, 0.9) !important;
+  color: var(--m-fg) !important;
+  border-color: var(--m-border) !important;
+}
+
+.marketing-root button[type="submit"] {
+  background: var(--m-accent) !important;
+  color: var(--m-accent-ink) !important;
+}

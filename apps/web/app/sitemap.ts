@@ -3,6 +3,7 @@ import { SEED_COUNTRIES } from "@/lib/seed-countries";
 
 const staticRoutes = [
   "",
+  "/start",
   "/countries",
   "/compare",
   "/visa-compass",
