@@ -181,6 +181,20 @@ body {
     var(--ea-bg);
 }
 
+/* Marketing `/` Earth parity — kill product glow wash before mu CSS loads */
+html.elsewhere-mu-active,
+html.elsewhere-mu-active[data-theme="light"] {
+  color-scheme: dark;
+  --ea-bg: #07090d;
+  --ea-fg: #f2efe8;
+  --ea-glow: rgba(126, 184, 201, 0.22);
+}
+
+html.elsewhere-mu-active body,
+html.elsewhere-mu-active body.elsewhere-surface {
+  background: #07090d !important;
+}
+
 /* Interactive list rows */
 .elsewhere-row {
   transition:

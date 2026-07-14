@@ -21,6 +21,11 @@ const STORAGE_KEY = "elsewhere-theme";
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 function applyTheme(theme: Theme) {
+  // Marketing home (`elsewhere-mu-active`) must stay dark for Earth lighting parity.
+  if (document.documentElement.classList.contains("elsewhere-mu-active")) {
+    document.documentElement.setAttribute("data-theme", "dark");
+    return;
+  }
   document.documentElement.setAttribute("data-theme", theme);
 }
 

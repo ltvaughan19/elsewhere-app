@@ -15,7 +15,9 @@ type EarthSplineProps = {
 };
 
 /**
- * Spline Earth — marketing hero + inline product use.
+ * Spline Earth — product/inline use only (idle spin).
+ * Marketing `/` must use `bootMarketing` → `createSplineScene` (camera scrub +
+ * `reduceGlobeGlare`). Do not use this wrapper on the mu landing path.
  * Respects prefers-reduced-motion. Does not rematerialize Earth textures.
  */
 export function EarthSpline({ className, fill = false }: EarthSplineProps) {
