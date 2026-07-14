@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { TrustDisclaimer } from "@expat-atlas/ui";
-import { WaitlistForm } from "@/components/waitlist-form";
+import { NewsletterForm } from "@/components/newsletter-form";
 
 const tools = [
   {
@@ -107,12 +107,12 @@ export default function StartPage() {
       </section>
 
       <section className="mt-16 rounded-xl border border-sand-200 bg-void-card px-6 py-10 text-center shadow-ea">
-        <h2 className="font-display text-2xl text-cream">Early access</h2>
+        <h2 className="font-display text-2xl text-cream">Corridor Brief</h2>
         <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-navy-800">
-          Join the waitlist for corridor openings. Uses the same waitlist pipe as
-          the marketing home when a webhook is configured.
+          Rare free emails when sourced notes change. The full paid digest is
+          included with Explorer — same account as the app.
         </p>
-        <WaitlistForm />
+        <NewsletterForm source="product-hub" />
       </section>
     </div>
   );

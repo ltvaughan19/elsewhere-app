@@ -14,7 +14,7 @@
 | **Marketing** | Same Next app — route `/` (Spline Earth) |
 | **Product** | Same Next app — `/start`, `/app/*`, tools |
 | **Auth** | Always completes on **this origin** (`/login`, `/signup`) |
-| **Supabase** | **One** project for marketing + product + future mobile |
+| **Supabase** | **One** project for marketing + product + newsletter prefs + future mobile |
 
 ```mermaid
 flowchart TD
@@ -63,6 +63,10 @@ One project: put keys on this Vercel app only. Add redirect URLs for local + pro
 |-----|--------|
 | elsewhere-mu (Vite) | Archive after this `/` is deployed; optional DNS redirect → this site |
 | elsewhere-app-theta quiz | Absorb UX polish later; do not add a second auth |
+
+---
+
+See also: `docs/plans/EMAIL_AND_SUPABASE.md` (Corridor Brief + Resend + plan-gated digest).
 
 ---
 

@@ -5,21 +5,58 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { TrustDisclaimer } from "@expat-atlas/ui";
 import { createDemoAccount, loadPlan } from "@/lib/plan-store";
+import { createClient } from "@/lib/supabase/client";
 
 export function SignupForm() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
 
-  const submit = (e: React.FormEvent) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.includes("@")) {
+    const cleaned = email.trim().toLowerCase();
+    if (!cleaned.includes("@")) {
       setError("Enter a valid email.");
       return;
     }
-    createDemoAccount(email, name);
-    router.push("/app/onboarding");
+    if (password.length < 8) {
+      setError("Password must be at least 8 characters.");
+      return;
+    }
+    setError("");
+    setBusy(true);
+    try {
+      const supabase = createClient();
+      const { data, error: signError } = await supabase.auth.signUp({
+        email: cleaned,
+        password,
+        options: {
+          data: { display_name: name.trim() || null },
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=/app/onboarding`,
+        },
+      });
+      if (signError) {
+        setError(signError.message);
+        return;
+      }
+      // Keep local demo plan for Fit Quiz until cloud sync exists.
+      createDemoAccount(cleaned, name);
+      if (data.session) {
+        router.push("/app/onboarding");
+        router.refresh();
+        return;
+      }
+      setError(
+        "Account created. If email confirmation is on, check your inbox, then log in.",
+      );
+    } catch {
+      setError("Could not reach auth. Check your connection and try again.");
+    } finally {
+      setBusy(false);
+    }
   };
 
   const existing = typeof window !== "undefined" ? loadPlan() : null;
@@ -31,14 +68,11 @@ export function SignupForm() {
       </p>
       <h1 className="mt-2 font-display text-4xl text-navy-950">Create your account</h1>
       <p className="mt-4 text-navy-800/80">
-        Save your plan, complete the readiness quiz, and track passport + budget steps.
+        One account for Fit Quiz, your plan, and Corridor Digest when you upgrade.
       </p>
-      <div className="mt-4 rounded-lg border border-gold-400/40 bg-gold-400/10 px-4 py-3 text-sm text-navy-900">
-        Demo mode: accounts are stored on this device until Supabase is connected.
-      </div>
       {existing?.onboardingCompleted ? (
         <p className="mt-4 text-sm">
-          You already have a plan.{" "}
+          You already have a local plan on this device.{" "}
           <Link href="/app/dashboard" className="text-jungle-600 underline">
             Go to dashboard
           </Link>
@@ -65,18 +99,36 @@ export function SignupForm() {
             id="email"
             type="email"
             required
+            autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="mt-1 w-full rounded-xl border border-sand-200 px-4 py-3"
             placeholder="you@example.com"
           />
         </div>
+        <div>
+          <label htmlFor="password" className="text-sm font-medium text-navy-900">
+            Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            required
+            minLength={8}
+            autoComplete="new-password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="mt-1 w-full rounded-xl border border-sand-200 px-4 py-3"
+            placeholder="At least 8 characters"
+          />
+        </div>
         {error ? <p className="text-sm text-red-700">{error}</p> : null}
         <button
           type="submit"
-          className="w-full rounded-full bg-jungle-600 py-3 font-medium text-white"
+          disabled={busy}
+          className="w-full rounded-full bg-jungle-600 py-3 font-medium text-white disabled:opacity-60"
         >
-          Continue to readiness quiz
+          {busy ? "Creating…" : "Continue to readiness quiz"}
         </button>
       </form>
       <p className="mt-6 text-center text-sm text-navy-800/70">

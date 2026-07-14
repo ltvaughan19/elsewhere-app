@@ -90,10 +90,9 @@ export function MarketingLanding() {
           <a href="#shift">The shift</a>
           <a href="#wins">Why move</a>
           <Link href="/login">Log in</Link>
-          <Link href="/app/onboarding">Start Fit Quiz</Link>
-          <a className="nav-cta" href="#begin">
-            Start your path
-          </a>
+          <Link className="nav-cta" href="/app/onboarding">
+            Start Fit Quiz
+          </Link>
         </nav>
       </header>
       <div className="nav-threshold" id="nav-threshold" aria-hidden="true" />
@@ -117,9 +116,9 @@ export function MarketingLanding() {
               to breathe.
             </p>
             <div className="hero-actions">
-              <a className="btn primary" href="#begin">
-                Join the waitlist
-              </a>
+              <Link className="btn primary" href="/app/onboarding">
+                Start Fit Quiz
+              </Link>
               <a className="btn ghost" href="#shift">
                 See how it works
               </a>
@@ -227,7 +226,7 @@ export function MarketingLanding() {
               Guidance and organization — not legal advice. You stay in control.
             </p>
             <div className="hero-actions" style={{ marginTop: "1.5rem" }}>
-              <Link className="btn ghost" href="/app/onboarding">
+              <Link className="btn primary" href="/app/onboarding">
                 Start Fit Quiz
               </Link>
               <Link className="btn ghost" href="/start">
@@ -239,18 +238,38 @@ export function MarketingLanding() {
 
         <section className="panel finale" id="begin">
           <div className="panel-inner center">
-            <p className="eyebrow">Start your path</p>
+            <p className="eyebrow">Begin</p>
             <h2>
-              Be first when Elsewhere opens.
+              Start with clarity.
               <br />
-              <em>Calmly.</em>
+              <em>Not a countdown.</em>
             </h2>
             <p className="body">
-              Join the waitlist for early access. No spam — only milestones that
-              matter as we open the first corridor.
+              Run the Fit Quiz and get a research path for Philippines, Thailand,
+              or Mexico. Planning estimates only — you verify before you act.
+            </p>
+            <div className="hero-actions" style={{ marginBottom: "2rem" }}>
+              <Link className="btn primary" href="/app/onboarding">
+                Start Fit Quiz
+              </Link>
+              <Link className="btn ghost" href="/pricing">
+                See Explorer
+              </Link>
+            </div>
+
+            <p className="eyebrow">Corridor Brief</p>
+            <h2>
+              Stay informed without the noise.
+              <br />
+              <em>Rarely.</em>
+            </h2>
+            <p className="body">
+              Opt in for a free brief when sourced corridor notes actually change.
+              The full paid digest ships with Explorer — same account, no second
+              Substack bill.
             </p>
 
-            <form className="waitlist" id="waitlist" noValidate>
+            <form className="waitlist" id="newsletter" noValidate>
               <label className="sr-only" htmlFor="email">
                 Email
               </label>
@@ -264,11 +283,11 @@ export function MarketingLanding() {
                   required
                 />
                 <button type="submit" className="btn primary">
-                  Join the waitlist
+                  Get the Brief
                 </button>
               </div>
-              <p className="waitlist-note" id="waitlist-note">
-                Free to join. Unsubscribe anytime.
+              <p className="waitlist-note" id="newsletter-note">
+                Unsubscribe anytime. Not legal advice — research signals only.
               </p>
             </form>
 

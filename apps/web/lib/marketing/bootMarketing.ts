@@ -344,9 +344,9 @@ export async function bootMarketingExperience(root: HTMLElement): Promise<BootHa
     anchors.forEach((link) => link.removeEventListener("click", anchorHandler));
   });
 
-  const STORAGE_KEY = "elsewhere-waitlist";
-  const form = root.querySelector<HTMLFormElement>("#waitlist");
-  const note = root.querySelector<HTMLElement>("#waitlist-note");
+  const STORAGE_KEY = "elsewhere-newsletter-emails";
+  const form = root.querySelector<HTMLFormElement>("#newsletter");
+  const note = root.querySelector<HTMLElement>("#newsletter-note");
 
   async function saveEmail(email: string) {
     const list = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]") as Array<
@@ -357,10 +357,14 @@ export async function bootMarketingExperience(root: HTMLElement): Promise<BootHa
       localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
     }
     try {
-      await fetch("/api/waitlist", {
+      await fetch("/api/newsletter", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, source: "elsewhere-marketing" }),
+        body: JSON.stringify({
+          email,
+          source: "marketing-home",
+          intent: "free_brief",
+        }),
       });
     } catch {
       /* local save still counts */
@@ -383,7 +387,8 @@ export async function bootMarketingExperience(root: HTMLElement): Promise<BootHa
     void saveEmail(value);
     form.classList.add("is-success");
     if (note) {
-      note.textContent = "You’re on the list. We’ll be in touch when the path opens.";
+      note.textContent =
+        "You’re in. Rare briefs only — full paid digest with Explorer.";
     }
     if (input) input.value = "";
   };
