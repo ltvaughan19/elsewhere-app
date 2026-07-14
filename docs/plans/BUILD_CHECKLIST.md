@@ -112,12 +112,13 @@
 
 ### 3B — Fit Quiz → Path → Checklist
 
-- [ ] **AGENT:** Port elsewhere-app quiz UX into Next app
-- [ ] **AGENT:** Quiz engine reads corridor packs (no hardcoded country ifs)
-- [ ] **AGENT:** Path page shows research route + claim badges
-- [ ] **AGENT:** Checklist per corridor pack
-- [ ] **AGENT:** Vault UI = metadata checklist only (label “files later”)
+- [x] **AGENT:** Fit Quiz → Path → Checklist in Next (`/app/onboarding` → `/app/path`)
+- [x] **AGENT:** Quiz engine reads corridor packs (PH/TH/MX seeds)
+- [x] **AGENT:** Path page shows research route + claim badges
+- [x] **AGENT:** Checklist per corridor pack (localStorage)
+- [x] **AGENT:** Vault UI = metadata checklist only (label “files later”)
 - [ ] **YOU:** Walk the quiz once and list what feels wrong
+- [ ] **AGENT:** Port elsewhere-app visual polish when source available
 
 ### 3C — Free tools (lead with value)
 

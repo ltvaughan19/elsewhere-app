@@ -51,5 +51,19 @@ test("signup flow reaches onboarding", async ({ page }) => {
   await page.getByLabel("Email").fill("test@example.com");
   await page.getByRole("button", { name: "Continue to readiness quiz" }).click();
   await expect(page).toHaveURL(/\/app\/onboarding/);
-  await expect(page.getByText("Build your expat profile")).toBeVisible();
+  await expect(page.getByText("Build your Elsewhere profile")).toBeVisible();
+});
+
+test("fit quiz guest flow reaches path", async ({ page }) => {
+  await page.goto("/app/onboarding");
+  await expect(page.getByText("Build your Elsewhere profile")).toBeVisible();
+  // Advance through all steps with defaults
+  const next = page.getByRole("button", { name: "Next" });
+  for (let i = 0; i < 9; i++) {
+    await next.click();
+  }
+  await page.getByRole("button", { name: "See my path" }).click();
+  await expect(page).toHaveURL(/\/app\/path/);
+  await expect(page.getByText("Your research path")).toBeVisible();
+  await expect(page.getByText("Needs verification").first()).toBeVisible();
 });

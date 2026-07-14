@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { TrustDisclaimer } from "@expat-atlas/ui";
 import { EarthSplineLazy } from "@/components/earth-spline-lazy";
+import { WaitlistForm } from "@/components/waitlist-form";
 
 const questions = [
   "Where can I actually afford to live?",
@@ -152,15 +153,18 @@ export default function HomePage() {
         <div className="mx-auto max-w-6xl px-6 text-center">
           <p className="font-display text-4xl text-cream">Ready when you are</p>
           <p className="mx-auto mt-4 max-w-md text-sm text-cream/55">
-            Take the Fit Quiz. Get a corridor hypothesis and a checklist — then
-            verify before you act.
+            Take the Fit Quiz now, or join the waitlist for corridor openings.
+            Verify before you act.
           </p>
-          <Link
-            href="/app/onboarding"
-            className="mt-8 inline-block rounded-md bg-accent-sand px-6 py-3 text-sm font-medium text-[#12141a] transition hover:bg-accent-sand-hover"
-          >
-            Start Fit Quiz
-          </Link>
+          <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <Link
+              href="/app/onboarding"
+              className="inline-block rounded-md bg-accent-sand px-6 py-3 text-sm font-medium text-[#12141a] transition hover:bg-accent-sand-hover"
+            >
+              Start Fit Quiz
+            </Link>
+          </div>
+          <WaitlistForm />
         </div>
       </section>
     </>

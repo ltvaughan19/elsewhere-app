@@ -1,6 +1,6 @@
 # Elsewhere — Handoff Notes (Work ↔ Home)
 
-**Last updated:** 2026-07-13 (work PC end-of-day)  
+**Last updated:** 2026-07-14 (work PC — resumed; no home work)  
 **Brand:** Elsewhere (public) · local folder still `expat-atlas`  
 **Repo (GitHub):** https://github.com/ltvaughan19/elsewhere-app  
 **Live (Vercel):** https://expat-atlas-web.vercel.app  
@@ -23,34 +23,23 @@ Do **not** leave unpushed work on either PC overnight.
 
 ---
 
-## Last session (2026-07-13 — work)
+## Last session (2026-07-14 — work)
 
-### Shipped / committed in this push
+### Shipped
 
-- Elsewhere foundation docs (`docs/plans/*`)
-- Dark design tokens + Instrument Serif / Outfit
-- User-facing rebrand Expat Atlas → Elsewhere
-- New cinematic `/` landing (brand-first, Fit Quiz CTA, PH/TH/MX corridors)
-- **Spline Earth** on `/` (locked scene URL from Vite Elsewhere; idle spin; CSS globe if reduced-motion/fail)
-- App shell demo: `/app/*` (onboarding quiz, dashboard, plan, etc.) — localStorage, no Supabase yet
-- Corridors page + source claim UI pieces
-- CI workflow `.github/workflows/ci.yml`
-- Partner application form, report outdated stub, sticky mobile CTA
-- **GitHub rename approved** — YOU rename in Settings (steps in YOUR queue)
-
-### Package names
-
-Still `@expat-atlas/*` internally. Rename to `@elsewhere/*` later with GitHub repo rename.
+- Fit Quiz → **`/app/path`**: corridor path pack, research checklist (localStorage), source claim cards
+- Guest quiz works from landing **Start Fit Quiz** (no signup required)
+- Landing waitlist form (device-local until ESP webhook)
+- Sidebar **My path**; dashboard CTA to research path
 
 ### Not done yet
 
 - [ ] Scroll-scrub cinematic camera (port rest of Vite `splineScene.js`)
-- [ ] Port elsewhere-app Fit Quiz / Path / Checklist source into Next
+- [ ] Port elsewhere-app Fit Quiz UX polish (need quiz source / Vercel pull)
 - [ ] Supabase project + real auth
-- [x] GitHub rename `expat-atlas` → `elsewhere-app` (YOU chose this name)  
 - [ ] Single Vercel project + production domain
-- [ ] Update GitHub repo description/README residual “Expat Atlas” copy on GitHub
-
+- [ ] Update GitHub repo description residual “Expat Atlas” copy
+- [ ] Wire waitlist to real email provider (needs YOU webhook)
 ---
 
 ## Start-of-day checklist (either PC)
@@ -186,7 +175,7 @@ Do not confuse with the Vite marketing repo `ltvaughan19/Elsewhere` or the Verce
 
 ## Next coding priority (home or work)
 
-1. Pull this push  
-2. Port cinematic Earth (Spline) from Vite Elsewhere if available on that PC  
-3. Or: wire Fit Quiz persistence toward corridors scoring  
-4. Or: Supabase + auth scaffold  
+1. `git pull origin main` on https://github.com/ltvaughan19/elsewhere-app  
+2. Click through `/` → Start Fit Quiz → `/app/path`  
+3. Scroll-scrub Earth camera **or** Supabase when YOU create project  
+4. Grant quiz prototype source when ready for UX parity  

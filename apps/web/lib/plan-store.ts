@@ -48,14 +48,24 @@ export function createDemoAccount(email: string, displayName: string): UserPlan 
   return plan;
 }
 
+export function ensureGuestPlan(): UserPlan {
+  const existing = loadPlan();
+  if (existing) return existing;
+  return createDemoAccount("guest@elsewhere.local", "Guest");
+}
+
 export function completeOnboarding(answers: OnboardingAnswers): UserPlan {
-  const existing = loadPlan() ?? DEFAULT_PLAN;
+  const existing = loadPlan() ?? ensureGuestPlan();
   const readiness = computeReadiness(answers);
   const plan: UserPlan = {
     ...existing,
     answers,
     readiness,
     onboardingCompleted: true,
+    savedCountrySlugs: [
+      readiness.bestFitSlug,
+      ...readiness.backupSlugs.slice(0, 2),
+    ].filter((slug, i, arr) => arr.indexOf(slug) === i),
     updatedAt: new Date().toISOString(),
   };
   savePlan(plan);

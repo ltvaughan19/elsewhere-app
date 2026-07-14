@@ -64,6 +64,12 @@ export function AppDashboard() {
           <p className="mt-2 text-lg text-navy-950">{plan.readiness.nextStep}</p>
           <div className="mt-4 flex flex-wrap gap-3">
             <Link
+              href="/app/path"
+              className="rounded-full bg-jungle-600 px-4 py-2 text-sm text-white"
+            >
+              Open research path
+            </Link>
+            <Link
               href="/app/passport"
               className="rounded-full border border-sand-200 px-4 py-2 text-sm"
             >
@@ -77,7 +83,7 @@ export function AppDashboard() {
             </Link>
             <Link
               href="/compare"
-              className="rounded-full bg-jungle-600 px-4 py-2 text-sm text-white"
+              className="rounded-full border border-sand-200 px-4 py-2 text-sm"
             >
               Compare countries
             </Link>

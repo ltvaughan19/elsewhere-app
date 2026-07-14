@@ -1,10 +1,10 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { OnboardingAnswers } from "@expat-atlas/types";
 import { TrustDisclaimer } from "@expat-atlas/ui";
-import { completeOnboarding, loadPlan } from "@/lib/plan-store";
+import { completeOnboarding, ensureGuestPlan } from "@/lib/plan-store";
 
 const STEPS: {
   key: keyof OnboardingAnswers;
@@ -110,6 +110,10 @@ export function OnboardingQuiz() {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<OnboardingAnswers>(defaults);
 
+  useEffect(() => {
+    ensureGuestPlan();
+  }, []);
+
   const current = STEPS[step];
   const progress = Math.round(((step + 1) / STEPS.length) * 100);
 
@@ -118,9 +122,8 @@ export function OnboardingQuiz() {
   };
 
   const finish = () => {
-    if (!loadPlan()) return;
     completeOnboarding(answers);
-    router.push("/app/dashboard");
+    router.push("/app/path");
   };
 
   return (
@@ -129,7 +132,7 @@ export function OnboardingQuiz() {
         Readiness quiz
       </p>
       <h1 className="mt-2 font-display text-3xl text-navy-950">
-        Build your expat profile
+        Build your Elsewhere profile
       </h1>
       <p className="mt-2 text-sm text-navy-800/70">
         Planning estimates only — not legal or immigration advice.
@@ -213,7 +216,7 @@ export function OnboardingQuiz() {
             onClick={finish}
             className="rounded-full bg-jungle-600 px-5 py-2.5 text-sm font-medium text-white"
           >
-            See my dashboard
+            See my path
           </button>
         )}
       </div>
