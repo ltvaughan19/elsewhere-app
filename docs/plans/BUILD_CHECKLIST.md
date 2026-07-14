@@ -2,7 +2,7 @@
 
 **Purpose:** Nothing important gets missed.  
 **How to use:** Check boxes as you go. Lines marked **YOU** need Brenden’s action. Lines marked **AGENT** can be done in Cursor.  
-**Companions:** `ELSEWHERE_FOUNDATION.md`, `BUSINESS_PLAN_AND_LAUNCH_REPORT.md`
+**Companions:** `PRODUCT_CLARITY_MAP.md` (start if confused), `ELSEWHERE_FOUNDATION.md`, `BUSINESS_PLAN_AND_LAUNCH_REPORT.md`
 
 ---
 
@@ -38,7 +38,7 @@
 - [ ] **YOU:** Create / confirm Supabase project (region: choose closest to users or US East)
 - [ ] **YOU:** Copy `NEXT_PUBLIC_SUPABASE_URL` + anon key + service role (service role never in frontend)
 - [ ] **BOTH:** Add keys to `apps/web/.env.local` and Vercel project env
-- [ ] **YOU:** Confirm Vercel team access (`venture-stack-labs`) for Elsewhere + expat-atlas-web
+- [ ] **YOU:** Confirm which Vercel project owns **product** production (`expat-atlas-web` today)
 - [ ] **YOU:** Decide email provider for waitlist (Resend / Loops / Formspree / other)
 - [ ] **YOU:** Create that email/waitlist account + webhook URL
 - [ ] **AGENT:** Wire waitlist endpoint when webhook provided
@@ -51,13 +51,15 @@
 - [ ] **YOU:** Decide company entity name for footer (if different from brand)
 - [ ] **AGENT:** Universal trust disclaimer on legal-adjacent pages (ongoing)
 
-### 1C — Repo unification (plan)
+### 1C — Repo unification
 
-- [ ] **YOU:** Approve merge strategy: keep working in `expat-atlas` until rename **or** create `elsewhere` monorepo
-- [ ] **YOU:** Grant access / approve Vercel pull for `elsewhere-app` source (quiz sample)
-- [ ] **AGENT:** Import marketing (Elsewhere) + quiz patterns into monorepo after approval
+- [x] **YOU:** Approve merge into monorepo → GitHub renamed **`elsewhere-app`**
+- [ ] **YOU:** Grant quiz prototype source / Vercel access when ready to port UX polish
+- [x] **AGENT:** Product lives in this monorepo; marketing Earth stays on Vite / elsewhere-mu
+- [ ] **AGENT:** Optional — deep-link marketing CTA → `/app/onboarding`
 
-**Merge strategy (YOU):** [ ] stay in expat-atlas then rename  [ ] new elsewhere repo  
+**Merge strategy:** Done — stay in this repo (`elsewhere-app` on GitHub). Local folder may remain `expat-atlas`.  
+**Clarity:** See [PRODUCT_CLARITY_MAP.md](./PRODUCT_CLARITY_MAP.md).
 
 ---
 

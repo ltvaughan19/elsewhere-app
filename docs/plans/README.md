@@ -1,19 +1,20 @@
 # Elsewhere — Planning Index
 
-Start here when resuming strategy or build work.
+**Start here if confused:** [PRODUCT_CLARITY_MAP.md](./PRODUCT_CLARITY_MAP.md) — site map, features, where info comes from, YOUR decisions.
 
 | Document | Purpose |
 |----------|---------|
-| [STYLING_RULES.md](./STYLING_RULES.md) | Colors, type, marketing vs app UI rules |
-| [REPO_CONSOLIDATION.md](./REPO_CONSOLIDATION.md) | One repo, one site, one mobile app |
+| [PRODUCT_CLARITY_MAP.md](./PRODUCT_CLARITY_MAP.md) | **Plain-language operating picture** |
+| [STYLING_RULES.md](./STYLING_RULES.md) | Colors, type, light/dark, marketing vs product |
+| [REPO_CONSOLIDATION.md](./REPO_CONSOLIDATION.md) | One repo, one product site, marketing separate |
 | [ELSEWHERE_FOUNDATION.md](./ELSEWHERE_FOUNDATION.md) | Mission, values, scalable platform rules |
 | [BUSINESS_PLAN_AND_LAUNCH_REPORT.md](./BUSINESS_PLAN_AND_LAUNCH_REPORT.md) | Offer, freemium, costs, partners, launch |
 | [BUILD_CHECKLIST.md](./BUILD_CHECKLIST.md) | Staged tasks + **YOUR** action queue |
-| [DIRECTION_BRIEF_2026-07-13.md](./DIRECTION_BRIEF_2026-07-13.md) | Discovery of 3 surfaces (Elsewhere + Expat Atlas) |
+| [DIRECTION_BRIEF_2026-07-13.md](./DIRECTION_BRIEF_2026-07-13.md) | Discovery of 3 surfaces |
 | [TODAY_EXECUTION_PLAN.md](./TODAY_EXECUTION_PLAN.md) | Prior sprint notes |
 | [GSTACK_EXECUTION_PLAN.md](./GSTACK_EXECUTION_PLAN.md) | Earlier Phase 1 GStack decisions |
 
 **User-facing product name:** Elsewhere  
-**Repo folder (legacy):** `expat-atlas` until rename approved  
+**GitHub repo:** `ltvaughan19/elsewhere-app` (local folder may still be `expat-atlas`)  
 
 **v1 corridors:** Philippines · Thailand · Mexico

@@ -1,11 +1,13 @@
 # Elsewhere — Handoff Notes (Work ↔ Home)
 
-**Last updated:** 2026-07-14 (work PC — resumed; no home work)  
+**Last updated:** 2026-07-14 (work PC — product clarity map)  
 **Brand:** Elsewhere (public) · local folder still `expat-atlas`  
 **Repo (GitHub):** https://github.com/ltvaughan19/elsewhere-app  
 **Live (Vercel):** https://expat-atlas-web.vercel.app  
 **Also live (legacy Vite landing):** https://elsewhere-mu.vercel.app — archive after Next landing parity  
 **Quiz prototype:** https://elsewhere-app-theta.vercel.app — merge into this monorepo (source not on work PC)
+
+**Confused about the product?** Read [`docs/plans/PRODUCT_CLARITY_MAP.md`](./docs/plans/PRODUCT_CLARITY_MAP.md) first.
 
 ---
 
@@ -23,14 +25,12 @@ Do **not** leave unpushed work on either PC overnight.
 
 ---
 
-## Last session (2026-07-14 — work, light + dark)
+## Last session (2026-07-14 — work, clarity map)
 
 ### Shipped
 
-- Product **light + dark** themes via `data-theme` semantic tokens
-- Theme toggle (header + app sidebar); persists + respects system preference
-- Light: stone paper / charcoal ink; Dark: warm night / soft cream — same brand accents
-- Product `/` home (no Earth marketing hero)
+- [`docs/plans/PRODUCT_CLARITY_MAP.md`](./docs/plans/PRODUCT_CLARITY_MAP.md) — surfaces, site map, features, data pipeline, YOUR decisions
+- Product light + dark themes; product `/` home (no Earth hero)
 
 ### Not done yet
 
@@ -38,6 +38,7 @@ Do **not** leave unpushed work on either PC overnight.
 - [ ] Supabase project + real auth
 - [ ] Single Vercel project + production domain
 - [ ] Wire waitlist to real email provider (needs YOU webhook)
+- [ ] YOU: official URLs + domain (see clarity map §7)
 ---
 
 ## Start-of-day checklist (either PC)
@@ -135,22 +136,26 @@ pnpm.cmd exec playwright test
 | Trust | No fake partners; no “you qualify”; source claims |
 | Strategy | Wide data model, narrow published content, freemium |
 
-Docs: `docs/plans/ELSEWHERE_FOUNDATION.md`, `BUSINESS_PLAN_AND_LAUNCH_REPORT.md`, `BUILD_CHECKLIST.md`, `STYLING_RULES.md`, `REPO_CONSOLIDATION.md`
+Docs: `docs/plans/PRODUCT_CLARITY_MAP.md` (start here), `ELSEWHERE_FOUNDATION.md`, `BUSINESS_PLAN_AND_LAUNCH_REPORT.md`, `BUILD_CHECKLIST.md`, `STYLING_RULES.md`, `REPO_CONSOLIDATION.md`
 
 ---
 
 ## YOUR queue (blocking / external)
 
+Full table: [`docs/plans/PRODUCT_CLARITY_MAP.md`](./docs/plans/PRODUCT_CLARITY_MAP.md) §7.
+
 1. Choose production domain  
 2. Create Supabase project when ready for real auth  
-3. Grant elsewhere-app source access for quiz port  
-4. GitHub rename (`expat-atlas` → **`elsewhere-app`**) — **done**  
-5. Official immigration URLs for PH / TH / MX claims  
-6. Skim Privacy / Terms before real users  
+3. Waitlist email provider + webhook  
+4. Official immigration URLs for PH / TH / MX  
+5. Entity name for footer if not Elsewhere  
+6. Confirm Vercel product project  
+7. Walk Fit Quiz once; note friction  
+8. Optional: marketing CTA → this Fit Quiz  
 
-### GitHub remote (both PCs after rename)
+GitHub rename to **`elsewhere-app`** — **done**.
 
-Repo is now: **https://github.com/ltvaughan19/elsewhere-app**
+### GitHub remote (both PCs)
 
 ```powershell
 cd C:\Users\brenden.vaughan\expat-atlas
@@ -159,8 +164,8 @@ git remote -v
 git pull origin main
 ```
 
-Local folder can stay `expat-atlas` until you rename it.  
-Do not confuse with the Vite marketing repo `ltvaughan19/Elsewhere` or the Vercel quiz `elsewhere-app-theta`.
+Local folder can stay `expat-atlas`. Do not confuse with Vite `ltvaughan19/Elsewhere` or Vercel quiz `elsewhere-app-theta`.
+
 ---
 
 ## Vercel
@@ -173,7 +178,7 @@ Do not confuse with the Vite marketing repo `ltvaughan19/Elsewhere` or the Verce
 
 ## Next coding priority (home or work)
 
-1. `git pull origin main` on https://github.com/ltvaughan19/elsewhere-app  
-2. Click through `/` → Start Fit Quiz → `/app/path`  
-3. Scroll-scrub Earth camera **or** Supabase when YOU create project  
-4. Grant quiz prototype source when ready for UX parity  
+1. `git pull origin main`  
+2. Read `docs/plans/PRODUCT_CLARITY_MAP.md` if context is fuzzy  
+3. Click through `/` → Fit Quiz → `/app/path`  
+4. Unblock YOU items (§7) before more feature sprawl  
