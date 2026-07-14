@@ -47,7 +47,7 @@ export function SourceClaimCard({
   return (
     <article
       className={cn(
-        "rounded-xl border border-sand-200 bg-void-card p-5",
+        "rounded-xl border border-sand-200 bg-void-card p-5 shadow-ea",
         className,
       )}
     >

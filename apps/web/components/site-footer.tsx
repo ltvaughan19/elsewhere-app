@@ -87,7 +87,7 @@ export function SiteFooter() {
           </div>
         </div>
         <div className="mt-8 border-t border-sand-200 pt-6">
-          <TrustDisclaimer className="text-navy-800/80" />
+          <TrustDisclaimer />
         </div>
       </div>
     </footer>

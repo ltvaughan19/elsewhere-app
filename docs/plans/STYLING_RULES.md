@@ -1,9 +1,9 @@
 # Elsewhere — Styling Rules
 
 **Brand:** Elsewhere  
-**Feel:** Warm night sky · calm adult · cinematic then operational  
-**Date:** 2026-07-13  
-**Surfaces:** One web site (landing + product) · one mobile app (later)  
+**Feel:** Warm night sky · stone paper light · calm adult · operational product  
+**Date:** 2026-07-14  
+**Surfaces:** Product site (light/dark) · marketing landing separate · mobile later  
 
 This document is the **source of truth** for visual design. Older “Expat Atlas / Atlas Calm” cream-and-ivory marketing look is **retired** for user-facing UI.
 
@@ -26,10 +26,33 @@ This document is the **source of truth** for visual design. Older “Expat Atlas
 | Surface | Mode | Purpose |
 |---------|------|---------|
 | **Marketing landing** | Dark cinematic | Separate Vite / elsewhere-mu — Earth, waitlist emotion |
-| **This product site** (`apps/web`) | Dark operational | Fit Quiz, path, tools, dashboard — **not** a copy of the Earth hero |
-| **Mobile app** | Dark operational | Same product tokens; denser spacing |
+| **This product site** (`apps/web`) | **Light + dark operational** | Fit Quiz, path, tools, dashboard — theme toggle |
+| **Mobile app** | Light + dark operational | Same tokens; denser spacing |
 
-**Rule:** Do not recreate the cinematic marketing hero inside the product app. Soft light *cards* on dark chrome are OK when interactive.
+**Rule:** Do not recreate the cinematic marketing hero inside the product app. Both themes share sand + cool teal identity.
+
+### Theme behavior
+
+- Default: **system preference**, then remember choice in `localStorage` (`elsewhere-theme`)
+- Toggle in header + app sidebar
+- FOUC prevented with blocking `data-theme` script in `<head>`
+- Components use semantic bridges (`cream`/`void`/`navy-*`) that flip under `html[data-theme]`
+
+### Light mode (product)
+
+- Stone paper `#f2f1ed` (not flat AI cream `#F4F1EA`)
+- Charcoal ink `#1a1c1f`, muted `#5c5852`
+- Deeper sand CTA `#a58b58` with light ink on fill
+- Cool link teal `#2f6f82`
+- Soft layered shadows on elevated panels
+
+### Dark mode (product)
+
+- Warm near-black `#07090d` (not pure `#000`)
+- Soft cream `#f2efe8`, solid muted `#c5bfb1`
+- Sand CTA `#c8b48a` with dark ink
+- Cool accent `#7eb8c9`
+- Elevation via hairlines more than heavy shadows
 
 ---
 
@@ -37,37 +60,21 @@ This document is the **source of truth** for visual design. Older “Expat Atlas
 
 ### Core palette (CSS variables)
 
+Semantic tokens live in `apps/web/app/globals.css` as `--ea-*` and flip with `data-theme`.
+Tailwind bridges (`void`, `cream`, `navy-*`, `sand-*`, `accent-*`) point at those tokens so components stay mode-agnostic.
+
 ```css
-:root {
-  /* Foundations */
-  --bg: #07090d;
-  --bg-elevated: #0e1218;
-  --bg-card: #12161e;
-  --fg: #f4f1ea;
-  --muted: rgba(244, 241, 234, 0.64);
-  --soft: rgba(244, 241, 234, 0.4);
-  --border: rgba(244, 241, 234, 0.12);
-  --border-strong: rgba(244, 241, 234, 0.22);
+/* Dark (default brand night) */
+--ea-bg: #07090d;
+--ea-fg: #f2efe8;
+--ea-accent: #c8b48a;
+--ea-accent-cool: #7eb8c9;
 
-  /* Accents */
-  --accent: #c8b48a;          /* warm sand / gold — primary CTA fill */
-  --accent-hover: #d4c49a;
-  --accent-ink: #12141a;      /* text on accent buttons */
-  --accent-2: #7eb8c9;        /* cool secondary / links */
-  --glow: rgba(126, 184, 201, 0.28);
-
-  /* Semantic */
-  --success: #3d8f6e;
-  --warning: #c9a227;
-  --danger: #c45c4a;
-  --info: #7eb8c9;
-
-  /* Trust badges */
-  --badge-official: rgba(126, 184, 201, 0.18);
-  --badge-demo: rgba(244, 241, 234, 0.08);
-  --badge-risk: rgba(196, 92, 74, 0.2);
-  --badge-sponsored: rgba(200, 180, 138, 0.2);
-}
+/* Light (stone paper) */
+--ea-bg: #f2f1ed;
+--ea-fg: #1a1c1f;
+--ea-accent: #a58b58;
+--ea-accent-cool: #2f6f82;
 ```
 
 ### Usage rules
@@ -84,10 +91,12 @@ This document is the **source of truth** for visual design. Older “Expat Atlas
 ### Forbidden defaults (AI / SaaS clichés)
 
 - Purple-on-white / indigo gradients  
-- Flat cream `#F4F1EA` full-page backgrounds as brand default  
+- Terracotta + flat cream `#F4F1EA` marketing cliché as product light mode  
 - Neon glow stacks, rainbow gradients  
+- Pure black `#000` or pure white full-page blaze  
 - Emoji as primary UI  
 - Rounded-full pill *clusters* that compete with the headline  
+- Opacity-stacked mute colors (`text-navy-800/70` when the token is already alpha)  
 
 ---
 

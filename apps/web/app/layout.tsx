@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Instrument_Serif, Outfit } from "next/font/google";
 import { LayoutChrome } from "@/components/layout-chrome";
+import { ThemeProvider } from "@/components/theme-provider";
+import { themeInitScript } from "@/lib/theme-script";
 import "./globals.css";
 
 const display = Instrument_Serif({
@@ -27,9 +29,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${display.variable} ${sans.variable}`}>
-      <body className="min-h-screen antialiased">
-        <LayoutChrome>{children}</LayoutChrome>
+    <html lang="en" className={`${display.variable} ${sans.variable}`} suppressHydrationWarning>
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
+      <body className="min-h-screen antialiased elsewhere-surface">
+        <ThemeProvider>
+          <LayoutChrome>{children}</LayoutChrome>
+        </ThemeProvider>
       </body>
     </html>
   );

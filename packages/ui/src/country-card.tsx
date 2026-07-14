@@ -13,7 +13,7 @@ export function CountryCard({
   return (
     <article
       className={cn(
-        "group rounded-xl border border-sand-200 bg-white p-6 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md",
+        "group rounded-xl border border-sand-200 bg-void-card p-6 shadow-ea transition hover:-translate-y-0.5",
         className,
       )}
     >

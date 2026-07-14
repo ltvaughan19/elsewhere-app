@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const links = [
   { href: "/countries", label: "Countries" },
@@ -17,9 +18,9 @@ export function SiteHeader() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-50 border-b border-sand-200/80 bg-ivory-50/90 backdrop-blur-md">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-        <Link href="/" className="font-display text-2xl text-navy-950">
+    <header className="sticky top-0 z-50 border-b border-sand-200 bg-void/90 backdrop-blur-md">
+      <div className="mx-auto flex max-w-5xl items-center justify-between gap-4 px-6 py-3.5">
+        <Link href="/" className="font-display text-2xl text-cream">
           Elsewhere
         </Link>
         <nav className="hidden items-center gap-6 text-sm text-navy-800 md:flex">
@@ -27,33 +28,37 @@ export function SiteHeader() {
             <Link
               key={link.href}
               href={link.href}
-              className="transition hover:text-jungle-600"
+              className={
+                pathname === link.href
+                  ? "font-medium text-cream"
+                  : "transition hover:text-cream"
+              }
             >
               {link.label}
             </Link>
           ))}
         </nav>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <ThemeToggle />
           <Link
             href="/login"
-            className="hidden text-sm text-navy-800 sm:inline"
+            className="hidden text-sm text-navy-800 transition hover:text-cream sm:inline"
           >
             Log in
           </Link>
           <Link
             href="/app/onboarding"
-            className="hidden rounded-md bg-jungle-600 px-4 py-2 text-sm font-medium text-[var(--color-void)] transition hover:bg-jungle-500 sm:inline"
+            className="hidden rounded-md bg-accent-sand px-3.5 py-2 text-sm font-medium text-accent-ink transition hover:bg-accent-sand-hover sm:inline"
           >
             Start Fit Quiz
           </Link>
           <button
             type="button"
-            className="inline-flex h-10 w-10 items-center justify-center rounded-lg border border-sand-200 text-navy-900 md:hidden"
+            className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-sand-200 text-cream md:hidden"
             aria-expanded={open}
             aria-label={open ? "Close menu" : "Open menu"}
             onClick={() => setOpen((v) => !v)}
           >
-            <span className="sr-only">Menu</span>
             <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               {open ? (
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -65,7 +70,7 @@ export function SiteHeader() {
         </div>
       </div>
       {open ? (
-        <nav className="border-t border-sand-200 bg-ivory-50 px-6 py-4 md:hidden">
+        <nav className="border-t border-sand-200 bg-void-elevated px-6 py-4 md:hidden">
           <ul className="space-y-3 text-sm">
             {links.map((link) => (
               <li key={link.href}>
@@ -73,7 +78,7 @@ export function SiteHeader() {
                   href={link.href}
                   className={
                     pathname === link.href
-                      ? "font-medium text-jungle-600"
+                      ? "font-medium text-accent-sand"
                       : "text-navy-800"
                   }
                   onClick={() => setOpen(false)}
@@ -90,7 +95,7 @@ export function SiteHeader() {
             <li>
               <Link
                 href="/app/onboarding"
-                className="inline-block rounded-md bg-jungle-600 px-4 py-2 font-medium text-[var(--color-void)]"
+                className="inline-block rounded-md bg-accent-sand px-4 py-2 font-medium text-accent-ink"
                 onClick={() => setOpen(false)}
               >
                 Start Fit Quiz

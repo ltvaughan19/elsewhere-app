@@ -18,7 +18,7 @@ export function VisaCard({
   return (
     <article
       className={cn(
-        "rounded-xl border border-sand-200 bg-void-card p-6",
+        "rounded-xl border border-sand-200 bg-void-card p-6 shadow-ea",
         className,
       )}
     >

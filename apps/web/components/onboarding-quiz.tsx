@@ -149,7 +149,7 @@ export function OnboardingQuiz() {
           ? current.options.map((opt) => (
               <label
                 key={opt.value}
-                className="flex cursor-pointer items-center gap-3 rounded-xl border border-sand-200 bg-void-card p-4 has-[:checked]:border-accent-sand has-[:checked]:ring-1 has-[:checked]:ring-accent-sand"
+                className="flex cursor-pointer items-center gap-3 rounded-xl border border-sand-200 bg-void-card p-4 shadow-ea has-[:checked]:border-accent-sand has-[:checked]:ring-1 has-[:checked]:ring-accent-sand"
               >
                 <input
                   type="radio"

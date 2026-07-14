@@ -1,53 +1,109 @@
 @import "tailwindcss";
 
 /**
- * Elsewhere product UI tokens
- * Source: docs/plans/STYLING_RULES.md
- *
- * This app is the product shell (and future mobile). Marketing Earth landing
- * lives separately (elsewhere-mu / Vite). Keep this surface operational + readable.
- *
- * Important: do not pair literal white surfaces with cream/navy-as-fg text.
- * `bg-white` maps to dark elevated cards so legacy classes stay readable.
+ * Elsewhere product theme — light + dark
+ * Research notes applied:
+ * - Calm UI: muted foundation, one accent job per view
+ * - Dark: warm near-black (not pure #000), desaturated accents, soft cream fg
+ * - Light: stone paper (not AI “#F4F1EA cream + terracotta”), charcoal ink, deeper sand CTA
+ * - Same identity across modes: sand + cool teal accents, Instrument Serif + Outfit
  */
+
+/* ── Semantic tokens (flip with data-theme) ── */
+:root,
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --ea-bg: #07090d;
+  --ea-bg-elevated: #0e1218;
+  --ea-bg-card: #141922;
+  --ea-fg: #f2efe8;
+  --ea-muted: #c5bfb1;
+  --ea-soft: #9a9488;
+  --ea-border: rgba(242, 239, 232, 0.12);
+  --ea-border-strong: rgba(242, 239, 232, 0.22);
+  --ea-accent: #c8b48a;
+  --ea-accent-hover: #d4c49a;
+  --ea-accent-ink: #12141a;
+  --ea-accent-cool: #7eb8c9;
+  --ea-success: #4a9b78;
+  --ea-warning: #c9a227;
+  --ea-danger: #d47264;
+  --ea-danger-bg: rgba(212, 114, 100, 0.14);
+  --ea-danger-border: rgba(212, 114, 100, 0.35);
+  --ea-glow: rgba(126, 184, 201, 0.22);
+  --ea-shadow: 0 0 0 1px rgba(242, 239, 232, 0.04);
+  --ea-overlay: rgba(7, 9, 13, 0.72);
+  --ea-selection: rgba(200, 180, 138, 0.35);
+  --ea-ring: rgba(126, 184, 201, 0.55);
+}
+
+html[data-theme="light"] {
+  color-scheme: light;
+  /* Stone paper — cool-warm neutral, not flat marketing cream */
+  --ea-bg: #f2f1ed;
+  --ea-bg-elevated: #faf9f6;
+  --ea-bg-card: #ffffff;
+  --ea-fg: #1a1c1f;
+  --ea-muted: #5c5852;
+  --ea-soft: #7a756c;
+  --ea-border: rgba(26, 28, 31, 0.1);
+  --ea-border-strong: rgba(26, 28, 31, 0.16);
+  --ea-accent: #a58b58;
+  --ea-accent-hover: #947b4c;
+  --ea-accent-ink: #faf9f6;
+  --ea-accent-cool: #2f6f82;
+  --ea-success: #2f7a58;
+  --ea-warning: #9a7a1a;
+  --ea-danger: #b54a3d;
+  --ea-danger-bg: rgba(181, 74, 61, 0.1);
+  --ea-danger-border: rgba(181, 74, 61, 0.28);
+  --ea-glow: rgba(47, 111, 130, 0.12);
+  --ea-shadow:
+    0 1px 2px rgba(26, 28, 31, 0.05),
+    0 10px 28px rgba(26, 28, 31, 0.05);
+  --ea-overlay: rgba(26, 28, 31, 0.4);
+  --ea-selection: rgba(165, 139, 88, 0.28);
+  --ea-ring: rgba(47, 111, 130, 0.45);
+}
+
 @theme {
-  --color-void: #07090d;
-  --color-void-elevated: #0e1218;
-  --color-void-card: #12161e;
-  --color-cream: #f4f1ea;
-  --color-muted: rgba(244, 241, 234, 0.78);
-  --color-soft: rgba(244, 241, 234, 0.58);
-  --color-accent-sand: #c8b48a;
-  --color-accent-sand-hover: #d4c49a;
-  --color-accent-cool: #7eb8c9;
-  --color-accent-ink: #12141a;
-  --color-glow: rgba(126, 184, 201, 0.28);
+  --color-void: var(--ea-bg);
+  --color-void-elevated: var(--ea-bg-elevated);
+  --color-void-card: var(--ea-bg-card);
+  --color-cream: var(--ea-fg);
+  --color-muted: var(--ea-muted);
+  --color-soft: var(--ea-soft);
+  --color-accent-sand: var(--ea-accent);
+  --color-accent-sand-hover: var(--ea-accent-hover);
+  --color-accent-cool: var(--ea-accent-cool);
+  --color-accent-ink: var(--ea-accent-ink);
+  --color-glow: var(--ea-glow);
+  --color-success: var(--ea-success);
+  --color-warning: var(--ea-warning);
+  --color-danger: var(--ea-danger);
 
-  /* Surfaces used by existing `bg-white` / page chrome */
-  --color-white: #12161e;
-  --color-black: #07090d;
+  --color-white: var(--ea-bg-card);
+  --color-black: var(--ea-bg);
 
-  /* Legacy names → dark product palette (readable fg on dark bg) */
-  --color-ivory-50: #07090d;
-  --color-navy-950: #f4f1ea;
-  --color-navy-900: #ebe6dc;
-  /* Solid muted cream — do NOT use alpha here; opacity modifiers would stack unreadably */
-  --color-navy-800: #c8c2b4;
-  --color-sand-50: #07090d;
-  --color-sand-100: #0e1218;
-  --color-sand-200: rgba(244, 241, 234, 0.14);
-  --color-sand-300: rgba(244, 241, 234, 0.24);
-  --color-jungle-500: #d4c49a;
-  --color-jungle-600: #c8b48a;
-  --color-gold-400: #c8b48a;
-  --color-gold-500: #b8a47a;
-  --color-ocean-400: #7eb8c9;
-  --color-ocean-500: #5fa8bc;
+  --color-ivory-50: var(--ea-bg);
+  --color-navy-950: var(--ea-fg);
+  --color-navy-900: var(--ea-fg);
+  --color-navy-800: var(--ea-muted);
+  --color-sand-50: var(--ea-bg);
+  --color-sand-100: var(--ea-bg-elevated);
+  --color-sand-200: var(--ea-border);
+  --color-sand-300: var(--ea-border-strong);
+  --color-jungle-500: var(--ea-accent-hover);
+  --color-jungle-600: var(--ea-accent);
+  --color-gold-400: var(--ea-accent);
+  --color-gold-500: var(--ea-accent-hover);
+  --color-ocean-400: var(--ea-accent-cool);
+  --color-ocean-500: var(--ea-accent-cool);
 
   --font-display: "Instrument Serif", Georgia, serif;
   --font-sans: "Outfit", system-ui, sans-serif;
-
   --ease-elsewhere: cubic-bezier(0.22, 1, 0.36, 1);
+  --shadow-ea: var(--ea-shadow);
 }
 
 html {
@@ -69,34 +125,76 @@ html {
 }
 
 body {
-  background: var(--color-void);
-  color: var(--color-cream);
+  background: var(--ea-bg);
+  color: var(--ea-fg);
   font-family: var(--font-sans);
   font-weight: 400;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 .font-display {
   font-family: var(--font-display);
+  letter-spacing: -0.01em;
 }
 
 ::selection {
-  background: rgba(200, 180, 138, 0.35);
-  color: #fff;
+  background: var(--ea-selection);
+  color: var(--ea-fg);
+}
+
+:focus-visible {
+  outline: 2px solid var(--ea-ring);
+  outline-offset: 2px;
 }
 
 .elsewhere-eyebrow {
   font-size: 0.72rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--color-accent-sand);
+  font-weight: 500;
+  color: var(--ea-accent);
 }
 
-/* High-contrast muted copy (avoid /40–/55 cream on void) */
 .elsewhere-muted {
-  color: var(--color-muted);
+  color: var(--ea-muted);
 }
 
 .elsewhere-soft {
-  color: var(--color-soft);
+  color: var(--ea-soft);
+}
+
+.elsewhere-panel {
+  background: var(--ea-bg-card);
+  border: 1px solid var(--ea-border);
+  box-shadow: var(--ea-shadow);
+}
+
+.elsewhere-surface {
+  background:
+    radial-gradient(
+      900px 420px at 12% -10%,
+      var(--ea-glow),
+      transparent 55%
+    ),
+    var(--ea-bg);
+}
+
+/* Interactive list rows */
+.elsewhere-row {
+  transition:
+    background-color 160ms var(--ease-elsewhere),
+    border-color 160ms var(--ease-elsewhere);
+}
+
+.elsewhere-row:hover {
+  background: var(--ea-bg-elevated);
+}
+
+/* Badge danger helpers (shared) */
+.elsewhere-badge-risk {
+  background: var(--ea-danger-bg);
+  color: var(--ea-danger);
+  border: 1px solid var(--ea-danger-border);
 }
