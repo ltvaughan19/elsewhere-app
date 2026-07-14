@@ -3,19 +3,27 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { UserPlan } from "@expat-atlas/types";
-import { clearPlan, loadPlan } from "@/lib/plan-store";
+import { clearPlan, resolvePlan } from "@/lib/plan-store";
 
 export default function SettingsPage() {
   const [plan, setPlan] = useState<UserPlan | null>(null);
 
   useEffect(() => {
-    setPlan(loadPlan());
+    let cancelled = false;
+    void (async () => {
+      const p = await resolvePlan();
+      if (!cancelled) setPlan(p);
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const reset = () => {
-    if (confirm("Clear your local plan and start over?")) {
-      clearPlan();
-      window.location.href = "/signup";
+    if (confirm("Clear your saved plan on this device and (if logged in) in the cloud?")) {
+      void clearPlan().then(() => {
+        window.location.href = "/signup";
+      });
     }
   };
 
@@ -39,8 +47,8 @@ export default function SettingsPage() {
         </div>
       </dl>
       <p className="mt-6 text-sm text-navy-800/70">
-        Supabase sync is not configured yet. Add keys in{" "}
-        <code className="rounded bg-sand-100 px-1">.env.local</code> when ready.
+        When you are logged in, your Fit Quiz plan syncs to your Elsewhere account.
+        Guests keep a device-only copy until signup.
       </p>
       <div className="mt-8 flex flex-wrap gap-3">
         <Link
@@ -54,7 +62,7 @@ export default function SettingsPage() {
           onClick={reset}
           className="rounded-full border border-red-200 px-4 py-2 text-sm text-red-800"
         >
-          Clear local plan
+          Clear saved plan
         </button>
       </div>
     </div>

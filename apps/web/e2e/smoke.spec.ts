@@ -70,8 +70,8 @@ test("fit quiz guest flow reaches path", async ({ page }) => {
   for (let i = 0; i < 9; i++) {
     await next.click();
   }
-  await page.getByRole("button", { name: "See my path" }).click();
-  await expect(page).toHaveURL(/\/app\/path/);
+  await page.getByRole("button", { name: /See my path|Saving/ }).click();
+  await expect(page).toHaveURL(/\/app\/path/, { timeout: 15000 });
   await expect(page.getByText("Your research path")).toBeVisible();
   await expect(page.getByText("Needs verification").first()).toBeVisible();
 });

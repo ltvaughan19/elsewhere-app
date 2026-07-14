@@ -10,7 +10,7 @@ import {
   corridorSlugForDestination,
   pathPackForDestination,
 } from "@/lib/corridor-path";
-import { loadPlan } from "@/lib/plan-store";
+import { resolvePlan } from "@/lib/plan-store";
 import { LAUNCH_CORRIDORS } from "@/lib/seed-corridors";
 import { SEED_COUNTRIES } from "@/lib/seed-countries";
 
@@ -36,18 +36,21 @@ export function PathView() {
   const [checks, setChecks] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
-    const p = loadPlan();
-    if (!p) {
-      router.replace("/app/onboarding");
-      return;
-    }
-    if (!p.onboardingCompleted || !p.readiness) {
-      router.replace("/app/onboarding");
-      return;
-    }
-    setPlan(p);
-    const pack = pathPackForDestination(p.readiness.bestFitSlug);
-    if (pack) setChecks(loadChecks(pack.id));
+    let cancelled = false;
+    void (async () => {
+      const p = await resolvePlan();
+      if (cancelled) return;
+      if (!p?.onboardingCompleted || !p.readiness) {
+        router.replace("/app/onboarding");
+        return;
+      }
+      setPlan(p);
+      const pack = pathPackForDestination(p.readiness.bestFitSlug);
+      if (pack) setChecks(loadChecks(pack.id));
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [router]);
 
   if (!plan?.readiness) {

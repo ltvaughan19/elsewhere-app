@@ -2,6 +2,7 @@
 
 import type { OnboardingAnswers, ReadinessResult, UserPlan } from "@expat-atlas/types";
 import { computeReadiness } from "@/lib/readiness-score";
+import { createClient } from "@/lib/supabase/client";
 
 const STORAGE_KEY = "expat-atlas-user-plan";
 
@@ -16,6 +17,19 @@ const DEFAULT_PLAN: UserPlan = {
   createdAt: new Date().toISOString(),
   updatedAt: new Date().toISOString(),
 };
+
+function isSupabaseConfigured(): boolean {
+  return Boolean(
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  );
+}
+
+function isValidPlan(value: unknown): value is UserPlan {
+  if (!value || typeof value !== "object") return false;
+  const p = value as UserPlan;
+  return typeof p.updatedAt === "string" && typeof p.onboardingCompleted === "boolean";
+}
 
 export function loadPlan(): UserPlan | null {
   if (typeof window === "undefined") return null;
@@ -36,6 +50,101 @@ export function savePlan(plan: UserPlan): void {
   );
 }
 
+async function getAuthedContext() {
+  if (!isSupabaseConfigured() || typeof window === "undefined") return null;
+  try {
+    const supabase = createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) return null;
+    return { supabase, user };
+  } catch {
+    return null;
+  }
+}
+
+/** Load plan from Supabase when a session exists. */
+export async function fetchCloudPlan(): Promise<UserPlan | null> {
+  const ctx = await getAuthedContext();
+  if (!ctx) return null;
+  const { data, error } = await ctx.supabase
+    .from("user_plans")
+    .select("plan")
+    .eq("user_id", ctx.user.id)
+    .maybeSingle();
+  if (error || !data?.plan) return null;
+  if (!isValidPlan(data.plan)) return null;
+  return data.plan;
+}
+
+/** Upsert plan for the logged-in user. No-op for guests / missing config. */
+export async function upsertCloudPlan(plan: UserPlan): Promise<boolean> {
+  const ctx = await getAuthedContext();
+  if (!ctx) return false;
+  const stamped: UserPlan = {
+    ...plan,
+    email: plan.email || ctx.user.email || "",
+    displayName:
+      plan.displayName ||
+      (ctx.user.user_metadata?.display_name as string | undefined) ||
+      ctx.user.email?.split("@")[0] ||
+      "Planner",
+    updatedAt: new Date().toISOString(),
+  };
+  const { error } = await ctx.supabase.from("user_plans").upsert(
+    {
+      user_id: ctx.user.id,
+      plan: stamped,
+      updated_at: stamped.updatedAt,
+    },
+    { onConflict: "user_id" },
+  );
+  return !error;
+}
+
+/**
+ * Prefer cloud plan when authed; fall back to localStorage for guests.
+ * If authed with only a local completed plan, migrate it to Supabase.
+ */
+export async function resolvePlan(): Promise<UserPlan | null> {
+  const local = loadPlan();
+  const ctx = await getAuthedContext();
+  if (!ctx) return local;
+
+  const cloud = await fetchCloudPlan();
+  if (cloud) {
+    savePlan(cloud);
+    return cloud;
+  }
+
+  if (local) {
+    const enriched: UserPlan = {
+      ...local,
+      email: local.email || ctx.user.email || local.email,
+      displayName:
+        local.displayName ||
+        (ctx.user.user_metadata?.display_name as string | undefined) ||
+        local.displayName,
+    };
+    if (enriched.onboardingCompleted) {
+      await upsertCloudPlan(enriched);
+    }
+    savePlan(enriched);
+    return enriched;
+  }
+
+  return null;
+}
+
+/** Always write localStorage; also upsert cloud when logged in. */
+export async function persistPlan(plan: UserPlan): Promise<UserPlan> {
+  const stamped = { ...plan, updatedAt: new Date().toISOString() };
+  savePlan(stamped);
+  await upsertCloudPlan(stamped);
+  return stamped;
+}
+
 export function createDemoAccount(email: string, displayName: string): UserPlan {
   const plan: UserPlan = {
     ...DEFAULT_PLAN,
@@ -54,7 +163,7 @@ export function ensureGuestPlan(): UserPlan {
   return createDemoAccount("guest@elsewhere.local", "Guest");
 }
 
-export function completeOnboarding(answers: OnboardingAnswers): UserPlan {
+export async function completeOnboarding(answers: OnboardingAnswers): Promise<UserPlan> {
   const existing = loadPlan() ?? ensureGuestPlan();
   const readiness = computeReadiness(answers);
   const plan: UserPlan = {
@@ -68,21 +177,22 @@ export function completeOnboarding(answers: OnboardingAnswers): UserPlan {
     ].filter((slug, i, arr) => arr.indexOf(slug) === i),
     updatedAt: new Date().toISOString(),
   };
-  savePlan(plan);
-  return plan;
+  return persistPlan(plan);
 }
 
-export function updateSavedCountries(slugs: string[]): UserPlan | null {
+export async function updateSavedCountries(slugs: string[]): Promise<UserPlan | null> {
   const plan = loadPlan();
   if (!plan) return null;
   const updated = { ...plan, savedCountrySlugs: slugs };
-  savePlan(updated);
-  return updated;
+  return persistPlan(updated);
 }
 
-export function clearPlan(): void {
+export async function clearPlan(): Promise<void> {
   if (typeof window === "undefined") return;
   localStorage.removeItem(STORAGE_KEY);
+  const ctx = await getAuthedContext();
+  if (!ctx) return;
+  await ctx.supabase.from("user_plans").delete().eq("user_id", ctx.user.id);
 }
 
 export function getReadinessForPlan(plan: UserPlan | null): ReadinessResult | null {

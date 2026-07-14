@@ -6,23 +6,30 @@ import { useEffect, useState } from "react";
 import type { UserPlan } from "@expat-atlas/types";
 import { Badge } from "@expat-atlas/ui";
 import { SEED_COUNTRIES } from "@/lib/seed-countries";
-import { loadPlan } from "@/lib/plan-store";
+import { resolvePlan } from "@/lib/plan-store";
 
 export function AppDashboard() {
   const router = useRouter();
   const [plan, setPlan] = useState<UserPlan | null>(null);
 
   useEffect(() => {
-    const p = loadPlan();
-    if (!p) {
-      router.replace("/signup");
-      return;
-    }
-    if (!p.onboardingCompleted) {
-      router.replace("/app/onboarding");
-      return;
-    }
-    setPlan(p);
+    let cancelled = false;
+    void (async () => {
+      const p = await resolvePlan();
+      if (cancelled) return;
+      if (!p) {
+        router.replace("/signup");
+        return;
+      }
+      if (!p.onboardingCompleted) {
+        router.replace("/app/onboarding");
+        return;
+      }
+      setPlan(p);
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [router]);
 
   if (!plan?.readiness) {

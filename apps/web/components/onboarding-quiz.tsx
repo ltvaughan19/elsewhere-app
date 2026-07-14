@@ -109,6 +109,7 @@ export function OnboardingQuiz() {
   const router = useRouter();
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<OnboardingAnswers>(defaults);
+  const [saving, setSaving] = useState(false);
 
   useEffect(() => {
     ensureGuestPlan();
@@ -121,9 +122,15 @@ export function OnboardingQuiz() {
     setAnswers((prev) => ({ ...prev, [key]: value }));
   };
 
-  const finish = () => {
-    completeOnboarding(answers);
-    router.push("/app/path");
+  const finish = async () => {
+    if (saving) return;
+    setSaving(true);
+    try {
+      await completeOnboarding(answers);
+      router.push("/app/path");
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -213,10 +220,11 @@ export function OnboardingQuiz() {
         ) : (
           <button
             type="button"
-            onClick={finish}
-            className="rounded-full bg-jungle-600 px-5 py-2.5 text-sm font-medium text-accent-ink"
+            disabled={saving}
+            onClick={() => void finish()}
+            className="rounded-full bg-jungle-600 px-5 py-2.5 text-sm font-medium text-accent-ink disabled:opacity-60"
           >
-            See my path
+            {saving ? "Saving…" : "See my path"}
           </button>
         )}
       </div>

@@ -4,23 +4,30 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { CountryCard } from "@expat-atlas/ui";
 import { SEED_COUNTRIES } from "@/lib/seed-countries";
-import { loadPlan, updateSavedCountries } from "@/lib/plan-store";
+import { resolvePlan, updateSavedCountries } from "@/lib/plan-store";
 
 export default function SavedPage() {
   const [saved, setSaved] = useState<string[]>([]);
 
   useEffect(() => {
-    const plan = loadPlan();
-    if (plan?.savedCountrySlugs.length) {
-      setSaved(plan.savedCountrySlugs);
-    } else if (plan?.readiness) {
-      const initial = [
-        plan.readiness.bestFitSlug,
-        ...plan.readiness.backupSlugs,
-      ].slice(0, 3);
-      setSaved(initial);
-      updateSavedCountries(initial);
-    }
+    let cancelled = false;
+    void (async () => {
+      const plan = await resolvePlan();
+      if (cancelled || !plan) return;
+      if (plan.savedCountrySlugs.length) {
+        setSaved(plan.savedCountrySlugs);
+      } else if (plan.readiness) {
+        const initial = [
+          plan.readiness.bestFitSlug,
+          ...plan.readiness.backupSlugs,
+        ].slice(0, 3);
+        setSaved(initial);
+        await updateSavedCountries(initial);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const toggle = (slug: string) => {
@@ -28,7 +35,7 @@ export default function SavedPage() {
       const next = prev.includes(slug)
         ? prev.filter((s) => s !== slug)
         : [...prev, slug];
-      updateSavedCountries(next);
+      void updateSavedCountries(next);
       return next;
     });
   };

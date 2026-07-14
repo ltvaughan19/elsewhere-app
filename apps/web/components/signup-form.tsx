@@ -42,7 +42,7 @@ export function SignupForm() {
         setError(signError.message);
         return;
       }
-      // Keep local demo plan for Fit Quiz until cloud sync exists.
+      // Seed local plan; Fit Quiz completion upserts to user_plans when session exists.
       createDemoAccount(cleaned, name);
       if (data.session) {
         router.push("/app/onboarding");
