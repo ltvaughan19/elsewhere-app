@@ -25,12 +25,11 @@ This document is the **source of truth** for visual design. Older “Expat Atlas
 
 | Surface | Mode | Purpose |
 |---------|------|---------|
-| **Landing** (`/`) | Dark cinematic | Emotion + waitlist / Start Fit Quiz |
-| **Marketing pages** | Dark editorial | Trust, pricing, about, education |
-| **Product app** (`/app/*`, quiz, path) | Dark operational | Dashboards, forms, checklists |
-| **Mobile app** | Dark operational | Same tokens; denser spacing |
+| **Marketing landing** | Dark cinematic | Separate Vite / elsewhere-mu — Earth, waitlist emotion |
+| **This product site** (`apps/web`) | Dark operational | Fit Quiz, path, tools, dashboard — **not** a copy of the Earth hero |
+| **Mobile app** | Dark operational | Same product tokens; denser spacing |
 
-**Rule:** Do not split into a light public site and a dark app of unrelated brands. Light ink-on-paper “ivory” is **not** the default. Soft light *cards* on dark chrome are OK.
+**Rule:** Do not recreate the cinematic marketing hero inside the product app. Soft light *cards* on dark chrome are OK when interactive.
 
 ---
 

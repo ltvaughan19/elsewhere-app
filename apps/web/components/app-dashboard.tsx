@@ -65,7 +65,7 @@ export function AppDashboard() {
           <div className="mt-4 flex flex-wrap gap-3">
             <Link
               href="/app/path"
-              className="rounded-full bg-jungle-600 px-4 py-2 text-sm text-white"
+              className="rounded-full bg-jungle-600 px-4 py-2 text-sm text-accent-ink"
             >
               Open research path
             </Link>

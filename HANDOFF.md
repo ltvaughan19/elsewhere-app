@@ -23,22 +23,21 @@ Do **not** leave unpushed work on either PC overnight.
 
 ---
 
-## Last session (2026-07-14 — work)
+## Last session (2026-07-14 — work, styling fix)
 
 ### Shipped
 
-- Fit Quiz → **`/app/path`**: corridor path pack, research checklist (localStorage), source claim cards
-- Guest quiz works from landing **Start Fit Quiz** (no signup required)
-- Landing waitlist form (device-local until ESP webhook)
-- Sidebar **My path**; dashboard CTA to research path
+- Product `/` home (no Earth marketing hero) — tools + Fit Quiz entry
+- Contrast fix: solid muted cream (`navy-800`), `bg-white` → dark cards, sidebar readable
+- Quiz option labels / disclaimers readable on dark chrome
+- Marketing Earth landing stays on elsewhere-mu / Vite — not duplicated here
 
 ### Not done yet
 
-- [ ] Scroll-scrub cinematic camera (port rest of Vite `splineScene.js`)
-- [ ] Port elsewhere-app Fit Quiz UX polish (need quiz source / Vercel pull)
+- [ ] Scroll-scrub cinematic camera (marketing site only)
+- [ ] Port elsewhere-app quiz visual polish when source available
 - [ ] Supabase project + real auth
 - [ ] Single Vercel project + production domain
-- [ ] Update GitHub repo description residual “Expat Atlas” copy
 - [ ] Wire waitlist to real email provider (needs YOU webhook)
 ---
 

@@ -47,7 +47,7 @@ export function SourceClaimCard({
   return (
     <article
       className={cn(
-        "rounded-xl border border-sand-200 bg-white p-5 shadow-sm",
+        "rounded-xl border border-sand-200 bg-void-card p-5",
         className,
       )}
     >
@@ -61,18 +61,18 @@ export function SourceClaimCard({
           <Badge variant="demo">Planning estimate</Badge>
         ) : null}
       </div>
-      <p className="text-sm text-navy-900">{claim.plainEnglishSummary}</p>
-      <dl className="mt-4 space-y-1 text-xs text-navy-800/70">
+      <p className="text-sm leading-relaxed text-navy-950">{claim.plainEnglishSummary}</p>
+      <dl className="mt-4 space-y-1 text-xs text-navy-800">
         {claim.sourceName ? (
           <div>
-            <dt className="inline font-medium">Source: </dt>
+            <dt className="inline font-medium text-cream">Source: </dt>
             <dd className="inline">
               {claim.sourceUrl ? (
                 <a
                   href={claim.sourceUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-jungle-600 underline"
+                  className="text-accent-cool underline"
                 >
                   {claim.sourceName}
                 </a>
@@ -83,11 +83,11 @@ export function SourceClaimCard({
           </div>
         ) : null}
         <div>
-          <dt className="inline font-medium">Type: </dt>
+          <dt className="inline font-medium text-cream">Type: </dt>
           <dd className="inline">{claim.sourceType.replaceAll("_", " ")}</dd>
         </div>
       </dl>
-      <p className="mt-3 text-xs text-navy-800/60">
+      <p className="mt-3 text-xs text-navy-800">
         General planning information only. Verify with official sources or a
         licensed professional before acting.
       </p>

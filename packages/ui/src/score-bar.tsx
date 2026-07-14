@@ -14,7 +14,7 @@ export function ScoreBar({
 
   return (
     <div className={cn("space-y-1", className)}>
-      <div className="flex justify-between text-xs text-navy-800/80">
+      <div className="flex justify-between text-xs text-navy-800">
         <span>{label}</span>
         <span>{value}</span>
       </div>

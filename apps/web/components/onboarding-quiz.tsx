@@ -134,7 +134,7 @@ export function OnboardingQuiz() {
       <h1 className="mt-2 font-display text-3xl text-navy-950">
         Build your Elsewhere profile
       </h1>
-      <p className="mt-2 text-sm text-navy-800/70">
+      <p className="mt-2 text-sm text-navy-800">
         Planning estimates only — not legal or immigration advice.
       </p>
       <div className="mt-6 h-2 overflow-hidden rounded-full bg-sand-200">
@@ -149,7 +149,7 @@ export function OnboardingQuiz() {
           ? current.options.map((opt) => (
               <label
                 key={opt.value}
-                className="flex cursor-pointer items-center gap-3 rounded-xl border border-sand-200 bg-white p-4 has-[:checked]:border-jungle-600 has-[:checked]:ring-1 has-[:checked]:ring-jungle-600"
+                className="flex cursor-pointer items-center gap-3 rounded-xl border border-sand-200 bg-void-card p-4 has-[:checked]:border-accent-sand has-[:checked]:ring-1 has-[:checked]:ring-accent-sand"
               >
                 <input
                   type="radio"
@@ -158,7 +158,7 @@ export function OnboardingQuiz() {
                   onChange={() => setValue(current.key, opt.value)}
                   className="text-jungle-600"
                 />
-                <span className="text-sm text-navy-900">{opt.label}</span>
+                <span className="text-sm text-cream">{opt.label}</span>
               </label>
             ))
           : null}
@@ -168,7 +168,7 @@ export function OnboardingQuiz() {
             min={0}
             value={answers[current.key] as number}
             onChange={(e) => setValue(current.key, Number(e.target.value))}
-            className="w-full rounded-xl border border-sand-200 bg-white px-4 py-3 text-navy-950"
+            className="w-full rounded-xl border border-sand-200 bg-void-card px-4 py-3 text-cream"
           />
         ) : null}
         {current.type === "boolean" ? (
@@ -183,8 +183,8 @@ export function OnboardingQuiz() {
                 onClick={() => setValue(current.key, opt.v)}
                 className={
                   answers[current.key] === opt.v
-                    ? "rounded-full bg-jungle-600 px-5 py-2 text-sm font-medium text-white"
-                    : "rounded-full border border-sand-200 px-5 py-2 text-sm text-navy-900"
+                    ? "rounded-full bg-jungle-600 px-5 py-2 text-sm font-medium text-accent-ink"
+                    : "rounded-full border border-sand-200 px-5 py-2 text-sm text-cream"
                 }
               >
                 {opt.l}
@@ -206,7 +206,7 @@ export function OnboardingQuiz() {
           <button
             type="button"
             onClick={() => setStep((s) => s + 1)}
-            className="rounded-full bg-jungle-600 px-5 py-2.5 text-sm font-medium text-white"
+            className="rounded-full bg-jungle-600 px-5 py-2.5 text-sm font-medium text-accent-ink"
           >
             Next
           </button>
@@ -214,7 +214,7 @@ export function OnboardingQuiz() {
           <button
             type="button"
             onClick={finish}
-            className="rounded-full bg-jungle-600 px-5 py-2.5 text-sm font-medium text-white"
+            className="rounded-full bg-jungle-600 px-5 py-2.5 text-sm font-medium text-accent-ink"
           >
             See my path
           </button>

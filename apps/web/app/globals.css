@@ -1,32 +1,42 @@
 @import "tailwindcss";
 
 /**
- * Elsewhere design tokens
- * Source of truth: docs/plans/STYLING_RULES.md
+ * Elsewhere product UI tokens
+ * Source: docs/plans/STYLING_RULES.md
  *
- * Legacy Tailwind color names are bridged to the dark Elsewhere palette
- * so existing utilities (bg-ivory-50, text-navy-950, bg-jungle-600) follow
- * the new brand without a big-bang class rewrite.
+ * This app is the product shell (and future mobile). Marketing Earth landing
+ * lives separately (elsewhere-mu / Vite). Keep this surface operational + readable.
+ *
+ * Important: do not pair literal white surfaces with cream/navy-as-fg text.
+ * `bg-white` maps to dark elevated cards so legacy classes stay readable.
  */
 @theme {
-  /* Canonical Elsewhere */
   --color-void: #07090d;
   --color-void-elevated: #0e1218;
   --color-void-card: #12161e;
   --color-cream: #f4f1ea;
+  --color-muted: rgba(244, 241, 234, 0.78);
+  --color-soft: rgba(244, 241, 234, 0.58);
   --color-accent-sand: #c8b48a;
   --color-accent-sand-hover: #d4c49a;
   --color-accent-cool: #7eb8c9;
+  --color-accent-ink: #12141a;
   --color-glow: rgba(126, 184, 201, 0.28);
 
-  /* Bridged legacy names → Elsewhere */
+  /* Surfaces used by existing `bg-white` / page chrome */
+  --color-white: #12161e;
+  --color-black: #07090d;
+
+  /* Legacy names → dark product palette (readable fg on dark bg) */
   --color-ivory-50: #07090d;
   --color-navy-950: #f4f1ea;
-  --color-navy-900: #e8e4dc;
-  --color-navy-800: rgba(244, 241, 234, 0.72);
+  --color-navy-900: #ebe6dc;
+  /* Solid muted cream — do NOT use alpha here; opacity modifiers would stack unreadably */
+  --color-navy-800: #c8c2b4;
+  --color-sand-50: #07090d;
   --color-sand-100: #0e1218;
-  --color-sand-200: rgba(244, 241, 234, 0.12);
-  --color-sand-300: rgba(244, 241, 234, 0.22);
+  --color-sand-200: rgba(244, 241, 234, 0.14);
+  --color-sand-300: rgba(244, 241, 234, 0.24);
   --color-jungle-500: #d4c49a;
   --color-jungle-600: #c8b48a;
   --color-gold-400: #c8b48a;
@@ -62,7 +72,7 @@ body {
   background: var(--color-void);
   color: var(--color-cream);
   font-family: var(--font-sans);
-  font-weight: 300;
+  font-weight: 400;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -75,10 +85,18 @@ body {
   color: #fff;
 }
 
-/* App / marketing shared helpers */
 .elsewhere-eyebrow {
   font-size: 0.72rem;
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--color-accent-sand);
+}
+
+/* High-contrast muted copy (avoid /40–/55 cream on void) */
+.elsewhere-muted {
+  color: var(--color-muted);
+}
+
+.elsewhere-soft {
+  color: var(--color-soft);
 }

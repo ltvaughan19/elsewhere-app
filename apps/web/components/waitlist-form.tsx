@@ -48,17 +48,17 @@ export function WaitlistForm() {
             setEmail(e.target.value);
             setStatus("idle");
           }}
-          className="flex-1 rounded-md border border-cream/15 bg-void px-4 py-3 text-sm text-cream placeholder:text-cream/35"
+          className="flex-1 rounded-md border border-sand-200 bg-void-card px-4 py-3 text-sm text-cream placeholder:text-navy-800"
           required
         />
         <button
           type="submit"
-          className="rounded-md bg-accent-sand px-5 py-3 text-sm font-medium text-[#12141a] hover:bg-accent-sand-hover"
+          className="rounded-md bg-accent-sand px-5 py-3 text-sm font-medium text-accent-ink hover:bg-accent-sand-hover"
         >
           Join the waitlist
         </button>
       </div>
-      <p className="mt-3 text-xs text-cream/45">
+      <p className="mt-3 text-xs leading-relaxed text-navy-800">
         {status === "saved"
           ? "Saved on this device for now. Email delivery connects when the waitlist webhook is ready."
           : status === "invalid"

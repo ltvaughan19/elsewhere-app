@@ -18,17 +18,17 @@ export function VisaCard({
   return (
     <article
       className={cn(
-        "rounded-xl border border-sand-200 bg-white p-6 shadow-sm",
+        "rounded-xl border border-sand-200 bg-void-card p-6",
         className,
       )}
     >
       <div className="mb-3 flex flex-wrap items-start justify-between gap-2">
         <div>
-          <p className="text-sm text-navy-800/70">
+          <p className="text-sm text-navy-800">
             {visa.flagEmoji} {visa.countryName}
           </p>
           <h3 className="font-display text-xl text-navy-950">{visa.name}</h3>
-          <p className="text-xs text-navy-800/60">{visa.category}</p>
+          <p className="text-xs text-navy-800">{visa.category}</p>
         </div>
         <div className="flex flex-wrap gap-1">
           <Badge variant="demo">Needs verification</Badge>
@@ -37,24 +37,24 @@ export function VisaCard({
           </Badge>
         </div>
       </div>
-      <p className="text-sm text-navy-800/80">{visa.overview}</p>
+      <p className="text-sm leading-relaxed text-navy-800">{visa.overview}</p>
       <dl className="mt-4 space-y-2 text-sm">
         <div>
-          <dt className="text-navy-800/60">Typical stay</dt>
+          <dt className="text-navy-800">Typical stay</dt>
           <dd className="text-navy-950">{visa.typicalStay}</dd>
         </div>
         <div>
-          <dt className="text-navy-800/60">Estimated fees</dt>
+          <dt className="text-navy-800">Estimated fees</dt>
           <dd className="text-navy-950">{visa.estimatedFees}</dd>
         </div>
         {visa.sourceName ? (
           <div>
-            <dt className="text-navy-800/60">Source</dt>
+            <dt className="text-navy-800">Source</dt>
             <dd className="text-navy-950">{visa.sourceName}</dd>
           </div>
         ) : null}
       </dl>
-      <p className="mt-4 text-xs text-navy-800/60">
+      <p className="mt-4 text-xs text-navy-800">
         Based on your profile, this may be worth researching — not a qualification
         determination.
       </p>

@@ -1,12 +1,11 @@
 import { test, expect } from "@playwright/test";
 
-test("home page loads with Elsewhere brand and Fit Quiz CTA", async ({
+test("home page loads with product entry and Fit Quiz CTA", async ({
   page,
 }) => {
   await page.goto("/");
-  await expect(page.getByText("Elsewhere").first()).toBeVisible();
   await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    "one calm path",
+    "Your move plan",
   );
   await expect(
     page.getByRole("link", { name: "Start Fit Quiz" }).first(),

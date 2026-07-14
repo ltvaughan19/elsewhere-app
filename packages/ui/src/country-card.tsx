@@ -21,7 +21,7 @@ export function CountryCard({
         <div>
           <p className="text-2xl">{country.flagEmoji}</p>
           <h3 className="font-display text-xl text-navy-950">{country.name}</h3>
-          <p className="text-sm text-navy-800/70">
+          <p className="text-sm text-navy-800">
             {country.monthlyCostEstimate} / mo · Visa: {country.visaComplexity}
           </p>
         </div>
@@ -33,7 +33,7 @@ export function CountryCard({
         <ScoreBar label="Healthcare" value={country.healthcareScore} />
         <ScoreBar label="Internet" value={country.internetScore} />
       </div>
-      <p className="mt-4 text-xs text-navy-800/60">
+      <p className="mt-4 text-xs text-navy-800">
         Property: {country.propertyComplexity} · Long-stay:{" "}
         {country.longStayPotential}
       </p>
