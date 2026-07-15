@@ -1,5 +1,5 @@
 import { Application } from "@splinetool/runtime";
-import { createEarthMarkers, EARTH_MARKERS_ENABLED } from "./earthMarkers.js";
+import { createEarthMarkers, EARTH_MARKERS_ENABLED, measureEarthRadius } from "./earthMarkers.js";
 
 /** Exported from your Spline project (Code export). */
 export const SPLINE_SCENE_URL =
@@ -343,8 +343,58 @@ export async function createSplineScene(canvas, { onReady, onError } = {}) {
   requestAnimationFrame(() => reduceGlobeGlare(app, spinTargets));
   setTimeout(() => reduceGlobeGlare(app, spinTargets), 500);
 
+  let measuredEarthRadius = 0;
+  let measuredFovDeg = 45;
+
+  function readCameraFov() {
+    try {
+      const f = camera?.fov ?? camera?._camera?.fov ?? camera?.perspectiveCamera?.fov;
+      if (typeof f === "number" && f > 5 && f < 120) return f;
+    } catch {
+      /* default */
+    }
+    return 45;
+  }
+
+  function remeasureEarth() {
+    const cam = lastCamPos || camera?.position || { x: 0, y: 240, z: 1250 };
+    measuredEarthRadius = measureEarthRadius(
+      spinTargets[0] ?? null,
+      cam,
+      spinTargets,
+    );
+    // Prefer true Earth/Globe over cloud shells if we can name-match
+    try {
+      for (const t of spinTargets) {
+        const n = String(t?.name || "");
+        if (/cloud|atmos|atmosphere/i.test(n)) continue;
+        if (/earth|globe|planet|world/i.test(n)) {
+          const r = measureEarthRadius(t, cam, [t]);
+          if (r > 1) measuredEarthRadius = r;
+          break;
+        }
+      }
+    } catch {
+      /* keep best */
+    }
+    measuredFovDeg = readCameraFov();
+  }
+
   let earthMarkers = { update() {}, dispose() {} };
   if (EARTH_MARKERS_ENABLED) {
+    remeasureEarth();
+    console.info(
+      "[Elsewhere] Measured earth radius ~",
+      measuredEarthRadius,
+      "fov",
+      measuredFovDeg,
+    );
+    // Geometry may finish loading a tick later
+    setTimeout(() => {
+      remeasureEarth();
+      console.info("[Elsewhere] Re-measured earth radius ~", measuredEarthRadius);
+    }, 800);
+
     try {
       earthMarkers = await createEarthMarkers({
         canvas,
@@ -352,14 +402,35 @@ export async function createSplineScene(canvas, { onReady, onError } = {}) {
           const spinRad = rotationIsDegrees
             ? (earthSpin * Math.PI) / 180
             : earthSpin;
-          const dist =
-            Math.hypot(lastCamPos.x, lastCamPos.y, lastCamPos.z) || 1000;
+          const cam = { ...lastCamPos };
+          const radius =
+            measuredEarthRadius > 1
+              ? measuredEarthRadius
+              : measureEarthRadius(spinTargets[0] ?? null, cam, spinTargets);
+          let earthCenter = { x: 0, y: 0, z: 0 };
+          try {
+            const e =
+              spinTargets.find((t) =>
+                /earth|globe|planet|world/i.test(String(t?.name || "")),
+              ) || spinTargets[0];
+            if (e?.position) {
+              earthCenter = {
+                x: e.position.x || 0,
+                y: e.position.y || 0,
+                z: e.position.z || 0,
+              };
+            }
+          } catch {
+            /* origin */
+          }
           return {
             ready,
-            cam: { ...lastCamPos },
+            cam,
             look: { ...lastLook },
             earthSpinRad: spinRad,
-            earthRadius: dist * 0.155,
+            earthRadius: radius,
+            earthCenter,
+            fovDeg: measuredFovDeg,
             scale,
             progress,
             cameraFound,
@@ -495,14 +566,18 @@ export async function createSplineScene(canvas, { onReady, onError } = {}) {
     const spinRad = rotationIsDegrees
       ? (earthSpin * Math.PI) / 180
       : earthSpin;
-    const dist =
-      Math.hypot(lastCamPos.x, lastCamPos.y, lastCamPos.z) || 1000;
+    const cam = { ...lastCamPos };
+    const radius =
+      measuredEarthRadius > 1
+        ? measuredEarthRadius
+        : measureEarthRadius(spinTargets[0] ?? null, cam, spinTargets);
     return {
       ready,
-      cam: { ...lastCamPos },
+      cam,
       look: { ...lastLook },
       earthSpinRad: spinRad,
-      earthRadius: dist * 0.155,
+      earthRadius: radius,
+      fovDeg: measuredFovDeg,
       scale,
       progress,
       cameraFound,

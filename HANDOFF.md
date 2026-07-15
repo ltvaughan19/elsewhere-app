@@ -1,17 +1,18 @@
 # Elsewhere — Handoff Notes (Work ↔ Home)
 
-**Last updated:** 2026-07-14 (work PC — Supabase live + domain)  
-**Brand:** Elsewhere (public) · product URL brand can stay Elsewhere; domain is **elsewhereplan.com**  
+**Last updated:** 2026-07-15 (session end — Earth markers WIP, wrap in ~13 min)  
+**Brand:** Elsewhere (public)  
 **Local folder:** often still `expat-atlas`  
 **Repo (GitHub):** https://github.com/ltvaughan19/elsewhere-app  
 **Live (Vercel):** https://expat-atlas-web.vercel.app  
-**Domain (Squarespace):** **elsewhereplan.com** + Google Workspace `brenden@elsewhereplan.com` (logged in / activated)  
-**Legacy Vite landing:** https://elsewhere-mu.vercel.app — retire when Next `/` is trusted forever  
+**Domain:** **elsewhereplan.com** (Squarespace DNS → Vercel) + Workspace `brenden@elsewhereplan.com`  
+**Legacy Vite landing:** https://elsewhere-mu.vercel.app — retire when ready  
 **Quiz prototype:** https://elsewhere-app-theta.vercel.app — absorb polish later  
 
 **Start here if context is fuzzy:** [`docs/plans/PRODUCT_CLARITY_MAP.md`](./docs/plans/PRODUCT_CLARITY_MAP.md)  
 **One site / one auth:** [`docs/plans/ONE_SITE_ONE_AUTH.md`](./docs/plans/ONE_SITE_ONE_AUTH.md)  
-**Email + Supabase decisions:** [`docs/plans/EMAIL_AND_SUPABASE.md`](./docs/plans/EMAIL_AND_SUPABASE.md)
+**Email + Supabase:** [`docs/plans/EMAIL_AND_SUPABASE.md`](./docs/plans/EMAIL_AND_SUPABASE.md)  
+**Earth markers:** [`docs/plans/EARTH_MARKERS.md`](./docs/plans/EARTH_MARKERS.md)
 
 ---
 
@@ -20,183 +21,186 @@
 End of every session:
 
 1. Commit meaningful work  
-2. **Push to `origin/main`**  
-3. Update this file’s “Last session” if anything non-obvious happened  
+2. **Push the branch you’re on** (feature branch OK — do not force-merge broken markers to `main`)  
+3. Update this file’s “Last session”
 
-Next machine: **`git pull origin main` first.**
+Next machine: **`git pull`** on the branch named below first.
 
 ---
 
-## Last session (2026-07-14 — work PC)
+## 🔴 LAST SESSION (2026-07-15) — START HERE
 
-### Shipped / done
+### Active branch (NOT merged to main)
 
-- Next `/` matches elsewhere-mu behavior (Spline camera, question tags, Lenis/GSAP) — see recent commits  
-- **Waitlist removed.** Primary CTA = **Start Fit Quiz**. Email = free **Corridor Brief**; paid digest = Explorer perk  
-- `/api/newsletter` (+ waitlist shim); forms wired  
-- **Supabase project live:** `kjrmtklvfecvzlhlzuaf`  
-  - URL: `https://kjrmtklvfecvzlhlzuaf.supabase.co`  
-  - Tables: `email_subscribers`, `profiles`, `user_plans` (SQL in `supabase/`)  
-  - Auth: email/password; Confirm email **OFF** for now  
-  - Redirects include localhost + `https://expat-atlas-web.vercel.app/**`  
-- Next auth wired (`@supabase/ssr`, middleware, login/signup, callback)  
-- Fit Quiz **cloud sync** for logged-in users (`user_plans`) — verified: quiz saved  
-- Vercel Production + Preview env: Supabase keys + `NEXT_PUBLIC_APP_URL`  
-- Domain purchased: **elsewhereplan.com** (Squarespace)  
-- Google Workspace: **`brenden@elsewhereplan.com`** — account activated / logged in  
+```
+feat/earth-destination-markers
+```
 
-### Commits to know
+Commits on remote (known):
+- `0497678` — initial markers (Three meshes — invisible; keep for history)
+- `1829db1` — switch to **DOM overlay** projection (visible but geo wrong)
+- *(this wrap)* — radius / canvas / occlusion / glow calibration pass — **unverified in browser**
 
-- Auth + Corridor Brief CTA era: around `226e8cf`  
-- Plan sync: `5070617` (`user_plans`)  
-- Pull `main` for latest  
+**Do not merge to `main` until pins sit on PH / TH / MX correctly.**
 
-### NOT done / next priority order
+### What is broken (user screenshots)
 
-1. [ ] Point **elsewhereplan.com** DNS → Vercel (`expat-atlas-web`); update Supabase Site URL + redirects  
-2. [ ] **Resend:** account + API key + verify `elsewhereplan.com` for sending Corridor Brief  
-3. [ ] YOU: official immigration URLs for **PH / TH / MX** (source claims)  
-4. [ ] Privacy/Terms mention email consent before promoting the list  
-5. [ ] Stripe Explorer checkout (after quiz loop is sticky)  
-6. [ ] Retire elsewhere-mu redirect  
+Pins appear, but:
+1. **Wrong geography** — PH/TH often in Pacific; MX in South Atlantic; sometimes clustered near disk center  
+2. **Style** looked like flat black pills (now restyled to glow core + pulse ring — confirm after pull)  
+3. **Far-side ghosting** — pins showing through ocean when on back of globe  
 
-### Env on each PC
+Root diagnosis we locked:
+- **Earth radius was too small** (`dist * 0.155`) → all pins pile near visual center  
+- Projection overlay used `position: fixed` without aligning to canvas bounds  
+- Spline’s Three ≠ app `three` → injected meshes never drew → DOM overlay is the right approach  
 
-Copy secrets into `apps/web/.env.local` (never commit):
+### What was changed today (uncommitted → should be in latest commit on branch)
+
+| File | Change |
+|------|--------|
+| `apps/web/lib/marketing/earthMarkers.js` | Better radius helper, canvas-bounded overlay, stricter far-side hide, glow pin CSS, `MARKER_CALIBRATION` |
+| `apps/web/lib/marketing/splineScene.js` | `measureEarthRadius` + remeasure @800ms, pass `earthCenter` + `fovDeg` |
+| `docs/plans/EARTH_MARKERS.md` | Calibration symptom guide |
+
+### Calibration knobs (next agent: tune these first)
+
+In `MARKER_CALIBRATION` (`earthMarkers.js`):
+
+| Knob | Meaning |
+|------|---------|
+| `lngOffsetDeg` | Meridian shift if on wrong ocean |
+| `latOffsetDeg` | N/S nudge |
+| `spinSign` | `1` or `-1` if pins drift opposite land |
+| `radiusScale` | Slightly above surface (~1.02) |
+
+Console on load:
+```
+[Elsewhere] Measured earth radius ~
+[Elsewhere] Earth markers ready: ph, th, mx
+```
+
+If radius still looks tiny vs globe silhouette → raise fallback in `measureEarthRadius` (currently `dist * 0.34`).
+
+### Destinations
+
+- PH 12.8797, 121.774  
+- TH 15.8700, 100.9925  
+- MX 23.6345, -102.5528  
+
+### Kill switches
+
+```
+NEXT_PUBLIC_EARTH_MARKERS=0   # instant off
+git checkout main            # leave feature entirely
+```
+
+### How to resume (5 min)
+
+```powershell
+cd C:\Users\brenden.vaughan\expat-atlas
+git fetch origin
+git checkout feat/earth-destination-markers
+git pull
+pnpm install
+pnpm --filter @expat-atlas/web dev
+```
+
+Open **http://localhost:3001** if 3000 is busy. Hard refresh. Watch globe spin:
+- Asia facing → TH + PH on SE Asia land; MX hidden  
+- Americas facing → MX on Mexico; TH/PH hidden  
+
+**Acceptance:** locked to land as spin + scroll camera move; glow dots not black pills; no Earth texture edits; never merge until user says OK.
+
+### Do NOT
+
+- Re-touch Earth materials / night texture / glare soften for markers  
+- Re-add travel arcs until pins are stable  
+- Merge this branch to `main` while geo is wrong  
+- Invent partner / visa claims  
+
+### Transcript for full context
+
+Agent chat: [Earth markers session](ba159b93-8b61-40b4-8251-e380b6893939)
+
+---
+
+## Priority queue (after markers or if abandoning)
+
+1. ✅ Domain → Vercel + Supabase redirects (elsewhereplan.com)  
+2. ✅ Resend Elsewhere account + branded Corridor Brief welcome  
+3. ✅ Privacy/Terms email consent  
+4. **YOU / next:** official immigration source URLs for **PH / TH / MX** claims  
+5. Retire elsewhere-mu redirect when `/` trusted  
+6. Stripe Explorer checkout (later)  
+
+If markers stall >1 focused hour: leave branch open, set `NEXT_PUBLIC_EARTH_MARKERS=0` on main, move to source URLs.
+
+---
+
+## Already shipped on main (stable)
+
+- Next `/` marketing = Spline Earth + scroll camera + question tags  
+- Waitlist removed; CTA = Fit Quiz; email = Corridor Brief  
+- Supabase `kjrmtklvfecvzlhlzuaf`: `email_subscribers`, `profiles`, `user_plans`  
+- Auth (`@supabase/ssr`); Fit Quiz cloud sync for logged-in users  
+- Resend welcome email HTML; domain verified  
+
+### Key commits on main
+
+- Auth + Corridor Brief: ~`226e8cf`  
+- Plan sync: `5070617`  
+- Handoff/docs: `bd6ddbe`  
+- Resend + privacy: `4d4fa43`, `72a3eb1`  
+
+---
+
+## Env (never commit)
 
 ```bash
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 NEXT_PUBLIC_SUPABASE_URL=https://kjrmtklvfecvzlhlzuaf.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=   # from Supabase API settings
-SUPABASE_SERVICE_ROLE_KEY=       # secret — from Supabase API settings
-# Resend — when ready
+NEXT_PUBLIC_SUPABASE_ANON_KEY=
+SUPABASE_SERVICE_ROLE_KEY=
 RESEND_API_KEY=
 RESEND_FROM_EMAIL=Elsewhere <hello@elsewhereplan.com>
 RESEND_AUDIENCE_ID=
+# optional kill switch:
+# NEXT_PUBLIC_EARTH_MARKERS=0
 ```
 
-Home PC: pull code, then **recreate `.env.local`** from Supabase dashboard keys (or password manager). Do not rely on work PC’s local file.
-
-### Domain / email facts
-
-| Item | Value |
-|------|--------|
-| Domain | elsewhereplan.com |
-| Registrar | Squarespace |
-| Workspace admin / inbox | brenden@elsewhereplan.com |
-| Product name in UI | Elsewhere (domain ≠ rename) |
-| Avoided | elsewhere.com (Activision), travel* domains |
+Home PC: recreate `.env.local` from password manager / dashboards.
 
 ---
 
-## Home PC — start here tonight
+## Architecture locks
 
-```powershell
-cd C:\Users\brenden.vaughan\expat-atlas   # or your home clone path
-git pull origin main
-pnpm install
-# create apps/web/.env.local with Supabase keys (see above)
-pnpm --filter @expat-atlas/web dev
-```
-
-Smoke:
-1. http://localhost:3000 — Fit Quiz CTA  
-2. Login with test / Workspace-related account if desired  
-3. `/app/onboarding` → complete → confirm `user_plans` row in Supabase  
-
-Best next coding block at home: **Vercel custom domain `elsewhereplan.com`** + Supabase redirect update, then Resend domain verify.
+- One Next origin: `/` · `/start` · `/app/*`  
+- One Supabase project  
+- Fit Quiz primary; Corridor Brief secondary; paid digest = Explorer  
+- No fake partners; no “you qualify”; claims need sources  
+- V1 corridors: US → PH, TH, MX  
 
 ---
 
-## Start-of-day checklist (either PC)
-
-```powershell
-$env:Path += ";$env:USERPROFILE\.local\node\node-v24.18.0-win-x64"
-$env:Path += ";$env:USERPROFILE\AppData\Local\Programs\Git\cmd"
-
-cd C:\Users\brenden.vaughan\expat-atlas
-git pull origin main
-pnpm.cmd install
-pnpm.cmd --filter @expat-atlas/web dev
-```
-
-Open http://localhost:3000 — Elsewhere + Start Fit Quiz.
-
----
-
-## End-of-day checklist
-
-```powershell
-cd C:\Users\brenden.vaughan\expat-atlas
-git status
-git add -A
-# never stage .env.local
-git commit -m "your message"
-git push origin main
-```
-
-Update **Last session** when unfinished context matters.
-
----
-
-## Dev commands
-
-### Work PC
-
-```powershell
-cd C:\Users\brenden.vaughan\expat-atlas
-$env:Path += ";$env:USERPROFILE\.local\node\node-v24.18.0-win-x64"
-$env:Path += ";$env:USERPROFILE\AppData\Local\Programs\Git\cmd"
-pnpm.cmd install
-pnpm.cmd --filter @expat-atlas/web dev
-pnpm.cmd --filter @expat-atlas/web build
-```
-
-### Home PC
-
-```bash
-cd expat-atlas
-git pull origin main
-pnpm install
-pnpm --filter @expat-atlas/web dev
-```
-
----
-
-## Architecture locks (do not reopen casually)
-
-- One Next origin: `/` marketing · `/start` hub · `/app/*` OS  
-- One Supabase project for everything  
-- No waitlist hype — Fit Quiz primary; Corridor Brief email secondary  
-- Paid newsletter = Explorer entitlement (not a second Substack bill)  
-- No fake partners; no “you qualify”; claims need sources / `needs_review`  
-- V1 corridors: US → Philippines, Thailand, Mexico  
-
----
-
-## Useful dashboards
+## Dashboards
 
 | System | Link |
 |--------|------|
 | GitHub | https://github.com/ltvaughan19/elsewhere-app |
-| Vercel app | https://expat-atlas-web.vercel.app |
+| Vercel | https://expat-atlas-web.vercel.app |
 | Supabase | https://supabase.com/dashboard/project/kjrmtklvfecvzlhlzuaf |
-| Auth users | …/auth/users |
-| SQL new | …/sql/new |
-| Google Admin | https://admin.google.com (as brenden@elsewhereplan.com) |
-| Squarespace domains | Squarespace → Domains for elsewhereplan.com |
+| Resend | (Elsewhere account — not VSL) |
 
 ---
 
-## SQL files in repo
+## SQL in repo (already applied live)
 
 | File | Purpose |
 |------|---------|
-| `supabase/seed-elsewhere-v1.sql` | `email_subscribers` + `profiles` + signup trigger |
-| `supabase/user-plans.sql` | `user_plans` + RLS (Fit Quiz cloud sync) |
-
-Both already run on the live project as of 2026-07-14.
+| `supabase/seed-elsewhere-v1.sql` | subscribers + profiles trigger |
+| `supabase/user-plans.sql` | Fit Quiz cloud sync + RLS |
 
 ---
 
-*Handoff written for home PC continuation — pull main first.*
+*Next machine: `git checkout feat/earth-destination-markers && git pull` — finish pin geo, then merge only when pins look right.*
