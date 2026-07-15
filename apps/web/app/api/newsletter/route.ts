@@ -17,13 +17,75 @@ function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
+async function addToResendAudience(email: string): Promise<"ok" | "skip" | "fail"> {
+  const resendKey = process.env.RESEND_API_KEY?.trim();
+  const audienceId = process.env.RESEND_AUDIENCE_ID?.trim();
+  if (!resendKey || !audienceId) return "skip";
+
+  try {
+    const res = await fetch(`https://api.resend.com/audiences/${audienceId}/contacts`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${resendKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, unsubscribed: false }),
+    });
+    // 409 = already exists — treat as success
+    if (res.ok || res.status === 409) return "ok";
+    console.error("[newsletter] resend audience", res.status, await res.text().catch(() => ""));
+    return "fail";
+  } catch (err) {
+    console.error("[newsletter] resend audience exception", err);
+    return "fail";
+  }
+}
+
+async function sendWelcomeEmail(email: string): Promise<"ok" | "skip" | "fail"> {
+  const resendKey = process.env.RESEND_API_KEY?.trim();
+  const from =
+    process.env.RESEND_FROM_EMAIL?.trim() || "Elsewhere <hello@elsewhereplan.com>";
+  if (!resendKey) return "skip";
+
+  try {
+    const res = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${resendKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from,
+        to: [email],
+        subject: "You’re on the Corridor Brief",
+        text: [
+          "Thanks for opting into the Elsewhere Corridor Brief.",
+          "",
+          "You’ll get rare emails when sourced notes on our research corridors actually change — not a daily hype drip.",
+          "",
+          "This is general planning information only — not legal, immigration, or tax advice. Verify with official sources before you act.",
+          "",
+          "Unsubscribe: reply stop, or use the link when we add list mailings.",
+          "",
+          "— Elsewhere",
+          "https://elsewhereplan.com",
+        ].join("\n"),
+      }),
+    });
+    if (!res.ok) {
+      console.error("[newsletter] welcome send", res.status, await res.text().catch(() => ""));
+      return "fail";
+    }
+    return "ok";
+  } catch (err) {
+    console.error("[newsletter] welcome exception", err);
+    return "fail";
+  }
+}
+
 /**
  * Corridor Brief opt-in.
- * Pipeline:
- * 1. Supabase email_subscribers (preferred when service role exists)
- * 2. NEWSLETTER_WEBHOOK / WAITLIST_WEBHOOK
- * 3. Resend Audience
- * 4. Accept without provider (dev)
+ * Always tries Supabase consent log + Resend audience + welcome email when configured.
  */
 export async function POST(request: Request) {
   let body: NewsletterBody = {};
@@ -39,6 +101,7 @@ export async function POST(request: Request) {
   }
 
   const source = (body.source ?? "elsewhere-web").slice(0, 80);
+  const modes: string[] = [];
 
   if (process.env.SUPABASE_SERVICE_ROLE_KEY && process.env.NEXT_PUBLIC_SUPABASE_URL) {
     try {
@@ -57,20 +120,32 @@ export async function POST(request: Request) {
         console.error("[newsletter] supabase error", error.message);
         return NextResponse.json({ ok: false, error: "supabase_failed" }, { status: 502 });
       }
-      return NextResponse.json({ ok: true, mode: "supabase" });
+      modes.push("supabase");
     } catch (err) {
       console.error("[newsletter] supabase exception", err);
       return NextResponse.json({ ok: false, error: "supabase_error" }, { status: 502 });
     }
   }
 
+  const audience = await addToResendAudience(email);
+  if (audience === "ok") modes.push("resend_audience");
+  if (audience === "fail") {
+    return NextResponse.json({ ok: false, error: "resend_audience_failed", modes }, { status: 502 });
+  }
+
+  const welcome = await sendWelcomeEmail(email);
+  if (welcome === "ok") modes.push("welcome_email");
+  // Welcome failure is soft if we already stored consent
+  if (welcome === "fail" && modes.length === 0) {
+    return NextResponse.json({ ok: false, error: "welcome_failed" }, { status: 502 });
+  }
+
   const webhook =
     process.env.NEWSLETTER_WEBHOOK?.trim() ||
     process.env.WAITLIST_WEBHOOK?.trim();
-
   if (webhook) {
     try {
-      const res = await fetch(webhook, {
+      await fetch(webhook, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -81,35 +156,15 @@ export async function POST(request: Request) {
           at: new Date().toISOString(),
         }),
       });
-      if (!res.ok) {
-        return NextResponse.json({ ok: false, error: "webhook_failed" }, { status: 502 });
-      }
-      return NextResponse.json({ ok: true, mode: "webhook" });
+      modes.push("webhook");
     } catch {
-      return NextResponse.json({ ok: false, error: "webhook_error" }, { status: 502 });
+      /* non-blocking */
     }
   }
 
-  const resendKey = process.env.RESEND_API_KEY?.trim();
-  const audienceId = process.env.RESEND_AUDIENCE_ID?.trim();
-  if (resendKey && audienceId) {
-    try {
-      const res = await fetch(`https://api.resend.com/audiences/${audienceId}/contacts`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${resendKey}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, unsubscribed: false }),
-      });
-      if (!res.ok) {
-        return NextResponse.json({ ok: false, error: "resend_failed" }, { status: 502 });
-      }
-      return NextResponse.json({ ok: true, mode: "resend_audience" });
-    } catch {
-      return NextResponse.json({ ok: false, error: "resend_error" }, { status: 502 });
-    }
+  if (modes.length === 0) {
+    return NextResponse.json({ ok: true, mode: "accepted_no_provider" });
   }
 
-  return NextResponse.json({ ok: true, mode: "accepted_no_provider" });
+  return NextResponse.json({ ok: true, modes });
 }

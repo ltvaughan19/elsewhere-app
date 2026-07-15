@@ -4,7 +4,7 @@ export default function TermsPage() {
   return (
     <div className="mx-auto max-w-3xl px-6 py-16">
       <h1 className="font-display text-4xl text-navy-950">Terms of Use</h1>
-      <p className="mt-2 text-sm text-navy-800/70">Last updated: June 2026 · Draft for MVP</p>
+      <p className="mt-2 text-sm text-navy-800/70">Last updated: July 2026 · Draft for MVP</p>
       <div className="mt-8 space-y-4 text-navy-800/80">
         <p>
           Elsewhere provides general planning information only. We do not provide
@@ -18,6 +18,23 @@ export default function TermsPage() {
         <p>
           Planning estimates, country scores, and visa overviews may be outdated or
           incomplete. Use the report-outdated feature when you find errors.
+        </p>
+        <p>
+          Email updates (including the free Corridor Brief and any paid research
+          digest) are optional product communications. They are not guarantees,
+          approvals, or advice. By opting in you consent to receive those messages
+          until you unsubscribe.
+        </p>
+        <p>
+          Site:{" "}
+          <a className="underline" href="https://elsewhereplan.com">
+            elsewhereplan.com
+          </a>
+          . Contact:{" "}
+          <a className="underline" href="mailto:hello@elsewhereplan.com">
+            hello@elsewhereplan.com
+          </a>
+          .
         </p>
       </div>
       <TrustDisclaimer className="mt-8" />
