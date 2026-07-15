@@ -47,6 +47,11 @@ async function sendWelcomeEmail(email: string): Promise<"ok" | "skip" | "fail"> 
     process.env.RESEND_FROM_EMAIL?.trim() || "Elsewhere <hello@elsewhereplan.com>";
   if (!resendKey) return "skip";
 
+  const { corridorBriefWelcomeEmail } = await import(
+    "@/lib/email/corridor-brief-welcome"
+  );
+  const { subject, text, html } = corridorBriefWelcomeEmail();
+
   try {
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
@@ -57,19 +62,9 @@ async function sendWelcomeEmail(email: string): Promise<"ok" | "skip" | "fail"> 
       body: JSON.stringify({
         from,
         to: [email],
-        subject: "You’re on the Corridor Brief",
-        text: [
-          "Thanks for opting into the Elsewhere Corridor Brief.",
-          "",
-          "You’ll get rare emails when sourced notes on our research corridors actually change — not a daily hype drip.",
-          "",
-          "This is general planning information only — not legal, immigration, or tax advice. Verify with official sources before you act.",
-          "",
-          "Unsubscribe: reply stop, or use the link when we add list mailings.",
-          "",
-          "— Elsewhere",
-          "https://elsewhereplan.com",
-        ].join("\n"),
+        subject,
+        text,
+        html,
       }),
     });
     if (!res.ok) {

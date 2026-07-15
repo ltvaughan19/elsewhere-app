@@ -388,7 +388,7 @@ export async function bootMarketingExperience(root: HTMLElement): Promise<BootHa
     form.classList.add("is-success");
     if (note) {
       note.textContent =
-        "You’re in. Rare briefs only — full paid digest with Explorer.";
+        "You’re subscribed. Check your inbox for a welcome from Elsewhere.";
     }
     if (input) input.value = "";
   };

@@ -89,15 +89,15 @@ export function NewsletterForm({
           disabled={status === "saving"}
           className="rounded-md bg-accent-sand px-5 py-3 text-sm font-medium text-accent-ink hover:bg-accent-sand-hover disabled:opacity-60"
         >
-          {status === "saving" ? "Saving…" : "Get the Brief"}
+          {status === "saving" ? "Saving…" : "Join Corridor Brief"}
         </button>
       </div>
       <p className="mt-3 text-xs leading-relaxed text-navy-800">
         {status === "saved"
-          ? "You’re in. Rare emails only — unsubscribe anytime."
+          ? "You’re subscribed. Check your inbox for a welcome from Elsewhere."
           : status === "invalid"
             ? "Enter a valid email and try again."
-            : "Free Corridor Brief when sourced notes change. Full paid digest with Explorer."}
+            : "Free updates when sourced corridor notes change. Fuller digest with Explorer."}
       </p>
     </form>
   );

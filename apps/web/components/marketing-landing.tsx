@@ -238,35 +238,35 @@ export function MarketingLanding() {
 
         <section className="panel finale" id="begin">
           <div className="panel-inner center">
-            <p className="eyebrow">Begin</p>
+            <p className="eyebrow">Your next step</p>
             <h2>
-              Start with clarity.
-              <br />
-              <em>Not a countdown.</em>
+              Get a research path in minutes.
             </h2>
             <p className="body">
-              Run the Fit Quiz and get a research path for Philippines, Thailand,
-              or Mexico. Planning estimates only — you verify before you act.
+              Take the Fit Quiz. We’ll map a calm sequence for Philippines,
+              Thailand, or Mexico based on your situation — planning estimates
+              only. You verify before you act.
             </p>
-            <div className="hero-actions" style={{ marginBottom: "2rem" }}>
+            <div className="hero-actions" style={{ marginBottom: "2.5rem" }}>
               <Link className="btn primary" href="/app/onboarding">
                 Start Fit Quiz
               </Link>
               <Link className="btn ghost" href="/pricing">
-                See Explorer
+                Compare plans
               </Link>
             </div>
 
-            <p className="eyebrow">Corridor Brief</p>
+            <p className="eyebrow">Email updates</p>
             <h2>
-              Stay informed without the noise.
+              Occasional corridor updates.
               <br />
-              <em>Rarely.</em>
+              <em>Only when something real changes.</em>
             </h2>
             <p className="body">
-              Opt in for a free brief when sourced corridor notes actually change.
-              The full paid digest ships with Explorer — same account, no second
-              Substack bill.
+              Join the free Corridor Brief: short emails when our sourced notes
+              for PH, TH, or MX change — so you aren’t stuck refreshing forums.
+              Explorer subscribers get the fuller research digest in the same
+              Elsewhere account.
             </p>
 
             <form className="waitlist" id="newsletter" noValidate>
@@ -283,11 +283,11 @@ export function MarketingLanding() {
                   required
                 />
                 <button type="submit" className="btn primary">
-                  Get the Brief
+                  Join Corridor Brief
                 </button>
               </div>
               <p className="waitlist-note" id="newsletter-note">
-                Unsubscribe anytime. Not legal advice — research signals only.
+                Free. Unsubscribe anytime. Not legal advice — research signals only.
               </p>
             </form>
 
