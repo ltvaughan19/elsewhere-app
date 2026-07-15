@@ -1,8 +1,11 @@
 import { Application } from "@splinetool/runtime";
+import { createEarthMarkers, EARTH_MARKERS_ENABLED } from "./earthMarkers.js";
 
 /** Exported from your Spline project (Code export). */
 export const SPLINE_SCENE_URL =
   "https://prod.spline.design/Lnx4uENq006e5zkU/scene.splinecode";
+
+/** Revert markers: set NEXT_PUBLIC_EARTH_MARKERS=0 or remove createEarthMarkers usage below. */
 
 function smoothstep(a, b, x) {
   const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
@@ -340,6 +343,23 @@ export async function createSplineScene(canvas, { onReady, onError } = {}) {
   requestAnimationFrame(() => reduceGlobeGlare(app, spinTargets));
   setTimeout(() => reduceGlobeGlare(app, spinTargets), 500);
 
+  let earthMarkers = { update() {}, dispose() {} };
+  if (EARTH_MARKERS_ENABLED) {
+    try {
+      earthMarkers = await createEarthMarkers({
+        app,
+        earthRoot: spinTargets[0] ?? null,
+        camera,
+        reducedMotion,
+        getEarthSpinRad: () =>
+          rotationIsDegrees ? (earthSpin * Math.PI) / 180 : earthSpin,
+      });
+    } catch (err) {
+      console.warn("[Elsewhere] Earth markers failed — continuing without", err);
+      earthMarkers = { update() {}, dispose() {} };
+    }
+  }
+
   try {
     for (const obj of spinTargets) {
       if (typeof obj.emitEvent === "function") {
@@ -522,6 +542,7 @@ export async function createSplineScene(canvas, { onReady, onError } = {}) {
       applyCamera(progress);
       applyEarthSpin(dt);
       applyEarthSpin(0);
+      earthMarkers.update?.(dt);
     }
 
     raf = requestAnimationFrame(tick);
@@ -550,6 +571,11 @@ export async function createSplineScene(canvas, { onReady, onError } = {}) {
     dispose() {
       cancelAnimationFrame(raf);
       window.removeEventListener("resize", resize);
+      try {
+        earthMarkers.dispose?.();
+      } catch {
+        /* ignore */
+      }
       try {
         app.dispose?.();
       } catch {
