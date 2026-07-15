@@ -347,12 +347,25 @@ export async function createSplineScene(canvas, { onReady, onError } = {}) {
   if (EARTH_MARKERS_ENABLED) {
     try {
       earthMarkers = await createEarthMarkers({
-        app,
-        earthRoot: spinTargets[0] ?? null,
-        camera,
+        canvas,
+        getPose: () => {
+          const spinRad = rotationIsDegrees
+            ? (earthSpin * Math.PI) / 180
+            : earthSpin;
+          const dist =
+            Math.hypot(lastCamPos.x, lastCamPos.y, lastCamPos.z) || 1000;
+          return {
+            ready,
+            cam: { ...lastCamPos },
+            look: { ...lastLook },
+            earthSpinRad: spinRad,
+            earthRadius: dist * 0.155,
+            scale,
+            progress,
+            cameraFound,
+          };
+        },
         reducedMotion,
-        getEarthSpinRad: () =>
-          rotationIsDegrees ? (earthSpin * Math.PI) / 180 : earthSpin,
       });
     } catch (err) {
       console.warn("[Elsewhere] Earth markers failed — continuing without", err);

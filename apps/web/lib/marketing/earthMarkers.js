@@ -1,42 +1,31 @@
 /**
- * Destination pins on the Spline Earth — separate meshes only.
- * Does NOT touch Earth materials, textures, UVs, or lighting.
+ * Destination pins locked to the Spline Earth.
  *
- * Kill switch: set EARTH_MARKERS_ENABLED = false (or env NEXT_PUBLIC_EARTH_MARKERS=0)
- * Full revert: remove createEarthMarkers import from splineScene.js
+ * Uses HTML overlays projected from globe math (lat/lng + earth spin + camera).
+ * Spline ships its own Three.js — injecting a second `three` instance into
+ * `app._scene` often produces invisible meshes. This approach is reliable and
+ * never touches Earth materials / textures / UVs / lighting.
+ *
+ * Kill switch: NEXT_PUBLIC_EARTH_MARKERS=0
  */
 
 export const EARTH_MARKERS_ENABLED =
   typeof process !== "undefined" &&
   process.env.NEXT_PUBLIC_EARTH_MARKERS !== "0";
 
-/** Destinations currently supported in product. */
 export const DESTINATIONS = [
-  { id: "ph", name: "Philippines", lat: 12.8797, lng: 121.774 },
-  { id: "th", name: "Thailand", lat: 15.87, lng: 100.9925 },
-  { id: "mx", name: "Mexico", lat: 23.6345, lng: -102.5528 },
+  { id: "ph", name: "Philippines", lat: 12.8797, lng: 121.774, short: "PH" },
+  { id: "th", name: "Thailand", lat: 15.87, lng: 100.9925, short: "TH" },
+  { id: "mx", name: "Mexico", lat: 23.6345, lng: -102.5528, short: "MX" },
 ];
 
-/**
- * Spline globe textures are rarely perfectly aligned to WGS84.
- * Tune these if pins sit in the wrong ocean (radians / degrees applied after latLng).
- */
+/** Tune if pins sit in wrong ocean. */
 export const MARKER_CALIBRATION = {
-  /** Shift longitude so texture meridian matches our map (+east). */
   lngOffsetDeg: -10,
-  /** Shift latitude (+north). */
   latOffsetDeg: 0,
-  /** Surface offset multiplier — slight lift to avoid z-fight. */
-  radiusScale: 1.012,
+  radiusScale: 1.02,
 };
 
-/**
- * Geographic → local sphere position (Y-up, +X east-ish after lng).
- * Common Three globe convention: lat=0 equator, lng=0 +Z or +X — we use:
- * x = cos(lat) * sin(lng)
- * y = sin(lat)
- * z = cos(lat) * cos(lng)
- */
 export function latLngToSpherePosition(lat, lng, radius, calib = MARKER_CALIBRATION) {
   const latRad = ((lat + (calib.latOffsetDeg || 0)) * Math.PI) / 180;
   const lngRad = ((lng + (calib.lngOffsetDeg || 0)) * Math.PI) / 180;
@@ -48,238 +37,247 @@ export function latLngToSpherePosition(lat, lng, radius, calib = MARKER_CALIBRAT
   };
 }
 
-function getThreeScene(app) {
-  return (
-    app?._scene ||
-    app?.scene ||
-    app?._renderer?.scene ||
-    app?.renderer?.scene ||
-    null
-  );
+function rotateY(p, angle) {
+  const c = Math.cos(angle);
+  const s = Math.sin(angle);
+  return {
+    x: p.x * c + p.z * s,
+    y: p.y,
+    z: -p.x * s + p.z * c,
+  };
 }
 
-function estimateRadius(earthObj, camPos) {
-  try {
-    const mesh = earthObj?._mesh || earthObj?.mesh;
-    if (mesh?.geometry) {
-      mesh.geometry.computeBoundingSphere?.();
-      const r = mesh.geometry.boundingSphere?.radius;
-      if (r && Number.isFinite(r) && r > 0) {
-        const sx = Math.abs(mesh.scale?.x ?? earthObj.scale?.x ?? 1);
-        return r * (sx || 1);
-      }
+function length(v) {
+  return Math.hypot(v.x, v.y, v.z) || 1;
+}
+
+function normalize(v) {
+  const L = length(v);
+  return { x: v.x / L, y: v.y / L, z: v.z / L };
+}
+
+function sub(a, b) {
+  return { x: a.x - b.x, y: a.y - b.y, z: a.z - b.z };
+}
+
+function cross(a, b) {
+  return {
+    x: a.y * b.z - a.z * b.y,
+    y: a.z * b.x - a.x * b.z,
+    z: a.x * b.y - a.y * b.x,
+  };
+}
+
+function dot(a, b) {
+  return a.x * b.x + a.y * b.y + a.z * b.z;
+}
+
+/**
+ * Project world point to canvas CSS pixels using cam + look-at.
+ * Approximates Spline framing (FOV ~42°).
+ */
+function projectToCanvas(world, cam, look, canvasW, canvasH) {
+  const forward = normalize(sub(look, cam));
+  let right = cross(forward, { x: 0, y: 1, z: 0 });
+  if (length(right) < 1e-5) right = cross(forward, { x: 1, y: 0, z: 0 });
+  right = normalize(right);
+  const up = normalize(cross(right, forward));
+
+  const to = sub(world, cam);
+  const z = dot(to, forward);
+  if (z <= 1) return null;
+
+  const x = dot(to, right);
+  const y = dot(to, up);
+  const fov = 42 * (Math.PI / 180);
+  const f = 0.5 / Math.tan(fov / 2);
+  const aspect = canvasW / Math.max(1, canvasH);
+
+  const ndcX = (x * f) / (z * aspect);
+  const ndcY = (y * f) / z;
+
+  return {
+    x: (ndcX + 1) * 0.5 * canvasW,
+    y: (1 - (ndcY + 1) * 0.5) * canvasH,
+    depth: z,
+  };
+}
+
+function ensureStyles() {
+  if (typeof document === "undefined") return;
+  if (document.getElementById("elsewhere-earth-marker-css")) return;
+  const style = document.createElement("style");
+  style.id = "elsewhere-earth-marker-css";
+  style.textContent = `
+    .ea-earth-markers {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 4;
+      overflow: hidden;
     }
-  } catch {
-    /* fall through */
-  }
-  const dist = Math.hypot(camPos?.x ?? 0, camPos?.y ?? 0, camPos?.z ?? 1000) || 1000;
-  return dist * 0.155;
+    .ea-pin {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      will-change: transform, opacity;
+    }
+    .ea-pin-core {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%, #f4efdf 0%, #c8b48a 45%, #7a6a45 100%);
+      box-shadow:
+        0 0 0 1px rgba(244, 241, 234, 0.35),
+        0 0 14px rgba(200, 180, 138, 0.75),
+        0 0 28px rgba(126, 184, 201, 0.35);
+    }
+    .ea-pin-ring {
+      position: absolute;
+      inset: -8px;
+      border-radius: 50%;
+      border: 1px solid rgba(126, 184, 201, 0.55);
+      opacity: 0.7;
+      animation: ea-pin-pulse 2.4s ease-out infinite;
+    }
+    .ea-pin-label {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-family: "Outfit", system-ui, sans-serif;
+      font-size: 10px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(244, 241, 234, 0.92);
+      background: rgba(7, 9, 13, 0.55);
+      border: 1px solid rgba(244, 241, 234, 0.14);
+      backdrop-filter: blur(8px);
+      white-space: nowrap;
+    }
+    @keyframes ea-pin-pulse {
+      0% { transform: scale(0.85); opacity: 0.75; }
+      70% { transform: scale(1.55); opacity: 0; }
+      100% { transform: scale(1.55); opacity: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .ea-pin-ring { animation: none; opacity: 0.35; }
+    }
+  `;
+  document.head.appendChild(style);
 }
 
 /**
  * @param {object} opts
- * @param {import('@splinetool/runtime').Application} opts.app
- * @param {object|null} opts.earthRoot - primary spin target (Earth)
- * @param {object|null} opts.camera
- * @param {() => number} opts.getEarthSpinRad - current earth Y spin in radians
+ * @param {HTMLCanvasElement} opts.canvas
+ * @param {() => object} opts.getPose - splineScene getPose()
  * @param {boolean} opts.reducedMotion
  */
 export async function createEarthMarkers({
-  app,
-  earthRoot,
-  camera,
-  getEarthSpinRad,
+  canvas,
+  getPose,
   reducedMotion = false,
 }) {
-  if (!EARTH_MARKERS_ENABLED) {
+  if (!EARTH_MARKERS_ENABLED || !canvas || typeof document === "undefined") {
     return { update() {}, dispose() {} };
   }
 
-  let THREE;
-  try {
-    THREE = await import("three");
-  } catch (err) {
-    console.warn("[Elsewhere] three unavailable — markers skipped", err);
-    return { update() {}, dispose() {} };
-  }
+  ensureStyles();
 
-  const scene = getThreeScene(app);
-  if (!scene || !earthRoot) {
-    console.warn("[Elsewhere] Markers: no scene or earth root — skipped");
-    return { update() {}, dispose() {} };
-  }
+  const parent = canvas.parentElement || canvas;
+  const prev = parent.style.position;
+  if (!prev || prev === "static") parent.style.position = "relative";
 
-  const camPos = camera?.position || { x: 0, y: 240, z: 1250 };
-  const baseRadius = estimateRadius(earthRoot, camPos);
-  const radius = baseRadius * (MARKER_CALIBRATION.radiusScale || 1.012);
+  const root = document.createElement("div");
+  root.className = "ea-earth-markers";
+  root.setAttribute("aria-hidden", "true");
+  parent.appendChild(root);
 
-  const group = new THREE.Group();
-  group.name = "elsewhere-earth-markers";
-  // Render after globe; avoid writing depth so no earth z-fight scars
-  group.renderOrder = 10;
-  scene.add(group);
-
-  const accent = new THREE.Color("#c8b48a");
-  const cool = new THREE.Color("#7eb8c9");
-
-  /** @type {Array<{ core: any, ring: any, local: {x:number,y:number,z:number}, matCore: any, matRing: any }>} */
-  const pins = [];
-
-  for (const dest of DESTINATIONS) {
-    const local = latLngToSpherePosition(dest.lat, dest.lng, radius);
-
-    const coreGeo = new THREE.SphereGeometry(baseRadius * 0.012, 16, 16);
-    const matCore = new THREE.MeshBasicMaterial({
-      color: accent,
-      transparent: true,
-      opacity: 0.95,
-      depthWrite: false,
-      depthTest: true,
-      toneMapped: false,
-    });
-    const core = new THREE.Mesh(coreGeo, matCore);
-    core.renderOrder = 11;
-    core.position.set(local.x, local.y, local.z);
-    core.userData.destinationId = dest.id;
-    group.add(core);
-
-    const ringGeo = new THREE.RingGeometry(
-      baseRadius * 0.016,
-      baseRadius * 0.028,
-      32,
-    );
-    const matRing = new THREE.MeshBasicMaterial({
-      color: cool,
-      transparent: true,
-      opacity: 0.55,
-      side: THREE.DoubleSide,
-      depthWrite: false,
-      depthTest: true,
-      toneMapped: false,
-    });
-    const ring = new THREE.Mesh(ringGeo, matRing);
-    ring.renderOrder = 11;
-    ring.position.set(local.x, local.y, local.z);
-    // Face outward from globe center
-    ring.lookAt(0, 0, 0);
-    ring.rotateY(Math.PI);
-    group.add(ring);
-
-    pins.push({ core, ring, local, matCore, matRing, name: dest.name });
-  }
+  /** @type {Array<{ el: HTMLElement, dest: typeof DESTINATIONS[0] }>} */
+  const pins = DESTINATIONS.map((dest) => {
+    const el = document.createElement("div");
+    el.className = "ea-pin";
+    el.dataset.id = dest.id;
+    el.innerHTML = `
+      <span class="ea-pin-ring"></span>
+      <span class="ea-pin-core"></span>
+      <span class="ea-pin-label">${dest.short}</span>
+    `;
+    if (reducedMotion) {
+      const ring = el.querySelector(".ea-pin-ring");
+      if (ring) ring.style.animation = "none";
+    }
+    root.appendChild(el);
+    return { el, dest };
+  });
 
   console.info(
-    "[Elsewhere] Earth markers mounted:",
+    "[Elsewhere] Earth markers (DOM overlay):",
     DESTINATIONS.map((d) => d.id).join(", "),
-    "radius~",
-    radius.toFixed(1),
   );
 
-  let t = 0;
   let disposed = false;
 
-  function syncGroupToEarth() {
-    // Prefer copying live Earth world matrix so parenting quirks don't matter
-    try {
-      const mesh = earthRoot._mesh || earthRoot.mesh || earthRoot;
-      if (mesh?.matrixWorld) {
-        mesh.updateWorldMatrix?.(true, false);
-        group.matrixAutoUpdate = false;
-        group.matrix.copy(mesh.matrixWorld);
-        group.matrixWorldNeedsUpdate = true;
-        return;
-      }
-      if (mesh?.position && mesh?.quaternion && mesh?.scale) {
-        group.position.copy(mesh.position);
-        group.quaternion.copy(mesh.quaternion);
-        group.scale.copy(mesh.scale);
-        return;
-      }
-    } catch {
-      /* fall through */
-    }
-
-    // Fallback: apply same Y spin we drive on Spline objects
-    const spin = getEarthSpinRad?.() ?? 0;
-    group.rotation.set(0, spin, 0);
-    try {
-      if (earthRoot.position) {
-        group.position.set(
-          earthRoot.position.x || 0,
-          earthRoot.position.y || 0,
-          earthRoot.position.z || 0,
-        );
-      }
-    } catch {
-      /* ignore */
-    }
-  }
-
-  function update(dt = 0.016) {
+  function update() {
     if (disposed) return;
-    t += dt;
-    syncGroupToEarth();
-
-    // Camera in world space for occlusion
-    let cx = camera?.position?.x ?? 0;
-    let cy = camera?.position?.y ?? 0;
-    let cz = camera?.position?.z ?? 1000;
-    try {
-      // If group is in earth space, transform local pin to approx world via group matrix
-    } catch {
-      /* ignore */
+    const pose = getPose?.();
+    if (!pose?.ready || !pose.cam || !pose.look) {
+      for (const p of pins) p.el.style.opacity = "0";
+      return;
     }
 
-    const pulse = reducedMotion ? 0 : (Math.sin(t * 2.2) + 1) * 0.5;
+    const rect = canvas.getBoundingClientRect();
+    const w = rect.width || canvas.clientWidth || 1;
+    const h = rect.height || canvas.clientHeight || 1;
+    const radius =
+      (pose.earthRadius || 150) * (MARKER_CALIBRATION.radiusScale || 1.02);
+    const spin = pose.earthSpinRad || 0;
+    const cam = pose.cam;
+    const look = pose.look;
+    const camDir = normalize(sub(cam, look));
 
-    for (const pin of pins) {
-      // World position ≈ group matrix * local
-      const v = new THREE.Vector3(pin.local.x, pin.local.y, pin.local.z);
-      v.applyMatrix4(group.matrixWorld);
+    for (const { el, dest } of pins) {
+      const local = latLngToSpherePosition(dest.lat, dest.lng, radius);
+      const world = rotateY(local, spin);
+      const outward = normalize(world);
+      // Facing: pin normal vs vector from center toward camera
+      const toCam = normalize(cam);
+      const facing = Math.max(
+        0,
+        Math.min(1, (dot(outward, toCam) - 0.02) / 0.6),
+      );
 
-      // Earth center world
-      const center = new THREE.Vector3();
-      center.setFromMatrixPosition(group.matrixWorld);
-
-      const outward = v.clone().sub(center).normalize();
-      const toCam = new THREE.Vector3(cx, cy, cz).sub(center).normalize();
-      const facing = outward.dot(toCam); // 1 = near side, -1 = far
-
-      const visible = Math.max(0, Math.min(1, (facing - 0.05) / 0.55));
-      const coreOp = 0.2 + visible * 0.75;
-      const ringOp = visible * (0.25 + pulse * 0.35);
-
-      pin.matCore.opacity = coreOp;
-      pin.matRing.opacity = ringOp;
-      pin.core.visible = visible > 0.04;
-      pin.ring.visible = visible > 0.08;
-
-      if (!reducedMotion) {
-        const s = 1 + pulse * 0.18 * visible;
-        pin.ring.scale.set(s, s, s);
+      const projected = projectToCanvas(world, cam, look, w, h);
+      if (!projected || facing < 0.05) {
+        el.style.opacity = "0";
+        el.style.visibility = "hidden";
+        continue;
       }
+
+      el.style.visibility = "visible";
+      el.style.opacity = String(0.25 + facing * 0.75);
+      el.style.left = `${projected.x}px`;
+      el.style.top = `${projected.y}px`;
+      el.style.zIndex = String(Math.round(1000 - projected.depth));
     }
   }
 
   function dispose() {
     disposed = true;
     try {
-      scene.remove(group);
+      root.remove();
     } catch {
       /* ignore */
     }
-    for (const pin of pins) {
-      try {
-        pin.core.geometry?.dispose?.();
-        pin.ring.geometry?.dispose?.();
-        pin.matCore.dispose?.();
-        pin.matRing.dispose?.();
-      } catch {
-        /* ignore */
-      }
+    if (prev === "" || prev === "static") {
+      /* leave relative — safe for marketing host */
     }
-    pins.length = 0;
   }
 
-  return { update, dispose, group, pins };
+  // Kick once so first paint isn’t empty
+  update();
+
+  return { update, dispose };
 }

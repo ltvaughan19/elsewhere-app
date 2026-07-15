@@ -1,8 +1,11 @@
 # Earth destination markers (feat/earth-destination-markers)
 
 ## What this does
-Soft glowing pins for Philippines, Thailand, Mexico on the Spline Earth hero.
-Separate Three.js meshes synced to Earth rotation — **does not** edit Earth textures/materials.
+Soft glowing **DOM pins** for Philippines, Thailand, Mexico projected from
+Earth lat/lng + spin + camera. We do **not** inject a second `three` copy into
+Spline’s scene (that often renders invisible).
+
+Still **does not** edit Earth textures/materials.
 
 ## Kill switch (instant)
 In `apps/web/.env.local` or Vercel:
