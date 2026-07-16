@@ -20,6 +20,58 @@ test("product hub loads at /start", async ({ page }) => {
   );
 });
 
+test("planner sidebar connects personal tools and destination research", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await page.goto("/app/onboarding");
+
+  const navigation = page.getByRole("navigation", {
+    name: "Elsewhere app navigation",
+  });
+  await expect(navigation).toBeVisible();
+  await expect(navigation.getByRole("link", { name: "Dashboard" })).toHaveAttribute(
+    "href",
+    "/app/dashboard",
+  );
+  await expect(navigation.getByRole("link", { name: "Countries" })).toHaveAttribute(
+    "href",
+    "/countries",
+  );
+  await expect(navigation.getByRole("link", { name: "Compare" })).toHaveAttribute(
+    "href",
+    "/compare",
+  );
+  await expect(navigation.getByRole("link", { name: "Visa Compass" })).toHaveAttribute(
+    "href",
+    "/visa-compass",
+  );
+  await expect(navigation.getByRole("link", { name: "Trust & sources" })).toHaveAttribute(
+    "href",
+    "/trust",
+  );
+});
+
+test("planner mobile navigation opens as a drawer without overflow", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/app/onboarding");
+
+  const menu = page.getByRole("button", { name: "Open navigation" });
+  await expect(menu).toBeVisible();
+  await menu.click();
+  await expect(
+    page.getByRole("button", { name: "Close navigation", expanded: true }),
+  ).toBeVisible();
+
+  const drawer = page.getByRole("dialog", { name: "Elsewhere navigation" });
+  await expect(drawer).toBeVisible();
+  await expect(drawer.getByRole("link", { name: "Countries" })).toBeVisible();
+  await expect(drawer.getByRole("link", { name: "Settings" })).toBeVisible();
+
+  const hasHorizontalOverflow = await page.evaluate(
+    () => document.documentElement.scrollWidth > window.innerWidth,
+  );
+  expect(hasHorizontalOverflow).toBe(false);
+});
+
 test("budget calculator computes runway", async ({ page }) => {
   await page.goto("/budget-calculator");
   await expect(page.getByText("Your runway")).toBeVisible();

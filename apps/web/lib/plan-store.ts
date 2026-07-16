@@ -30,6 +30,27 @@ function serializePlan(plan: UserPlan): Json {
   return JSON.parse(JSON.stringify(plan)) as Json;
 }
 
+function enrichAuthenticatedIdentity(
+  plan: UserPlan,
+  user: { email?: string | null; user_metadata?: Record<string, unknown> },
+): UserPlan {
+  const metadataName =
+    typeof user.user_metadata?.display_name === "string"
+      ? user.user_metadata.display_name.trim()
+      : "";
+  const emailName = user.email?.split("@")[0]?.trim() || "Planner";
+  const hasGuestName =
+    !plan.displayName.trim() || plan.displayName.trim().toLowerCase() === "guest";
+  const hasGuestEmail =
+    !plan.email.trim() || plan.email.trim().toLowerCase().endsWith("@elsewhere.local");
+
+  return {
+    ...plan,
+    email: hasGuestEmail ? user.email || plan.email : plan.email,
+    displayName: hasGuestName ? metadataName || emailName : plan.displayName,
+  };
+}
+
 export function loadPlan(): UserPlan | null {
   if (typeof window === "undefined") return null;
   const raw = localStorage.getItem(STORAGE_KEY);
@@ -81,14 +102,9 @@ export async function fetchCloudPlan(): Promise<UserPlan | null> {
 export async function upsertCloudPlan(plan: UserPlan): Promise<boolean> {
   const ctx = await getAuthedContext();
   if (!ctx) return false;
+  const identified = enrichAuthenticatedIdentity(plan, ctx.user);
   const stamped: UserPlan = {
-    ...plan,
-    email: plan.email || ctx.user.email || "",
-    displayName:
-      plan.displayName ||
-      (ctx.user.user_metadata?.display_name as string | undefined) ||
-      ctx.user.email?.split("@")[0] ||
-      "Planner",
+    ...identified,
     updatedAt: new Date().toISOString(),
   };
   const { error } = await ctx.supabase.from("user_plans").upsert(
@@ -113,19 +129,19 @@ export async function resolvePlan(): Promise<UserPlan | null> {
 
   const cloud = await fetchCloudPlan();
   if (cloud) {
-    savePlan(cloud);
-    return cloud;
+    const identified = enrichAuthenticatedIdentity(cloud, ctx.user);
+    if (
+      identified.displayName !== cloud.displayName ||
+      identified.email !== cloud.email
+    ) {
+      await upsertCloudPlan(identified);
+    }
+    savePlan(identified);
+    return identified;
   }
 
   if (local) {
-    const enriched: UserPlan = {
-      ...local,
-      email: local.email || ctx.user.email || local.email,
-      displayName:
-        local.displayName ||
-        (ctx.user.user_metadata?.display_name as string | undefined) ||
-        local.displayName,
-    };
+    const enriched = enrichAuthenticatedIdentity(local, ctx.user);
     if (enriched.onboardingCompleted) {
       await upsertCloudPlan(enriched);
     }

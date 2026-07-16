@@ -1,5 +1,11 @@
 # Elsewhere production foundation handoff
 
+> **Historical handoff:** This file records the pre-rollout state of the former
+> `codex/production-foundation` branch. The foundation was subsequently reviewed,
+> merged into `main`, migrated, and deployed on July 16, 2026. See
+> [`docs/plans/PRODUCTION_STATUS_AND_NEXT_BUILD.md`](../plans/PRODUCTION_STATUS_AND_NEXT_BUILD.md)
+> for the current production inventory and remaining work.
+
 **Date:** July 16, 2026  
 **Branch:** `codex/production-foundation`  
 **Status:** Pushed for review; not deployed and not applied to production data
