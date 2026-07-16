@@ -1,8 +1,11 @@
 # Elsewhere current state and builder handoff
 
-Prepared: 2026-07-16  
-Audience: Cursor, Codex, or another senior product builder  
-Canonical repository: `https://github.com/ltvaughan19/elsewhere-app`  
+Prepared: 2026-07-16
+
+Audience: Cursor, Codex, or another senior product builder
+
+Canonical repository: `https://github.com/ltvaughan19/elsewhere-app`
+
 Production site: `https://elsewhereplan.com`
 
 ## Read this first

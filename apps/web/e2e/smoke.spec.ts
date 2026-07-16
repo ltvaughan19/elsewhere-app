@@ -225,7 +225,7 @@ test("login explains the trusted-device session choice", async ({ page }) => {
     name: "Keep me signed in on this trusted device",
   });
   await expect(trustedDevice).not.toBeChecked();
-  await expect(page.getByText("Use only on a personal device.")).toBeVisible();
+  await expect(page.getByText("Elsewhere does not set a persistent sign-in cookie.")).toBeVisible();
   await trustedDevice.check();
   await expect(trustedDevice).toBeChecked();
 });

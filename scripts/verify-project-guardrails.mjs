@@ -35,6 +35,12 @@ requireText("apps/web/lib/auth/oauth.ts", '["google", "apple"]', "expected socia
 function filesUnder(directory) {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
     const path = join(directory, entry.name);
+    if (
+      entry.isDirectory() &&
+      [".next", "node_modules", "playwright-report", "test-results"].includes(entry.name)
+    ) {
+      return [];
+    }
     return entry.isDirectory() ? filesUnder(path) : [path];
   });
 }

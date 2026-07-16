@@ -1,5 +1,7 @@
 # Elsewhere — Handoff Notes (Work ↔ Home)
 
+> This 2026-07-14 record is retained for history. For the canonical current production state, completed work, authentication model, and next priorities, use [`docs/notes/2026-07-16-cursor-builder-handoff.md`](./docs/notes/2026-07-16-cursor-builder-handoff.md).
+
 **Last updated:** 2026-07-14 (work PC — Supabase live + domain)  
 **Brand:** Elsewhere (public) · product URL brand can stay Elsewhere; domain is **elsewhereplan.com**  
 **Local folder:** often still `expat-atlas`  

@@ -26,15 +26,27 @@ export function AuthSessionProvider({ children }: { children: React.ReactNode })
     if (!isSupabaseConfigured()) return;
     const supabase = createClient();
     let active = true;
+    let authoritativeEventObserved = false;
 
-    void supabase.auth.getUser().then(({ data }) => {
-      if (!active) return;
-      setUser(data.user);
-      setStatus(data.user ? "authenticated" : "anonymous");
-    });
+    void supabase.auth
+      .getUser()
+      .then(({ data }) => {
+        if (!active || authoritativeEventObserved) return;
+        setUser(data.user);
+        setStatus(data.user ? "authenticated" : "anonymous");
+      })
+      .catch(() => {
+        if (!active || authoritativeEventObserved) return;
+        setUser(null);
+        setStatus("anonymous");
+      });
 
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
       if (!active) return;
+      // INITIAL_SESSION reflects locally stored tokens. Keep the shell neutral
+      // until getUser() has verified them with Supabase.
+      if (event === "INITIAL_SESSION") return;
+      authoritativeEventObserved = true;
       setUser(session?.user ?? null);
       setStatus(session?.user ? "authenticated" : "anonymous");
     });

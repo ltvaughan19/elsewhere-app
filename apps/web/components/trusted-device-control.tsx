@@ -16,7 +16,7 @@ export function TrustedDeviceControl({ checked, onChange }: TrustedDeviceControl
         <span>Keep me signed in on this trusted device</span>
       </label>
       <p className="pl-7 text-xs leading-5 text-soft">
-        Use only on a personal device. Otherwise your session ends when the browser session closes.
+        Use only on a personal device. If left off, Elsewhere does not set a persistent sign-in cookie.
       </p>
     </div>
   );
