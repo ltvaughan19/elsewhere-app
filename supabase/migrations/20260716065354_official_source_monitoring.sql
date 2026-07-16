@@ -1717,6 +1717,7 @@ as $$
     select 1
     from public.claim_versions version
     join public.claims claim on claim.id = version.claim_id
+    join public.claim_categories category on category.id = claim.category_id
     join public.editorial_reviews review
       on review.id = target_review_id
       and review.claim_version_id = version.id
@@ -1754,9 +1755,24 @@ as $$
     ) conflict on conflict.declaration = 'no_conflict'
     where version.id = target_claim_version_id
       and target_not_before is not null
-      and assignment.assigned_at >= target_not_before
-      and assignment.completed_at >= target_not_before
-      and review.created_at >= target_not_before
+      and assignment.assigned_at >= greatest(
+        target_not_before,
+        version.updated_at,
+        claim.updated_at,
+        category.updated_at
+      )
+      and assignment.completed_at >= greatest(
+        target_not_before,
+        version.updated_at,
+        claim.updated_at,
+        category.updated_at
+      )
+      and review.created_at >= greatest(
+        target_not_before,
+        version.updated_at,
+        claim.updated_at,
+        category.updated_at
+      )
       and credential.status = 'verified'
       and verification.review_due_at > now()
       and (verification.valid_from is null or verification.valid_from <= current_date)
@@ -1769,6 +1785,18 @@ as $$
       and review.created_at >= verification.verified_at
       and review.reviewer_id is distinct from version.authored_by
       and review.reviewer_id is distinct from claim.created_by
+      and not exists (
+        select 1
+        from public.professional_review_assignments prior_assignment
+        join public.claim_versions prior_version
+          on prior_version.id = prior_assignment.claim_version_id
+        join public.professional_review_conflicts prior_conflict
+          on prior_conflict.assignment_id = prior_assignment.id
+          and prior_conflict.reviewer_user_id = prior_assignment.reviewer_user_id
+          and prior_conflict.declaration in ('disclosed', 'recused')
+        where prior_version.claim_id = claim.id
+          and prior_assignment.reviewer_user_id = assignment.reviewer_user_id
+      )
       and claim.category_id = any(verification.category_scope_ids)
       and claim.country_id = any(verification.country_scope_ids)
       and exists (
@@ -1783,7 +1811,8 @@ as $$
           and exists (
             select 1
             from public.editorial_reviews evidence_review
-            where evidence_review.source_document_id = evidence_source.id
+            where evidence_review.id = verification.verification_source_review_id
+              and evidence_review.source_document_id = evidence_source.id
               and evidence_review.reviewed_snapshot_id = evidence_snapshot.id
               and evidence_review.review_kind = 'source_verification'
               and evidence_review.decision = 'approved'
