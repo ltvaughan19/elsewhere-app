@@ -624,6 +624,9 @@ export type Database = {
           decision: Database["public"]["Enums"]["editorial_review_decision"]
           id: string
           notes: string | null
+          professional_assignment_id: string | null
+          professional_credential_snapshot: Json | null
+          professional_credential_verification_id: string | null
           release_id: string | null
           review_kind: Database["public"]["Enums"]["editorial_review_kind"]
           reviewed_snapshot_id: string | null
@@ -638,6 +641,9 @@ export type Database = {
           decision: Database["public"]["Enums"]["editorial_review_decision"]
           id?: string
           notes?: string | null
+          professional_assignment_id?: string | null
+          professional_credential_snapshot?: Json | null
+          professional_credential_verification_id?: string | null
           release_id?: string | null
           review_kind: Database["public"]["Enums"]["editorial_review_kind"]
           reviewed_snapshot_id?: string | null
@@ -652,6 +658,9 @@ export type Database = {
           decision?: Database["public"]["Enums"]["editorial_review_decision"]
           id?: string
           notes?: string | null
+          professional_assignment_id?: string | null
+          professional_credential_snapshot?: Json | null
+          professional_credential_verification_id?: string | null
           release_id?: string | null
           review_kind?: Database["public"]["Enums"]["editorial_review_kind"]
           reviewed_snapshot_id?: string | null
@@ -659,6 +668,23 @@ export type Database = {
           source_document_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "editorial_professional_review_matches_assignment"
+            columns: [
+              "professional_assignment_id",
+              "claim_version_id",
+              "reviewer_id",
+              "professional_credential_verification_id",
+            ]
+            isOneToOne: false
+            referencedRelation: "professional_review_assignments"
+            referencedColumns: [
+              "id",
+              "claim_version_id",
+              "reviewer_user_id",
+              "credential_verification_id",
+            ]
+          },
           {
             foreignKeyName: "editorial_reviews_claim_version_id_fkey"
             columns: ["claim_version_id"]
@@ -686,6 +712,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "published_country_blocks"
             referencedColumns: ["content_block_version_id"]
+          },
+          {
+            foreignKeyName: "editorial_reviews_professional_assignment_id_fkey"
+            columns: ["professional_assignment_id"]
+            isOneToOne: false
+            referencedRelation: "professional_review_assignments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "editorial_reviews_professional_credential_verification_id_fkey"
+            columns: ["professional_credential_verification_id"]
+            isOneToOne: false
+            referencedRelation: "professional_credential_verifications"
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "editorial_reviews_release_id_fkey"
@@ -926,6 +966,461 @@ export type Database = {
           },
         ]
       }
+      professional_credential_category_scopes: {
+        Row: {
+          category_id: string
+          created_at: string
+          credential_id: string
+        }
+        Insert: {
+          category_id: string
+          created_at?: string
+          credential_id: string
+        }
+        Update: {
+          category_id?: string
+          created_at?: string
+          credential_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_credential_category_scopes_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "claim_categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "professional_credential_category_scopes_credential_id_fkey"
+            columns: ["credential_id"]
+            isOneToOne: false
+            referencedRelation: "professional_credentials"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      professional_credential_country_scopes: {
+        Row: {
+          country_id: string
+          created_at: string
+          credential_id: string
+        }
+        Insert: {
+          country_id: string
+          created_at?: string
+          credential_id: string
+        }
+        Update: {
+          country_id?: string
+          created_at?: string
+          credential_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_credential_country_scopes_country_id_fkey"
+            columns: ["country_id"]
+            isOneToOne: false
+            referencedRelation: "countries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "professional_credential_country_scopes_country_id_fkey"
+            columns: ["country_id"]
+            isOneToOne: false
+            referencedRelation: "published_country_portals"
+            referencedColumns: ["country_id"]
+          },
+          {
+            foreignKeyName: "professional_credential_country_scopes_credential_id_fkey"
+            columns: ["credential_id"]
+            isOneToOne: false
+            referencedRelation: "professional_credentials"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      professional_credential_verifications: {
+        Row: {
+          category_scope_ids: string[]
+          country_scope_ids: string[]
+          created_at: string
+          credential_id: string
+          expires_on: string | null
+          id: string
+          issuer_attests_no_expiry: boolean
+          review_due_at: string
+          reviewer_user_id: string
+          valid_from: string | null
+          verification_source_document_id: string
+          verification_source_review_id: string
+          verification_source_snapshot_id: string
+          verified_at: string
+          verified_by: string
+        }
+        Insert: {
+          category_scope_ids: string[]
+          country_scope_ids: string[]
+          created_at?: string
+          credential_id: string
+          expires_on?: string | null
+          id?: string
+          issuer_attests_no_expiry: boolean
+          review_due_at: string
+          reviewer_user_id: string
+          valid_from?: string | null
+          verification_source_document_id: string
+          verification_source_review_id: string
+          verification_source_snapshot_id: string
+          verified_at?: string
+          verified_by: string
+        }
+        Update: {
+          category_scope_ids?: string[]
+          country_scope_ids?: string[]
+          created_at?: string
+          credential_id?: string
+          expires_on?: string | null
+          id?: string
+          issuer_attests_no_expiry?: boolean
+          review_due_at?: string
+          reviewer_user_id?: string
+          valid_from?: string | null
+          verification_source_document_id?: string
+          verification_source_review_id?: string
+          verification_source_snapshot_id?: string
+          verified_at?: string
+          verified_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_credential_verif_credential_id_reviewer_user__fkey"
+            columns: ["credential_id", "reviewer_user_id"]
+            isOneToOne: false
+            referencedRelation: "professional_credentials"
+            referencedColumns: ["id", "reviewer_user_id"]
+          },
+          {
+            foreignKeyName: "professional_credential_verif_verification_source_review_i_fkey"
+            columns: ["verification_source_review_id"]
+            isOneToOne: false
+            referencedRelation: "editorial_reviews"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "professional_credential_verif_verification_source_snapshot_fkey"
+            columns: [
+              "verification_source_snapshot_id",
+              "verification_source_document_id",
+            ]
+            isOneToOne: false
+            referencedRelation: "source_snapshots"
+            referencedColumns: ["id", "source_document_id"]
+          },
+        ]
+      }
+      professional_credentials: {
+        Row: {
+          created_at: string
+          credential_kind: string
+          current_verification_id: string | null
+          expires_on: string | null
+          id: string
+          issuer_attests_no_expiry: boolean
+          issuing_authority: string
+          jurisdiction_country_id: string | null
+          jurisdiction_region: string | null
+          public_label: string
+          registry_url: string | null
+          review_due_at: string | null
+          reviewer_user_id: string
+          specialty: string
+          status: Database["public"]["Enums"]["professional_credential_status"]
+          status_reason: string | null
+          updated_at: string
+          valid_from: string | null
+          verification_source_document_id: string | null
+          verification_source_snapshot_id: string | null
+          verified_at: string | null
+          verified_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          credential_kind: string
+          current_verification_id?: string | null
+          expires_on?: string | null
+          id?: string
+          issuer_attests_no_expiry?: boolean
+          issuing_authority: string
+          jurisdiction_country_id?: string | null
+          jurisdiction_region?: string | null
+          public_label: string
+          registry_url?: string | null
+          review_due_at?: string | null
+          reviewer_user_id: string
+          specialty: string
+          status?: Database["public"]["Enums"]["professional_credential_status"]
+          status_reason?: string | null
+          updated_at?: string
+          valid_from?: string | null
+          verification_source_document_id?: string | null
+          verification_source_snapshot_id?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          credential_kind?: string
+          current_verification_id?: string | null
+          expires_on?: string | null
+          id?: string
+          issuer_attests_no_expiry?: boolean
+          issuing_authority?: string
+          jurisdiction_country_id?: string | null
+          jurisdiction_region?: string | null
+          public_label?: string
+          registry_url?: string | null
+          review_due_at?: string | null
+          reviewer_user_id?: string
+          specialty?: string
+          status?: Database["public"]["Enums"]["professional_credential_status"]
+          status_reason?: string | null
+          updated_at?: string
+          valid_from?: string | null
+          verification_source_document_id?: string | null
+          verification_source_snapshot_id?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_credentials_current_verification_fk"
+            columns: ["current_verification_id", "id", "reviewer_user_id"]
+            isOneToOne: false
+            referencedRelation: "professional_credential_verifications"
+            referencedColumns: ["id", "credential_id", "reviewer_user_id"]
+          },
+          {
+            foreignKeyName: "professional_credentials_evidence_identity_fk"
+            columns: [
+              "verification_source_snapshot_id",
+              "verification_source_document_id",
+            ]
+            isOneToOne: false
+            referencedRelation: "source_snapshots"
+            referencedColumns: ["id", "source_document_id"]
+          },
+          {
+            foreignKeyName: "professional_credentials_jurisdiction_country_id_fkey"
+            columns: ["jurisdiction_country_id"]
+            isOneToOne: false
+            referencedRelation: "countries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "professional_credentials_jurisdiction_country_id_fkey"
+            columns: ["jurisdiction_country_id"]
+            isOneToOne: false
+            referencedRelation: "published_country_portals"
+            referencedColumns: ["country_id"]
+          },
+          {
+            foreignKeyName: "professional_credentials_reviewer_user_id_fkey"
+            columns: ["reviewer_user_id"]
+            isOneToOne: false
+            referencedRelation: "professional_reviewer_profiles"
+            referencedColumns: ["user_id"]
+          },
+          {
+            foreignKeyName: "professional_credentials_verification_source_document_id_fkey"
+            columns: ["verification_source_document_id"]
+            isOneToOne: false
+            referencedRelation: "source_documents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "professional_credentials_verification_source_snapshot_id_fkey"
+            columns: ["verification_source_snapshot_id"]
+            isOneToOne: false
+            referencedRelation: "source_snapshots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      professional_review_assignments: {
+        Row: {
+          assigned_at: string
+          assigned_by: string
+          assignment_notes: string | null
+          cancellation_reason: string | null
+          cancelled_at: string | null
+          claim_version_id: string
+          completed_at: string | null
+          created_at: string
+          credential_id: string
+          credential_verification_id: string
+          due_at: string | null
+          id: string
+          reviewer_user_id: string
+          status: Database["public"]["Enums"]["professional_assignment_status"]
+          updated_at: string
+        }
+        Insert: {
+          assigned_at?: string
+          assigned_by: string
+          assignment_notes?: string | null
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          claim_version_id: string
+          completed_at?: string | null
+          created_at?: string
+          credential_id: string
+          credential_verification_id: string
+          due_at?: string | null
+          id?: string
+          reviewer_user_id: string
+          status?: Database["public"]["Enums"]["professional_assignment_status"]
+          updated_at?: string
+        }
+        Update: {
+          assigned_at?: string
+          assigned_by?: string
+          assignment_notes?: string | null
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          claim_version_id?: string
+          completed_at?: string | null
+          created_at?: string
+          credential_id?: string
+          credential_verification_id?: string
+          due_at?: string | null
+          id?: string
+          reviewer_user_id?: string
+          status?: Database["public"]["Enums"]["professional_assignment_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_review_assignmen_credential_id_reviewer_user__fkey"
+            columns: ["credential_id", "reviewer_user_id"]
+            isOneToOne: false
+            referencedRelation: "professional_credentials"
+            referencedColumns: ["id", "reviewer_user_id"]
+          },
+          {
+            foreignKeyName: "professional_review_assignmen_credential_verification_id_c_fkey"
+            columns: [
+              "credential_verification_id",
+              "credential_id",
+              "reviewer_user_id",
+            ]
+            isOneToOne: false
+            referencedRelation: "professional_credential_verifications"
+            referencedColumns: ["id", "credential_id", "reviewer_user_id"]
+          },
+          {
+            foreignKeyName: "professional_review_assignments_claim_version_id_fkey"
+            columns: ["claim_version_id"]
+            isOneToOne: false
+            referencedRelation: "claim_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "professional_review_assignments_claim_version_id_fkey"
+            columns: ["claim_version_id"]
+            isOneToOne: false
+            referencedRelation: "published_country_claims"
+            referencedColumns: ["claim_version_id"]
+          },
+        ]
+      }
+      professional_review_conflicts: {
+        Row: {
+          assignment_id: string
+          declaration: Database["public"]["Enums"]["professional_conflict_declaration"]
+          declared_at: string
+          disclosure: string | null
+          id: string
+          reviewer_user_id: string
+        }
+        Insert: {
+          assignment_id: string
+          declaration: Database["public"]["Enums"]["professional_conflict_declaration"]
+          declared_at?: string
+          disclosure?: string | null
+          id?: string
+          reviewer_user_id: string
+        }
+        Update: {
+          assignment_id?: string
+          declaration?: Database["public"]["Enums"]["professional_conflict_declaration"]
+          declared_at?: string
+          disclosure?: string | null
+          id?: string
+          reviewer_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "professional_conflicts_match_assignment_reviewer"
+            columns: ["assignment_id", "reviewer_user_id"]
+            isOneToOne: false
+            referencedRelation: "professional_review_assignments"
+            referencedColumns: ["id", "reviewer_user_id"]
+          },
+          {
+            foreignKeyName: "professional_review_conflicts_assignment_id_fkey"
+            columns: ["assignment_id"]
+            isOneToOne: false
+            referencedRelation: "professional_review_assignments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "professional_review_conflicts_reviewer_user_id_fkey"
+            columns: ["reviewer_user_id"]
+            isOneToOne: false
+            referencedRelation: "professional_reviewer_profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
+      professional_reviewer_profiles: {
+        Row: {
+          activated_at: string | null
+          activated_by: string | null
+          active: boolean
+          attribution_consent: boolean
+          created_at: string
+          display_name: string
+          organization: string | null
+          public_bio: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          activated_at?: string | null
+          activated_by?: string | null
+          active?: boolean
+          attribution_consent?: boolean
+          created_at?: string
+          display_name: string
+          organization?: string | null
+          public_bio?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          activated_at?: string | null
+          activated_by?: string | null
+          active?: boolean
+          attribution_consent?: boolean
+          created_at?: string
+          display_name?: string
+          organization?: string | null
+          public_bio?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -1135,6 +1630,146 @@ export type Database = {
           },
         ]
       }
+      source_change_claim_impact_reviews: {
+        Row: {
+          checklist: Json
+          created_at: string
+          decision: Database["public"]["Enums"]["editorial_review_decision"]
+          id: string
+          notes: string
+          professional_review_id: string | null
+          reviewer_id: string
+          source_change_claim_impact_id: string
+          source_verification_review_id: string | null
+        }
+        Insert: {
+          checklist?: Json
+          created_at?: string
+          decision: Database["public"]["Enums"]["editorial_review_decision"]
+          id?: string
+          notes: string
+          professional_review_id?: string | null
+          reviewer_id: string
+          source_change_claim_impact_id: string
+          source_verification_review_id?: string | null
+        }
+        Update: {
+          checklist?: Json
+          created_at?: string
+          decision?: Database["public"]["Enums"]["editorial_review_decision"]
+          id?: string
+          notes?: string
+          professional_review_id?: string | null
+          reviewer_id?: string
+          source_change_claim_impact_id?: string
+          source_verification_review_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "source_change_claim_impact_re_source_change_claim_impact_i_fkey"
+            columns: ["source_change_claim_impact_id"]
+            isOneToOne: false
+            referencedRelation: "source_change_claim_impacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "source_change_claim_impact_re_source_verification_review_i_fkey"
+            columns: ["source_verification_review_id"]
+            isOneToOne: false
+            referencedRelation: "editorial_reviews"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "source_change_claim_impact_reviews_professional_review_id_fkey"
+            columns: ["professional_review_id"]
+            isOneToOne: false
+            referencedRelation: "editorial_reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      source_change_claim_impacts: {
+        Row: {
+          change_kind: Database["public"]["Enums"]["source_monitor_job_status"]
+          citation_ids: string[]
+          cited_snapshot_ids: string[]
+          claim_version_id: string
+          created_at: string
+          current_content_type: string
+          current_final_url: string
+          current_normalization_algorithm_version: string
+          current_semantic_hash: string
+          detected_at: string
+          id: string
+          previous_content_type: string | null
+          previous_final_url: string | null
+          previous_normalization_algorithm_version: string | null
+          previous_semantic_hash: string | null
+          source_document_id: string
+          source_monitor_job_id: string
+        }
+        Insert: {
+          change_kind: Database["public"]["Enums"]["source_monitor_job_status"]
+          citation_ids: string[]
+          cited_snapshot_ids?: string[]
+          claim_version_id: string
+          created_at?: string
+          current_content_type: string
+          current_final_url: string
+          current_normalization_algorithm_version: string
+          current_semantic_hash: string
+          detected_at: string
+          id?: string
+          previous_content_type?: string | null
+          previous_final_url?: string | null
+          previous_normalization_algorithm_version?: string | null
+          previous_semantic_hash?: string | null
+          source_document_id: string
+          source_monitor_job_id: string
+        }
+        Update: {
+          change_kind?: Database["public"]["Enums"]["source_monitor_job_status"]
+          citation_ids?: string[]
+          cited_snapshot_ids?: string[]
+          claim_version_id?: string
+          created_at?: string
+          current_content_type?: string
+          current_final_url?: string
+          current_normalization_algorithm_version?: string
+          current_semantic_hash?: string
+          detected_at?: string
+          id?: string
+          previous_content_type?: string | null
+          previous_final_url?: string | null
+          previous_normalization_algorithm_version?: string | null
+          previous_semantic_hash?: string | null
+          source_document_id?: string
+          source_monitor_job_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "source_change_claim_impacts_claim_version_id_fkey"
+            columns: ["claim_version_id"]
+            isOneToOne: false
+            referencedRelation: "claim_versions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "source_change_claim_impacts_claim_version_id_fkey"
+            columns: ["claim_version_id"]
+            isOneToOne: false
+            referencedRelation: "published_country_claims"
+            referencedColumns: ["claim_version_id"]
+          },
+          {
+            foreignKeyName: "source_change_claim_impacts_source_monitor_job_id_source_d_fkey"
+            columns: ["source_monitor_job_id", "source_document_id"]
+            isOneToOne: false
+            referencedRelation: "source_monitor_jobs"
+            referencedColumns: ["id", "source_document_id"]
+          },
+        ]
+      }
       source_documents: {
         Row: {
           authority_level: Database["public"]["Enums"]["source_authority_level"]
@@ -1207,6 +1842,261 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "published_country_portals"
             referencedColumns: ["country_id"]
+          },
+        ]
+      }
+      source_monitor_jobs: {
+        Row: {
+          attempt_count: number
+          completed_at: string | null
+          completion_token: string | null
+          configuration_version: number
+          content_length_bytes: number | null
+          content_type: string | null
+          created_at: string
+          current_normalization_algorithm_version: string | null
+          current_raw_hash: string | null
+          current_semantic_hash: string | null
+          error_code: string | null
+          error_detail: string | null
+          etag: string | null
+          final_url: string | null
+          http_status: number | null
+          id: string
+          last_modified_header: string | null
+          lease_expires_at: string | null
+          lease_token: string | null
+          previous_content_length_bytes: number | null
+          previous_content_type: string | null
+          previous_etag: string | null
+          previous_final_url: string | null
+          previous_last_modified_header: string | null
+          previous_normalization_algorithm_version: string | null
+          previous_raw_hash: string | null
+          previous_semantic_hash: string | null
+          resolution:
+            | Database["public"]["Enums"]["source_monitor_resolution"]
+            | null
+          resolution_note: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          scheduled_for: string
+          source_document_id: string
+          started_at: string | null
+          status: Database["public"]["Enums"]["source_monitor_job_status"]
+          updated_at: string
+          validator_etag_sent: boolean
+          validator_last_modified_sent: boolean
+        }
+        Insert: {
+          attempt_count?: number
+          completed_at?: string | null
+          completion_token?: string | null
+          configuration_version: number
+          content_length_bytes?: number | null
+          content_type?: string | null
+          created_at?: string
+          current_normalization_algorithm_version?: string | null
+          current_raw_hash?: string | null
+          current_semantic_hash?: string | null
+          error_code?: string | null
+          error_detail?: string | null
+          etag?: string | null
+          final_url?: string | null
+          http_status?: number | null
+          id?: string
+          last_modified_header?: string | null
+          lease_expires_at?: string | null
+          lease_token?: string | null
+          previous_content_length_bytes?: number | null
+          previous_content_type?: string | null
+          previous_etag?: string | null
+          previous_final_url?: string | null
+          previous_last_modified_header?: string | null
+          previous_normalization_algorithm_version?: string | null
+          previous_raw_hash?: string | null
+          previous_semantic_hash?: string | null
+          resolution?:
+            | Database["public"]["Enums"]["source_monitor_resolution"]
+            | null
+          resolution_note?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          scheduled_for?: string
+          source_document_id: string
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["source_monitor_job_status"]
+          updated_at?: string
+          validator_etag_sent?: boolean
+          validator_last_modified_sent?: boolean
+        }
+        Update: {
+          attempt_count?: number
+          completed_at?: string | null
+          completion_token?: string | null
+          configuration_version?: number
+          content_length_bytes?: number | null
+          content_type?: string | null
+          created_at?: string
+          current_normalization_algorithm_version?: string | null
+          current_raw_hash?: string | null
+          current_semantic_hash?: string | null
+          error_code?: string | null
+          error_detail?: string | null
+          etag?: string | null
+          final_url?: string | null
+          http_status?: number | null
+          id?: string
+          last_modified_header?: string | null
+          lease_expires_at?: string | null
+          lease_token?: string | null
+          previous_content_length_bytes?: number | null
+          previous_content_type?: string | null
+          previous_etag?: string | null
+          previous_final_url?: string | null
+          previous_last_modified_header?: string | null
+          previous_normalization_algorithm_version?: string | null
+          previous_raw_hash?: string | null
+          previous_semantic_hash?: string | null
+          resolution?:
+            | Database["public"]["Enums"]["source_monitor_resolution"]
+            | null
+          resolution_note?: string | null
+          resolved_at?: string | null
+          resolved_by?: string | null
+          scheduled_for?: string
+          source_document_id?: string
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["source_monitor_job_status"]
+          updated_at?: string
+          validator_etag_sent?: boolean
+          validator_last_modified_sent?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "source_monitor_jobs_source_document_id_fkey"
+            columns: ["source_document_id"]
+            isOneToOne: false
+            referencedRelation: "source_documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      source_monitor_origins: {
+        Row: {
+          active: boolean
+          approved_at: string
+          approved_by: string
+          configuration_version: number
+          created_at: string
+          hostname: string
+          id: string
+          source_document_id: string
+        }
+        Insert: {
+          active?: boolean
+          approved_at?: string
+          approved_by: string
+          configuration_version: number
+          created_at?: string
+          hostname: string
+          id?: string
+          source_document_id: string
+        }
+        Update: {
+          active?: boolean
+          approved_at?: string
+          approved_by?: string
+          configuration_version?: number
+          created_at?: string
+          hostname?: string
+          id?: string
+          source_document_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "source_monitor_origins_source_document_id_fkey"
+            columns: ["source_document_id"]
+            isOneToOne: false
+            referencedRelation: "source_documents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      source_monitor_state: {
+        Row: {
+          configuration_version: number
+          configured_at: string
+          configured_by: string | null
+          consecutive_failures: number
+          evidence_changed_at: string | null
+          failure_review_required_at: string | null
+          last_content_length_bytes: number | null
+          last_content_type: string | null
+          last_etag: string | null
+          last_final_url: string | null
+          last_modified_header: string | null
+          last_raw_hash: string | null
+          last_semantic_hash: string | null
+          last_success_at: string | null
+          monitor_frequency_hours: number
+          monitoring_enabled: boolean
+          next_monitor_at: string | null
+          normalization_algorithm_version: string | null
+          source_document_id: string
+          updated_at: string
+        }
+        Insert: {
+          configuration_version?: number
+          configured_at?: string
+          configured_by?: string | null
+          consecutive_failures?: number
+          evidence_changed_at?: string | null
+          failure_review_required_at?: string | null
+          last_content_length_bytes?: number | null
+          last_content_type?: string | null
+          last_etag?: string | null
+          last_final_url?: string | null
+          last_modified_header?: string | null
+          last_raw_hash?: string | null
+          last_semantic_hash?: string | null
+          last_success_at?: string | null
+          monitor_frequency_hours?: number
+          monitoring_enabled?: boolean
+          next_monitor_at?: string | null
+          normalization_algorithm_version?: string | null
+          source_document_id: string
+          updated_at?: string
+        }
+        Update: {
+          configuration_version?: number
+          configured_at?: string
+          configured_by?: string | null
+          consecutive_failures?: number
+          evidence_changed_at?: string | null
+          failure_review_required_at?: string | null
+          last_content_length_bytes?: number | null
+          last_content_type?: string | null
+          last_etag?: string | null
+          last_final_url?: string | null
+          last_modified_header?: string | null
+          last_raw_hash?: string | null
+          last_semantic_hash?: string | null
+          last_success_at?: string | null
+          monitor_frequency_hours?: number
+          monitoring_enabled?: boolean
+          next_monitor_at?: string | null
+          normalization_algorithm_version?: string | null
+          source_document_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "source_monitor_state_source_document_id_fkey"
+            columns: ["source_document_id"]
+            isOneToOne: true
+            referencedRelation: "source_documents"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -1380,6 +2270,186 @@ export type Database = {
       }
     }
     Functions: {
+      assign_professional_review: {
+        Args: {
+          target_assignment_notes?: string
+          target_claim_version_id: string
+          target_credential_id: string
+          target_due_at?: string
+        }
+        Returns: {
+          assigned_at: string
+          assigned_by: string
+          assignment_notes: string | null
+          cancellation_reason: string | null
+          cancelled_at: string | null
+          claim_version_id: string
+          completed_at: string | null
+          created_at: string
+          credential_id: string
+          credential_verification_id: string
+          due_at: string | null
+          id: string
+          reviewer_user_id: string
+          status: Database["public"]["Enums"]["professional_assignment_status"]
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "professional_review_assignments"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      cancel_professional_review_assignment: {
+        Args: { target_assignment_id: string; target_reason: string }
+        Returns: {
+          assigned_at: string
+          assigned_by: string
+          assignment_notes: string | null
+          cancellation_reason: string | null
+          cancelled_at: string | null
+          claim_version_id: string
+          completed_at: string | null
+          created_at: string
+          credential_id: string
+          credential_verification_id: string
+          due_at: string | null
+          id: string
+          reviewer_user_id: string
+          status: Database["public"]["Enums"]["professional_assignment_status"]
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "professional_review_assignments"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      claim_source_monitor_jobs: {
+        Args: { target_batch_size?: number }
+        Returns: {
+          approved_hostnames: string[]
+          canonical_url: string
+          configuration_version: number
+          job_id: string
+          lease_token: string
+          previous_content_length_bytes: number
+          previous_content_type: string
+          previous_etag: string
+          previous_final_url: string
+          previous_last_modified: string
+          previous_normalization_algorithm_version: string
+          previous_raw_hash: string
+          previous_semantic_hash: string
+          source_document_id: string
+        }[]
+      }
+      complete_source_monitor_job: {
+        Args: {
+          target_content_length_bytes?: number
+          target_content_type?: string
+          target_current_raw_hash?: string
+          target_current_semantic_hash?: string
+          target_error_code?: string
+          target_error_detail?: string
+          target_etag?: string
+          target_final_url?: string
+          target_http_status?: number
+          target_job_id: string
+          target_last_modified_header?: string
+          target_lease_token: string
+          target_normalization_algorithm_version?: string
+          target_status: Database["public"]["Enums"]["source_monitor_job_status"]
+          target_validator_etag_sent?: boolean
+          target_validator_last_modified_sent?: boolean
+        }
+        Returns: {
+          attempt_count: number
+          completed_at: string | null
+          completion_token: string | null
+          configuration_version: number
+          content_length_bytes: number | null
+          content_type: string | null
+          created_at: string
+          current_normalization_algorithm_version: string | null
+          current_raw_hash: string | null
+          current_semantic_hash: string | null
+          error_code: string | null
+          error_detail: string | null
+          etag: string | null
+          final_url: string | null
+          http_status: number | null
+          id: string
+          last_modified_header: string | null
+          lease_expires_at: string | null
+          lease_token: string | null
+          previous_content_length_bytes: number | null
+          previous_content_type: string | null
+          previous_etag: string | null
+          previous_final_url: string | null
+          previous_last_modified_header: string | null
+          previous_normalization_algorithm_version: string | null
+          previous_raw_hash: string | null
+          previous_semantic_hash: string | null
+          resolution:
+            | Database["public"]["Enums"]["source_monitor_resolution"]
+            | null
+          resolution_note: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          scheduled_for: string
+          source_document_id: string
+          started_at: string | null
+          status: Database["public"]["Enums"]["source_monitor_job_status"]
+          updated_at: string
+          validator_etag_sent: boolean
+          validator_last_modified_sent: boolean
+        }
+        SetofOptions: {
+          from: "*"
+          to: "source_monitor_jobs"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      configure_source_monitoring: {
+        Args: {
+          target_approved_hostnames: string[]
+          target_enabled: boolean
+          target_frequency_hours: number
+          target_source_document_id: string
+        }
+        Returns: {
+          configuration_version: number
+          configured_at: string
+          configured_by: string | null
+          consecutive_failures: number
+          evidence_changed_at: string | null
+          failure_review_required_at: string | null
+          last_content_length_bytes: number | null
+          last_content_type: string | null
+          last_etag: string | null
+          last_final_url: string | null
+          last_modified_header: string | null
+          last_raw_hash: string | null
+          last_semantic_hash: string | null
+          last_success_at: string | null
+          monitor_frequency_hours: number
+          monitoring_enabled: boolean
+          next_monitor_at: string | null
+          normalization_algorithm_version: string | null
+          source_document_id: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "source_monitor_state"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       create_claim_draft_atomic: {
         Args: {
           citation_evidence_excerpt: string | null
@@ -1421,6 +2491,27 @@ export type Database = {
         Args: { target_country_id: string; target_release_notes: string }
         Returns: string
       }
+      declare_professional_review_conflict: {
+        Args: {
+          target_assignment_id: string
+          target_declaration: Database["public"]["Enums"]["professional_conflict_declaration"]
+          target_disclosure?: string
+        }
+        Returns: {
+          assignment_id: string
+          declaration: Database["public"]["Enums"]["professional_conflict_declaration"]
+          declared_at: string
+          disclosure: string | null
+          id: string
+          reviewer_user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "professional_review_conflicts"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       emergency_suppress_claim: {
         Args: { suppression_reason: string; target_claim_id: string }
         Returns: undefined
@@ -1443,6 +2534,110 @@ export type Database = {
         SetofOptions: {
           from: "*"
           to: "country_releases"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      register_professional_reviewer_profile: {
+        Args: {
+          profile_attribution_consent?: boolean
+          profile_display_name: string
+          profile_organization?: string
+          profile_public_bio?: string
+        }
+        Returns: {
+          activated_at: string | null
+          activated_by: string | null
+          active: boolean
+          attribution_consent: boolean
+          created_at: string
+          display_name: string
+          organization: string | null
+          public_bio: string | null
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "professional_reviewer_profiles"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      relax_claim_professional_review_requirement: {
+        Args: { change_reason: string; target_claim_id: string }
+        Returns: {
+          category_id: string
+          claim_slug: string
+          country_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          portal_section_id: string | null
+          requires_professional_review: boolean
+          risk_level: Database["public"]["Enums"]["claim_risk_level"]
+          suppressed_at: string | null
+          suppressed_reason: string | null
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "claims"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      resolve_source_monitor_job: {
+        Args: {
+          target_job_id: string
+          target_resolution: Database["public"]["Enums"]["source_monitor_resolution"]
+          target_resolution_note: string
+        }
+        Returns: {
+          attempt_count: number
+          completed_at: string | null
+          completion_token: string | null
+          configuration_version: number
+          content_length_bytes: number | null
+          content_type: string | null
+          created_at: string
+          current_normalization_algorithm_version: string | null
+          current_raw_hash: string | null
+          current_semantic_hash: string | null
+          error_code: string | null
+          error_detail: string | null
+          etag: string | null
+          final_url: string | null
+          http_status: number | null
+          id: string
+          last_modified_header: string | null
+          lease_expires_at: string | null
+          lease_token: string | null
+          previous_content_length_bytes: number | null
+          previous_content_type: string | null
+          previous_etag: string | null
+          previous_final_url: string | null
+          previous_last_modified_header: string | null
+          previous_normalization_algorithm_version: string | null
+          previous_raw_hash: string | null
+          previous_semantic_hash: string | null
+          resolution:
+            | Database["public"]["Enums"]["source_monitor_resolution"]
+            | null
+          resolution_note: string | null
+          resolved_at: string | null
+          resolved_by: string | null
+          scheduled_for: string
+          source_document_id: string
+          started_at: string | null
+          status: Database["public"]["Enums"]["source_monitor_job_status"]
+          updated_at: string
+          validator_etag_sent: boolean
+          validator_last_modified_sent: boolean
+        }
+        SetofOptions: {
+          from: "*"
+          to: "source_monitor_jobs"
           isOneToOne: true
           isSetofReturn: false
         }
@@ -1474,6 +2669,26 @@ export type Database = {
         }
         Returns: string
       }
+      review_professional_assignment: {
+        Args: {
+          review_checklist?: Json
+          review_decision: Database["public"]["Enums"]["editorial_review_decision"]
+          review_notes?: string
+          target_assignment_id: string
+        }
+        Returns: string
+      }
+      review_source_change_claim_impact: {
+        Args: {
+          review_checklist?: Json
+          review_decision: Database["public"]["Enums"]["editorial_review_decision"]
+          review_notes?: string
+          target_impact_id: string
+          target_professional_review_id?: string
+          target_source_verification_review_id?: string
+        }
+        Returns: string
+      }
       review_source_document: {
         Args: {
           review_checklist?: Json
@@ -1482,6 +2697,175 @@ export type Database = {
           target_source_document_id: string
         }
         Returns: string
+      }
+      set_claim_category_trust_requirements: {
+        Args: {
+          change_reason: string
+          target_category_id: string
+          target_requires_official_source: boolean
+          target_requires_professional_review: boolean
+        }
+        Returns: {
+          created_at: string
+          default_risk_level: Database["public"]["Enums"]["claim_risk_level"]
+          id: string
+          is_active: boolean
+          name: string
+          portal_section_slug: string
+          requires_official_source: boolean
+          requires_professional_review: boolean
+          review_interval_days: number
+          slug: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "claim_categories"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      set_professional_credential_status: {
+        Args: {
+          target_credential_id: string
+          target_reason: string
+          target_status: Database["public"]["Enums"]["professional_credential_status"]
+        }
+        Returns: {
+          created_at: string
+          credential_kind: string
+          current_verification_id: string | null
+          expires_on: string | null
+          id: string
+          issuer_attests_no_expiry: boolean
+          issuing_authority: string
+          jurisdiction_country_id: string | null
+          jurisdiction_region: string | null
+          public_label: string
+          registry_url: string | null
+          review_due_at: string | null
+          reviewer_user_id: string
+          specialty: string
+          status: Database["public"]["Enums"]["professional_credential_status"]
+          status_reason: string | null
+          updated_at: string
+          valid_from: string | null
+          verification_source_document_id: string | null
+          verification_source_snapshot_id: string | null
+          verified_at: string | null
+          verified_by: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "professional_credentials"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      set_professional_reviewer_active: {
+        Args: { target_active: boolean; target_reviewer_user_id: string }
+        Returns: {
+          activated_at: string | null
+          activated_by: string | null
+          active: boolean
+          attribution_consent: boolean
+          created_at: string
+          display_name: string
+          organization: string | null
+          public_bio: string | null
+          updated_at: string
+          user_id: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "professional_reviewer_profiles"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      submit_professional_credential: {
+        Args: {
+          credential_kind_input: string
+          issuing_authority_input: string
+          jurisdiction_country_id_input?: string
+          jurisdiction_region_input?: string
+          public_label_input: string
+          registry_url_input?: string
+          specialty_input: string
+        }
+        Returns: {
+          created_at: string
+          credential_kind: string
+          current_verification_id: string | null
+          expires_on: string | null
+          id: string
+          issuer_attests_no_expiry: boolean
+          issuing_authority: string
+          jurisdiction_country_id: string | null
+          jurisdiction_region: string | null
+          public_label: string
+          registry_url: string | null
+          review_due_at: string | null
+          reviewer_user_id: string
+          specialty: string
+          status: Database["public"]["Enums"]["professional_credential_status"]
+          status_reason: string | null
+          updated_at: string
+          valid_from: string | null
+          verification_source_document_id: string | null
+          verification_source_snapshot_id: string | null
+          verified_at: string | null
+          verified_by: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "professional_credentials"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      verify_professional_credential: {
+        Args: {
+          target_category_scope_ids: string[]
+          target_country_scope_ids: string[]
+          target_credential_id: string
+          target_expires_on: string
+          target_issuer_attests_no_expiry: boolean
+          target_review_due_at: string
+          target_source_document_id: string
+          target_source_snapshot_id: string
+          target_valid_from: string
+        }
+        Returns: {
+          created_at: string
+          credential_kind: string
+          current_verification_id: string | null
+          expires_on: string | null
+          id: string
+          issuer_attests_no_expiry: boolean
+          issuing_authority: string
+          jurisdiction_country_id: string | null
+          jurisdiction_region: string | null
+          public_label: string
+          registry_url: string | null
+          review_due_at: string | null
+          reviewer_user_id: string
+          specialty: string
+          status: Database["public"]["Enums"]["professional_credential_status"]
+          status_reason: string | null
+          updated_at: string
+          valid_from: string | null
+          verification_source_document_id: string | null
+          verification_source_snapshot_id: string | null
+          verified_at: string | null
+          verified_by: string | null
+        }
+        SetofOptions: {
+          from: "*"
+          to: "professional_credentials"
+          isOneToOne: true
+          isSetofReturn: false
+        }
       }
     }
     Enums: {
@@ -1527,6 +2911,13 @@ export type Database = {
         | "resolved"
         | "rejected"
       portal_coverage_level: "preview" | "core" | "deep"
+      professional_assignment_status: "assigned" | "completed" | "cancelled"
+      professional_conflict_declaration: "no_conflict" | "disclosed" | "recused"
+      professional_credential_status:
+        | "pending"
+        | "verified"
+        | "suspended"
+        | "revoked"
       source_authority_level:
         | "official_government"
         | "embassy_consulate"
@@ -1542,6 +2933,21 @@ export type Database = {
         | "superseded"
         | "unavailable"
         | "disputed"
+      source_monitor_job_status:
+        | "queued"
+        | "running"
+        | "baseline"
+        | "unchanged"
+        | "changed"
+        | "blocked"
+        | "unavailable"
+        | "failed"
+      source_monitor_resolution:
+        | "source_reverified"
+        | "source_superseded"
+        | "monitoring_adjusted"
+        | "acknowledged"
+        | "dismissed"
       staff_role: "editor" | "reviewer" | "publisher" | "admin"
     }
     CompositeTypes: {
@@ -1717,6 +3123,18 @@ export const Constants = {
         "rejected",
       ],
       portal_coverage_level: ["preview", "core", "deep"],
+      professional_assignment_status: ["assigned", "completed", "cancelled"],
+      professional_conflict_declaration: [
+        "no_conflict",
+        "disclosed",
+        "recused",
+      ],
+      professional_credential_status: [
+        "pending",
+        "verified",
+        "suspended",
+        "revoked",
+      ],
       source_authority_level: [
         "official_government",
         "embassy_consulate",
@@ -1733,6 +3151,23 @@ export const Constants = {
         "superseded",
         "unavailable",
         "disputed",
+      ],
+      source_monitor_job_status: [
+        "queued",
+        "running",
+        "baseline",
+        "unchanged",
+        "changed",
+        "blocked",
+        "unavailable",
+        "failed",
+      ],
+      source_monitor_resolution: [
+        "source_reverified",
+        "source_superseded",
+        "monitoring_adjusted",
+        "acknowledged",
+        "dismissed",
       ],
       staff_role: ["editor", "reviewer", "publisher", "admin"],
     },
