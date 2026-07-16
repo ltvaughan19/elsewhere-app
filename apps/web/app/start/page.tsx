@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
 import { TrustDisclaimer } from "@expat-atlas/ui";
 import { NewsletterForm } from "@/components/newsletter-form";
+import { useAuthSession } from "@/components/auth-session-provider";
 
 const tools = [
   {
@@ -41,6 +44,8 @@ const tools = [
  * Auth and plan always stay on this same origin (one Supabase project).
  */
 export default function StartPage() {
+  const { status } = useAuthSession();
+  const authenticated = status === "authenticated";
   return (
     <div className="mx-auto max-w-3xl px-6 py-14 md:py-20">
       <p className="elsewhere-eyebrow">Elsewhere product</p>
@@ -55,23 +60,26 @@ export default function StartPage() {
 
       <div className="mt-8 flex flex-wrap gap-3">
         <Link
-          href="/app/onboarding"
+          href={authenticated ? "/app/dashboard" : "/app/onboarding"}
           className="rounded-md bg-accent-sand px-5 py-3 text-sm font-medium text-accent-ink shadow-ea transition hover:bg-accent-sand-hover"
         >
-          Start Fit Quiz
+          {authenticated ? "Continue plan" : "Start Fit Quiz"}
         </Link>
-        <Link
-          href="/login"
-          className="rounded-md border border-sand-300 bg-void-card px-5 py-3 text-sm font-medium text-cream shadow-ea transition hover:bg-void-elevated"
-        >
-          Log in
-        </Link>
-        <Link
-          href="/app/dashboard"
-          className="rounded-md border border-sand-200 px-5 py-3 text-sm font-medium text-navy-800 transition hover:text-cream"
-        >
-          Dashboard
-        </Link>
+        {authenticated ? (
+          <Link
+            href="/app/settings"
+            className="rounded-md border border-sand-300 bg-void-card px-5 py-3 text-sm font-medium text-cream shadow-ea transition hover:bg-void-elevated"
+          >
+            Account settings
+          </Link>
+        ) : (
+          <Link
+            href="/login"
+            className="rounded-md border border-sand-300 bg-void-card px-5 py-3 text-sm font-medium text-cream shadow-ea transition hover:bg-void-elevated"
+          >
+            Log in
+          </Link>
+        )}
       </div>
 
       <TrustDisclaimer className="mt-6 max-w-xl" />

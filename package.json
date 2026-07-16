@@ -11,7 +11,9 @@
     "lint": "turbo lint",
     "typecheck": "turbo typecheck",
     "test": "turbo test",
-    "test:e2e": "pnpm --filter @expat-atlas/web exec playwright test"
+    "test:e2e": "pnpm --filter @expat-atlas/web exec playwright test",
+    "check:guardrails": "node scripts/verify-project-guardrails.mjs",
+    "check:release": "pnpm check:guardrails && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm test:e2e"
   },
   "devDependencies": {
     "@eslint/eslintrc": "3.3.1",

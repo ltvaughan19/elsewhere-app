@@ -5,19 +5,37 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { safeNextPath } from "@/lib/auth/safe-next-path";
+import { setTrustedDevicePreference } from "@/lib/auth/trusted-device";
+import { OAuthButtons } from "@/components/oauth-buttons";
+import { TrustedDeviceControl } from "@/components/trusted-device-control";
+import { useAuthSession } from "@/components/auth-session-provider";
 
 export default function LoginPage() {
   const router = useRouter();
+  const { status } = useAuthSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [rememberDevice, setRememberDevice] = useState(false);
+  const [nextPath, setNextPath] = useState<string | null>(null);
 
   useEffect(() => {
-    if (new URLSearchParams(window.location.search).get("error") === "auth") {
+    const search = new URLSearchParams(window.location.search);
+    setNextPath(search.get("next"));
+    if (search.get("error") === "auth") {
       setError("That sign-in or recovery link is invalid or has expired. Request a new link and try again.");
     }
   }, []);
+
+  useEffect(() => {
+    if (status !== "authenticated") return;
+    const destination = safeNextPath(
+      new URLSearchParams(window.location.search).get("next"),
+    );
+    router.replace(destination);
+    router.refresh();
+  }, [router, status]);
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -25,6 +43,7 @@ export default function LoginPage() {
     setBusy(true);
     try {
       const supabase = createClient();
+      setTrustedDevicePreference(rememberDevice);
       const { error: signError } = await supabase.auth.signInWithPassword({
         email: email.trim().toLowerCase(),
         password,
@@ -34,7 +53,7 @@ export default function LoginPage() {
         return;
       }
       const destination = safeNextPath(
-        new URLSearchParams(window.location.search).get("next"),
+        nextPath,
       );
       router.push(destination);
       router.refresh();
@@ -74,6 +93,14 @@ export default function LoginPage() {
           Continue your plan and saved country research.
         </p>
 
+        <TrustedDeviceControl checked={rememberDevice} onChange={setRememberDevice} />
+
+        <OAuthButtons
+          nextPath={nextPath}
+          rememberDevice={rememberDevice}
+          onError={setError}
+        />
+
         <form onSubmit={submit} className="mt-8" aria-describedby={error ? "login-error" : undefined}>
           <div>
             <label htmlFor="email" className="text-sm font-medium text-cream">Email address</label>
@@ -88,6 +115,7 @@ export default function LoginPage() {
               className="mt-2 min-h-12 w-full rounded-md border border-sand-300 bg-void-card px-4 text-cream placeholder:text-soft"
             />
           </div>
+
           <div className="mt-5">
             <div className="flex items-center justify-between gap-5">
               <label htmlFor="password" className="text-sm font-medium text-cream">Password</label>

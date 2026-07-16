@@ -5,6 +5,9 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { connectLocalPlanIdentity, loadPlan, upsertCloudPlan } from "@/lib/plan-store";
 import { createClient } from "@/lib/supabase/client";
+import { setTrustedDevicePreference } from "@/lib/auth/trusted-device";
+import { OAuthButtons } from "@/components/oauth-buttons";
+import { TrustedDeviceControl } from "@/components/trusted-device-control";
 
 export function SignupForm() {
   const router = useRouter();
@@ -15,6 +18,7 @@ export function SignupForm() {
   const [notice, setNotice] = useState("");
   const [busy, setBusy] = useState(false);
   const [hasLocalPlan, setHasLocalPlan] = useState(false);
+  const [rememberDevice, setRememberDevice] = useState(false);
 
   useEffect(() => {
     setHasLocalPlan(Boolean(loadPlan()?.onboardingCompleted));
@@ -33,6 +37,7 @@ export function SignupForm() {
     setBusy(true);
     try {
       const supabase = createClient();
+      setTrustedDevicePreference(rememberDevice);
       const { data, error: signError } = await supabase.auth.signUp({
         email: cleaned,
         password,
@@ -97,7 +102,14 @@ export function SignupForm() {
             </Link>
           </div>
         ) : (
-          <form onSubmit={submit} className="mt-8">
+          <>
+            <TrustedDeviceControl checked={rememberDevice} onChange={setRememberDevice} />
+            <OAuthButtons
+              nextPath="/app/onboarding"
+              rememberDevice={rememberDevice}
+              onError={setError}
+            />
+            <form onSubmit={submit} className="mt-8">
             <div>
               <label htmlFor="name" className="text-sm font-medium text-cream">Name <span className="font-normal text-soft">(optional)</span></label>
               <input
@@ -108,6 +120,7 @@ export function SignupForm() {
                 className="mt-2 min-h-12 w-full rounded-md border border-sand-300 bg-void-card px-4 text-cream"
               />
             </div>
+
             <div className="mt-5">
               <label htmlFor="email" className="text-sm font-medium text-cream">Email address</label>
               <input
@@ -147,7 +160,8 @@ export function SignupForm() {
             >
               {busy ? "Creating account…" : "Create account"}
             </button>
-          </form>
+            </form>
+          </>
         )}
 
         <p className="mt-6 text-sm text-muted">

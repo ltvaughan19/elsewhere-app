@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Instrument_Serif, Outfit } from "next/font/google";
 import { LayoutChrome } from "@/components/layout-chrome";
 import { ThemeProvider } from "@/components/theme-provider";
+import { AuthSessionProvider } from "@/components/auth-session-provider";
 import { themeInitScript } from "@/lib/theme-script";
 import "./globals.css";
 
@@ -35,7 +36,9 @@ export default function RootLayout({
       </head>
       <body className="min-h-screen antialiased elsewhere-surface">
         <ThemeProvider>
-          <LayoutChrome>{children}</LayoutChrome>
+          <AuthSessionProvider>
+            <LayoutChrome>{children}</LayoutChrome>
+          </AuthSessionProvider>
         </ThemeProvider>
       </body>
     </html>

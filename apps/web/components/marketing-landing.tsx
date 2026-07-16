@@ -3,6 +3,40 @@
 import Link from "next/link";
 import { useEffect, useRef } from "react";
 import "@/components/marketing/elsewhere-mu.css";
+import { useAuthSession } from "@/components/auth-session-provider";
+
+function MarketingAuthActions() {
+  const { status } = useAuthSession();
+  if (status === "loading") {
+    return (
+      <>
+        <span aria-hidden="true" className="nav-login" style={{ visibility: "hidden" }}>Account</span>
+        <span aria-hidden="true" className="nav-cta" style={{ visibility: "hidden" }}>Continue plan</span>
+      </>
+    );
+  }
+  const authenticated = status === "authenticated";
+  return (
+    <>
+      <Link className="nav-login" href={authenticated ? "/app/settings" : "/login"}>
+        {authenticated ? "Account" : "Log in"}
+      </Link>
+      <Link className="nav-cta" href={authenticated ? "/app/dashboard" : "/app/onboarding"}>
+        {authenticated ? "Continue plan" : "Start Fit Quiz"}
+      </Link>
+    </>
+  );
+}
+
+function MarketingPlanLink({ className }: { className: string }) {
+  const { status } = useAuthSession();
+  const authenticated = status === "authenticated";
+  return (
+    <Link className={className} href={authenticated ? "/app/dashboard" : "/app/onboarding"}>
+      {authenticated ? "Continue plan" : "Start Fit Quiz"}
+    </Link>
+  );
+}
 
 /**
  * Exact behavioral port of elsewhere-mu (Vite): Spline Earth camera scrub,
@@ -89,10 +123,7 @@ export function MarketingLanding() {
         <nav className="nav" aria-label="Primary">
           <a href="#shift">The shift</a>
           <a href="#wins">Why move</a>
-          <Link className="nav-login" href="/login">Log in</Link>
-          <Link className="nav-cta" href="/app/onboarding">
-            Start Fit Quiz
-          </Link>
+          <MarketingAuthActions />
         </nav>
       </header>
       <div className="nav-threshold" id="nav-threshold" aria-hidden="true" />
@@ -116,9 +147,7 @@ export function MarketingLanding() {
               to breathe.
             </p>
             <div className="hero-actions">
-              <Link className="btn primary" href="/app/onboarding">
-                Start Fit Quiz
-              </Link>
+              <MarketingPlanLink className="btn primary" />
               <a className="btn ghost" href="#shift">
                 See how it works
               </a>
@@ -226,9 +255,7 @@ export function MarketingLanding() {
               Guidance and organization — not legal advice. You stay in control.
             </p>
             <div className="hero-actions" style={{ marginTop: "1.5rem" }}>
-              <Link className="btn primary" href="/app/onboarding">
-                Start Fit Quiz
-              </Link>
+              <MarketingPlanLink className="btn primary" />
               <Link className="btn ghost" href="/start">
                 Open the app
               </Link>
@@ -248,9 +275,7 @@ export function MarketingLanding() {
               only. You verify before you act.
             </p>
             <div className="hero-actions" style={{ marginBottom: "2.5rem" }}>
-              <Link className="btn primary" href="/app/onboarding">
-                Start Fit Quiz
-              </Link>
+              <MarketingPlanLink className="btn primary" />
               <Link className="btn ghost" href="/pricing">
                 Compare plans
               </Link>

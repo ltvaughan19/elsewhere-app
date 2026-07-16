@@ -2,6 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { shouldRedirectInvalidRecovery } from "@/lib/auth/password-recovery";
 import type { Database } from "./database.types";
+import { applyTrustedDeviceLifetime, TRUSTED_DEVICE_COOKIE } from "@/lib/auth/trusted-device";
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
@@ -13,6 +14,7 @@ export async function updateSession(request: NextRequest) {
   if (!url || !key) {
     return supabaseResponse;
   }
+  const trustedDevice = request.cookies.get(TRUSTED_DEVICE_COOKIE)?.value;
 
   const supabase = createServerClient<Database>(url, key, {
     cookies: {
@@ -23,7 +25,11 @@ export async function updateSession(request: NextRequest) {
         cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value));
         supabaseResponse = NextResponse.next({ request });
         cookiesToSet.forEach(({ name, value, options }) =>
-          supabaseResponse.cookies.set(name, value, options),
+          supabaseResponse.cookies.set(
+            name,
+            value,
+            applyTrustedDeviceLifetime(options, trustedDevice),
+          ),
         );
       },
     },

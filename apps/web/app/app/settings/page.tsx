@@ -6,6 +6,7 @@ import type { UserPlan } from "@expat-atlas/types";
 import { clearPlan, resolvePlan } from "@/lib/plan-store";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { useAuthSession } from "@/components/auth-session-provider";
 
 interface AccountSummary {
   email: string;
@@ -34,6 +35,7 @@ async function loadAccountSummary(): Promise<AccountSummary | null> {
 }
 
 export default function SettingsPage() {
+  const { status, signOut } = useAuthSession();
   const [plan, setPlan] = useState<UserPlan | null>(null);
   const [account, setAccount] = useState<AccountSummary | null>(null);
   const [accountLoaded, setAccountLoaded] = useState(false);
@@ -62,6 +64,11 @@ export default function SettingsPage() {
         window.location.href = "/signup";
       });
     }
+  };
+
+  const logOut = async () => {
+    await signOut();
+    window.location.assign("/");
   };
 
   return (
@@ -109,6 +116,15 @@ export default function SettingsPage() {
         >
           Clear saved plan
         </button>
+        {status === "authenticated" ? (
+          <button
+            type="button"
+            onClick={() => void logOut()}
+            className="rounded-full border border-sand-300 px-4 py-2 text-sm text-navy-950"
+          >
+            Log out on this device
+          </button>
+        ) : null}
       </div>
     </div>
   );

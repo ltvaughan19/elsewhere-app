@@ -204,6 +204,9 @@ test("editorial workspace rejects ordinary visitors", async ({ page }) => {
 
 test("signup form enforces account requirements without creating a user", async ({ page }) => {
   await page.goto("/signup");
+  await expect(
+    page.getByRole("checkbox", { name: "Keep me signed in on this trusted device" }),
+  ).not.toBeChecked();
   await expect(page.getByLabel("Email")).toHaveAttribute("type", "email");
   await expect(page.getByLabel("Password")).toHaveAttribute("minlength", "12");
   await expect(page.getByLabel("Password")).toHaveAttribute(
@@ -214,6 +217,17 @@ test("signup form enforces account requirements without creating a user", async 
     "href",
     "/login",
   );
+});
+
+test("login explains the trusted-device session choice", async ({ page }) => {
+  await page.goto("/login");
+  const trustedDevice = page.getByRole("checkbox", {
+    name: "Keep me signed in on this trusted device",
+  });
+  await expect(trustedDevice).not.toBeChecked();
+  await expect(page.getByText("Use only on a personal device.")).toBeVisible();
+  await trustedDevice.check();
+  await expect(trustedDevice).toBeChecked();
 });
 
 test("fit quiz guest flow reaches path", async ({ page }) => {

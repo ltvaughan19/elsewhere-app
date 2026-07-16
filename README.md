@@ -57,6 +57,8 @@ $env:Path += ";$env:USERPROFILE\.local\node\node-v24.18.0-win-x64"
 | [RISK_REGISTER.md](./RISK_REGISTER.md) | Legal/operational risks |
 | [AGENTS.md](./AGENTS.md) | AI agent instructions |
 | [SKILLS_INVENTORY.md](./SKILLS_INVENTORY.md) | Installed Cursor/GStack skills |
+| [Current builder handoff](./docs/notes/2026-07-16-cursor-builder-handoff.md) | What changed, production state, and next work |
+| [Quality gates](./docs/operations/QUALITY_GATES.md) | Permanent auth, trust, design, and release checks |
 
 ---
 

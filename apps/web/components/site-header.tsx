@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { useAuthSession } from "@/components/auth-session-provider";
 
 const primaryLinks = [
   { href: "/countries", label: "Countries" },
@@ -36,6 +37,9 @@ export function SiteHeader() {
   const pathname = usePathname() ?? "/";
   const inPlanner = pathname.startsWith("/app");
   const inAccountFlow = ["/login", "/signup", "/forgot-password", "/reset-password"].includes(pathname);
+  const { status, signOut } = useAuthSession();
+  const authenticated = status === "authenticated";
+  const showPlanNavigation = inPlanner || authenticated;
   const [open, setOpen] = useState(false);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
@@ -92,6 +96,11 @@ export function SiteHeader() {
   }, [open]);
 
   const closeMenu = () => setOpen(false);
+  const logOut = async () => {
+    closeMenu();
+    await signOut();
+    window.location.assign("/");
+  };
 
   return (
     <>
@@ -130,13 +139,17 @@ export function SiteHeader() {
 
           <div className="ml-auto flex items-center gap-2">
             <ThemeToggle className="inline-flex h-11 w-11 items-center justify-center rounded-md border border-sand-200 text-muted transition-colors duration-150 hover:bg-void-elevated hover:text-cream" />
-            <Link
-              href={inPlanner ? "/app/settings" : inAccountFlow && pathname === "/login" ? "/signup" : "/login"}
-              className="hidden min-h-11 items-center px-3 text-sm text-muted transition-colors duration-150 hover:text-cream sm:inline-flex"
-            >
-              {inPlanner ? "Account" : inAccountFlow && pathname === "/login" ? "Create account" : "Log in"}
-            </Link>
-            {!inAccountFlow && !inPlanner ? <Link
+            {status === "loading" ? (
+              <span aria-hidden="true" className="hidden h-11 w-20 animate-pulse rounded-md bg-void-elevated sm:inline-flex" />
+            ) : (
+              <Link
+                href={authenticated ? "/app/settings" : inAccountFlow && pathname === "/login" ? "/signup" : "/login"}
+                className="hidden min-h-11 items-center px-3 text-sm text-muted transition-colors duration-150 hover:text-cream sm:inline-flex"
+              >
+                {authenticated ? "Account" : inAccountFlow && pathname === "/login" ? "Create account" : "Log in"}
+              </Link>
+            )}
+            {!inAccountFlow && !inPlanner && !authenticated ? <Link
               href="/app/onboarding"
               className="hidden min-h-11 items-center rounded-md bg-accent-sand px-4 text-sm font-medium text-accent-ink transition-colors duration-150 hover:bg-accent-sand-hover md:inline-flex"
             >
@@ -198,7 +211,7 @@ export function SiteHeader() {
             </div>
 
             <nav className="min-h-0 flex-1 overflow-y-auto px-5 py-6 pb-[max(2rem,env(safe-area-inset-bottom))]">
-              {inPlanner ? (
+              {showPlanNavigation ? (
                 <div>
                   <p className="elsewhere-eyebrow">Your plan</p>
                   <ul className="mt-3 border-t border-sand-200">
@@ -219,7 +232,7 @@ export function SiteHeader() {
                 </div>
               ) : null}
 
-              <div className={inPlanner ? "mt-8" : ""}>
+              <div className={showPlanNavigation ? "mt-8" : ""}>
                 <p className="elsewhere-eyebrow">Research</p>
                 <ul className="mt-3 border-t border-sand-200">
                   {researchLinks.map((link) => (
@@ -239,15 +252,36 @@ export function SiteHeader() {
               </div>
 
               <div className="mt-8 border-t border-sand-200 pt-5">
-                <Link
-                  href={inPlanner ? "/app/settings" : "/login"}
-                  onClick={closeMenu}
-                  className="flex min-h-12 items-center justify-between text-base text-cream"
-                >
-                  {inPlanner ? "Settings" : "Log in"}
-                  <span aria-hidden="true" className="text-soft">&rarr;</span>
-                </Link>
-                {!inPlanner ? (
+                {authenticated ? (
+                  <>
+                    <Link
+                      href="/app/settings"
+                      onClick={closeMenu}
+                      className="flex min-h-12 items-center justify-between text-base text-cream"
+                    >
+                      Account settings
+                      <span aria-hidden="true" className="text-soft">&rarr;</span>
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => void logOut()}
+                      className="flex min-h-12 w-full items-center justify-between text-left text-sm text-muted"
+                    >
+                      Log out
+                      <span aria-hidden="true" className="text-soft">&rarr;</span>
+                    </button>
+                  </>
+                ) : (
+                  <Link
+                    href={inPlanner ? "/app/settings" : "/login"}
+                    onClick={closeMenu}
+                    className="flex min-h-12 items-center justify-between text-base text-cream"
+                  >
+                    {inPlanner ? "Settings" : "Log in"}
+                    <span aria-hidden="true" className="text-soft">&rarr;</span>
+                  </Link>
+                )}
+                {!inPlanner && !authenticated ? (
                   <Link
                     href="/app/onboarding"
                     onClick={closeMenu}
