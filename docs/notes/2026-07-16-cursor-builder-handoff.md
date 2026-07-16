@@ -79,7 +79,7 @@ The main customer-facing gap found on 2026-07-16 was account continuity. Session
 | Monitoring | Schema, worker code, runbook, and tests exist; no monitor state/jobs in production |
 | CI | GitHub Actions: guardrails, lint, types, unit tests, build, desktop/mobile Playwright |
 
-The production deployment before the auth-continuity release was Vercel deployment `dpl_DGosdF9K5F14dY1qnF8W8oBocPaZ`, READY from main commit `c61ace15aa876d8fbbb18b05de05c8873168c4a8` (“Redesign unified product experience”). Confirm the newer deployment after this handoff is merged.
+The auth-continuity application release is live on the production aliases from main commit `f76213313ec6dcff6b7242f9b27cd65ed5c50e01`. Its first READY production deployment was `dpl_9XssWBX5K1rXgDdzANxYnsrgAjNt`. Anonymous production canaries returned 200 for Home, Login, Countries, Compare, and Dashboard; the Home response retained the locked loader/Earth markup, and Vercel reported no new runtime errors. A later documentation-only deployment may supersede that deployment ID without changing the application runtime.
 
 ## Supabase reality
 
@@ -126,12 +126,13 @@ Do not weaken a check to make a build pass. Fix the regression or obtain explici
 
 ### Immediate: account release completion
 
-1. Run the complete release suite and review the diff independently.
-2. Deploy the auth-continuity release and test a real email/password session across Home → Countries → Compare → Plan → Account.
-3. Configure Google OAuth in its provider console and Supabase, then run the new-account, returning-account, same-email, cancellation, and logout scenarios.
-4. Configure Apple only after an Apple Developer owner, signing-secret rotation owner, and renewal process are recorded.
-5. Decide and configure Supabase inactivity/time-box session limits at the platform level; do not simulate security timeout copy in the UI.
-6. Enable leaked-password protection when available for the project plan.
+The complete release suite and independent code review passed, and the application release is live. The remaining account work is operational verification and provider activation:
+
+1. Test a real production email/password session across Home → Countries → Compare → Plan → Account, including an unchecked trusted-device login, a checked trusted-device login, refresh, browser restart, and explicit logout.
+2. Configure Google OAuth in its provider console and Supabase, then run the new-account, returning-account, same-email, cancellation, and logout scenarios.
+3. Configure Apple only after an Apple Developer owner, signing-secret rotation owner, and renewal process are recorded.
+4. Decide and configure Supabase inactivity/time-box session limits at the platform level; do not simulate security timeout copy in the UI.
+5. Enable leaked-password protection when available for the project plan.
 
 ### Next: monitoring activation
 
