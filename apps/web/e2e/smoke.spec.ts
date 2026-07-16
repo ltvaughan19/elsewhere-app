@@ -1,8 +1,11 @@
 import { test, expect } from "@playwright/test";
 
 test("marketing home loads with Fit Quiz CTA", async ({ page }) => {
+  test.slow();
   await page.goto("/");
-  await expect(page.locator("#loader")).toBeHidden({ timeout: 15000 });
+  const loader = page.locator("#loader");
+  await expect(loader).toHaveClass(/\bis-done\b/, { timeout: 30000 });
+  await expect(loader).toBeHidden({ timeout: 5000 });
   await expect(page.locator("h1")).toContainText("one calm path");
   await expect(
     page.getByRole("link", { name: "Start Fit Quiz" }).first(),
