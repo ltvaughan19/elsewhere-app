@@ -98,7 +98,10 @@ export async function POST(request: Request) {
   const source = (body.source ?? "elsewhere-web").slice(0, 80);
   const modes: string[] = [];
 
-  if (process.env.SUPABASE_SERVICE_ROLE_KEY && process.env.NEXT_PUBLIC_SUPABASE_URL) {
+  if (
+    (process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY) &&
+    process.env.NEXT_PUBLIC_SUPABASE_URL
+  ) {
     try {
       const admin = createAdminClient();
       const { error } = await admin.from("email_subscribers").upsert(

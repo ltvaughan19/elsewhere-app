@@ -89,7 +89,7 @@ export function MarketingLanding() {
         <nav className="nav" aria-label="Primary">
           <a href="#shift">The shift</a>
           <a href="#wins">Why move</a>
-          <Link href="/login">Log in</Link>
+          <Link className="nav-login" href="/login">Log in</Link>
           <Link className="nav-cta" href="/app/onboarding">
             Start Fit Quiz
           </Link>

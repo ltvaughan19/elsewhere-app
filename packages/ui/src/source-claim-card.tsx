@@ -3,10 +3,13 @@ import { Badge } from "./badge";
 import { cn } from "./utils";
 
 function verificationLabel(claim: SourceClaimDisplay): string {
-  if (claim.reviewStatus === "needs_review" || claim.reviewStatus === "draft") {
+  if (
+    claim.reviewStatus !== "human_reviewed" &&
+    claim.reviewStatus !== "partner_reviewed"
+  ) {
     return "Needs verification";
   }
-  if (!claim.lastVerifiedAt) return "Not yet verified";
+  if (!claim.sourceUrl || !claim.lastVerifiedAt) return "Evidence incomplete";
   const date = new Date(claim.lastVerifiedAt);
   return `Last verified ${date.toLocaleDateString("en-US", {
     month: "short",
@@ -17,15 +20,24 @@ function verificationLabel(claim: SourceClaimDisplay): string {
 function badgeVariant(
   claim: SourceClaimDisplay,
 ): "official" | "demo" | "risk" | "default" {
-  if (
-    claim.reviewStatus === "needs_review" ||
-    claim.reviewStatus === "draft" ||
-    claim.confidenceLevel === "low"
-  ) {
+  const reviewed =
+    claim.reviewStatus === "human_reviewed" ||
+    claim.reviewStatus === "partner_reviewed";
+  const hasEvidence = Boolean(
+    claim.sourceName && claim.sourceUrl && claim.lastVerifiedAt,
+  );
+  if (!reviewed || !hasEvidence || claim.confidenceLevel === "low") {
     return "demo";
   }
   if (claim.requiresProfessionalReview) return "risk";
-  return "official";
+  if (
+    claim.sourceType === "official_government" ||
+    claim.sourceType === "embassy_consulate" ||
+    claim.sourceType === "immigration_authority"
+  ) {
+    return "official";
+  }
+  return "default";
 }
 
 /**
@@ -40,9 +52,11 @@ export function SourceClaimCard({
   className?: string;
 }) {
   const needsVerification =
-    claim.reviewStatus === "needs_review" ||
-    claim.reviewStatus === "draft" ||
-    claim.confidenceLevel === "low";
+    (claim.reviewStatus !== "human_reviewed" &&
+      claim.reviewStatus !== "partner_reviewed") ||
+    claim.confidenceLevel === "low" ||
+    !claim.sourceUrl ||
+    !claim.lastVerifiedAt;
 
   return (
     <article

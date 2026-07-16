@@ -2,9 +2,8 @@ import { test, expect } from "@playwright/test";
 
 test("marketing home loads with Fit Quiz CTA", async ({ page }) => {
   await page.goto("/");
-  await expect(page.getByRole("heading", { level: 1 })).toContainText(
-    "one calm path",
-  );
+  await expect(page.locator("#loader")).toBeHidden({ timeout: 15000 });
+  await expect(page.locator("h1")).toContainText("one calm path");
   await expect(
     page.getByRole("link", { name: "Start Fit Quiz" }).first(),
   ).toBeVisible();
@@ -51,22 +50,79 @@ test("404 page for unknown country slug", async ({ page }) => {
   await expect(page.getByText("Page not found")).toBeVisible();
 });
 
-test("signup flow reaches onboarding", async ({ page }) => {
+test("country directory exposes the three launch portals", async ({ page }) => {
+  await page.goto("/countries");
+  await expect(
+    page.getByRole("heading", { name: "One portal for the whole move." }),
+  ).toBeVisible();
+  for (const country of ["Philippines", "Thailand", "Mexico"]) {
+    await expect(
+      page.getByRole("link", { name: `Open the ${country} country portal` }),
+    ).toBeVisible();
+  }
+});
+
+test("country preview withholds unreviewed guidance", async ({ page }) => {
+  await page.goto("/countries/philippines");
+  await expect(
+    page.getByRole("heading", { name: "Philippines", level: 1 }),
+  ).toBeVisible();
+  await expect(page.getByText("Portal preview").first()).toBeVisible();
+  await expect(
+    page.getByText("This page exposes structure only.", { exact: false }),
+  ).toBeVisible();
+  await expect(page.locator('meta[name="robots"]')).toHaveAttribute(
+    "content",
+    /noindex/,
+  );
+  await expect(page.locator("#report-outdated")).toHaveCount(0);
+});
+
+test("country guide contents works without mobile overflow", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/countries/philippines");
+
+  const contents = page.getByRole("button", { name: /Contents/ });
+  await expect(contents).toBeVisible();
+  await contents.click();
+  await expect(contents).toHaveAttribute("aria-expanded", "true");
+  await expect(
+    page.locator("#country-portal-mobile-contents a"),
+  ).toHaveCount(11);
+  await expect(
+    page.getByRole("link", { name: /Entry and legal stay/ }).last(),
+  ).toBeVisible();
+
+  const hasHorizontalOverflow = await page.evaluate(
+    () => document.documentElement.scrollWidth > window.innerWidth,
+  );
+  expect(hasHorizontalOverflow).toBe(false);
+});
+
+test("editorial workspace rejects ordinary visitors", async ({ page }) => {
+  await page.goto("/admin");
+  await expect(page).toHaveURL(/\/login\?next=%2Fadmin/);
+});
+
+test("signup form enforces account requirements without creating a user", async ({ page }) => {
   await page.goto("/signup");
-  await page.getByLabel("Email").fill(`test-${Date.now()}@example.com`);
-  await page.getByLabel("Password").fill("testpass123");
-  await page.getByRole("button", { name: "Continue to readiness quiz" }).click();
-  // Real Supabase may require confirm-email off for session; local demo plan still continues.
-  await expect
-    .poll(async () => page.url(), { timeout: 15000 })
-    .toMatch(/\/(app\/onboarding|login|signup)/);
+  await expect(page.getByLabel("Email")).toHaveAttribute("type", "email");
+  await expect(page.getByLabel("Password")).toHaveAttribute("minlength", "8");
+  await expect(page.getByLabel("Password")).toHaveAttribute(
+    "autocomplete",
+    "new-password",
+  );
+  await expect(page.getByRole("link", { name: "Log in" }).last()).toHaveAttribute(
+    "href",
+    "/login",
+  );
 });
 
 test("fit quiz guest flow reaches path", async ({ page }) => {
   await page.goto("/app/onboarding");
   await expect(page.getByText("Build your Elsewhere profile")).toBeVisible();
   // Advance through all steps with defaults
-  const next = page.getByRole("button", { name: "Next" });
+  const next = page.getByRole("button", { name: "Next", exact: true });
   for (let i = 0; i < 9; i++) {
     await next.click();
   }

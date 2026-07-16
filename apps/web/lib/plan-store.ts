@@ -3,6 +3,8 @@
 import type { OnboardingAnswers, ReadinessResult, UserPlan } from "@expat-atlas/types";
 import { computeReadiness } from "@/lib/readiness-score";
 import { createClient } from "@/lib/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+import type { Json } from "@/lib/supabase/database.types";
 
 const STORAGE_KEY = "expat-atlas-user-plan";
 
@@ -18,17 +20,14 @@ const DEFAULT_PLAN: UserPlan = {
   updatedAt: new Date().toISOString(),
 };
 
-function isSupabaseConfigured(): boolean {
-  return Boolean(
-    process.env.NEXT_PUBLIC_SUPABASE_URL &&
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-  );
-}
-
 function isValidPlan(value: unknown): value is UserPlan {
   if (!value || typeof value !== "object") return false;
   const p = value as UserPlan;
   return typeof p.updatedAt === "string" && typeof p.onboardingCompleted === "boolean";
+}
+
+function serializePlan(plan: UserPlan): Json {
+  return JSON.parse(JSON.stringify(plan)) as Json;
 }
 
 export function loadPlan(): UserPlan | null {
@@ -95,7 +94,7 @@ export async function upsertCloudPlan(plan: UserPlan): Promise<boolean> {
   const { error } = await ctx.supabase.from("user_plans").upsert(
     {
       user_id: ctx.user.id,
-      plan: stamped,
+      plan: serializePlan(stamped),
       updated_at: stamped.updatedAt,
     },
     { onConflict: "user_id" },

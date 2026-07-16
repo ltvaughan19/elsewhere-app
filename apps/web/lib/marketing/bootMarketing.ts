@@ -75,6 +75,15 @@ export async function bootMarketingExperience(root: HTMLElement): Promise<BootHa
 
   const scrollTriggers: ScrollTrigger[] = [];
   const cleanups: Array<() => void> = [];
+  const heroCopy = root.querySelector<HTMLElement>(".hero-copy");
+  const isMobileHero = () => window.innerWidth < 768;
+  const revealUsefulContent = () => {
+    loader?.classList.add("is-done");
+    heroCopy?.classList.add("is-visible");
+    ScrollTrigger.refresh();
+  };
+  const failSafe = window.setTimeout(revealUsefulContent, 10000);
+  cleanups.push(() => window.clearTimeout(failSafe));
 
   if (canvas) {
     try {
@@ -86,27 +95,15 @@ export async function bootMarketingExperience(root: HTMLElement): Promise<BootHa
               "[Elsewhere] Scroll camera object not found in Spline scene — check camera name",
             );
           }
-          window.setTimeout(() => {
-            loader?.classList.add("is-done");
-            root.querySelector(".hero-copy")?.classList.add("is-visible");
-            ScrollTrigger.refresh();
-          }, 350);
+          window.setTimeout(revealUsefulContent, 350);
         },
-        onError: () => {
-          loader?.classList.add("is-done");
-        },
+        onError: revealUsefulContent,
       });
       earthScene = scene;
     } catch {
-      loader?.classList.add("is-done");
+      revealUsefulContent();
     }
   }
-
-  const failSafe = window.setTimeout(() => loader?.classList.add("is-done"), 10000);
-  cleanups.push(() => window.clearTimeout(failSafe));
-
-  const heroCopy = root.querySelector<HTMLElement>(".hero-copy");
-  const isMobileHero = () => window.innerWidth < 768;
 
   panelInners.forEach((inner) => {
     const section = inner.closest(".panel");

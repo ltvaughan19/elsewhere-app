@@ -9,7 +9,9 @@ export function StickyMobileCta() {
     pathname === "/" ||
     pathname?.startsWith("/signup") ||
     pathname?.startsWith("/login") ||
-    pathname?.startsWith("/app")
+    pathname?.startsWith("/app") ||
+    pathname?.startsWith("/admin") ||
+    pathname?.startsWith("/countries")
   ) {
     return null;
   }

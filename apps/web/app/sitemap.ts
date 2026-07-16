@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { SEED_COUNTRIES } from "@/lib/seed-countries";
+import { getPublishedCountrySlugs } from "@/lib/country-portals/queries";
 
 const staticRoutes = [
   "",
@@ -24,16 +24,19 @@ const staticRoutes = [
   "/terms",
 ];
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const base = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const base = (
+    process.env.NEXT_PUBLIC_APP_URL ?? "https://elsewhereplan.com"
+  ).replace(/\/$/, "");
+  const publishedCountrySlugs = await getPublishedCountrySlugs();
 
   return [
     ...staticRoutes.map((route) => ({
       url: `${base}${route}`,
       lastModified: new Date(),
     })),
-    ...SEED_COUNTRIES.map((c) => ({
-      url: `${base}/countries/${c.slug}`,
+    ...publishedCountrySlugs.map((slug) => ({
+      url: `${base}/countries/${slug}`,
       lastModified: new Date(),
     })),
   ];

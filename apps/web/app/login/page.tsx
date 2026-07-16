@@ -27,7 +27,12 @@ export default function LoginPage() {
         setError(signError.message);
         return;
       }
-      router.push("/app/dashboard");
+      const requestedPath = new URLSearchParams(window.location.search).get("next");
+      const destination =
+        requestedPath?.startsWith("/") && !requestedPath.startsWith("//")
+          ? requestedPath
+          : "/app/dashboard";
+      router.push(destination);
       router.refresh();
     } catch {
       setError("Could not reach auth. Check your connection and try again.");

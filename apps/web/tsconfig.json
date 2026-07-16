@@ -8,6 +8,6 @@
     "incremental": true,
     "allowJs": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.js", ".next/types/**/*.ts"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.js", ".next/types/**/*.ts", ".next-playwright/types/**/*.ts"],
   "exclude": ["node_modules"]
 }

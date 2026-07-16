@@ -1,7 +1,8 @@
-# Expat Atlas — Design System (legacy pointer)
+# Elsewhere Design System (legacy pointer)
 
 > **Superseded for product direction.**  
-> Use **[`docs/plans/STYLING_RULES.md`](./docs/plans/STYLING_RULES.md)** — Elsewhere brand tokens, typography, marketing vs app rules.  
+> Use **[`DESIGN.md`](./DESIGN.md)** for the current Elsewhere Field Guide system.
+> Use **[`docs/plans/STYLING_RULES.md`](./docs/plans/STYLING_RULES.md)** for the earlier tokens and marketing/app split decisions that informed it.
 > Use **[`docs/plans/REPO_CONSOLIDATION.md`](./docs/plans/REPO_CONSOLIDATION.md)** — one site, one mobile app, one monorepo.
 
 The historical “Atlas Calm” ivory/sand system below is kept only as archive notes during migration. Do not start new screens with cream full-page backgrounds.

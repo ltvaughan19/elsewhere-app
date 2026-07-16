@@ -8,11 +8,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "drizzle-orm": "^0.44.2"
+    "drizzle-orm": "^0.45.2"
   },
   "devDependencies": {
     "@expat-atlas/config": "workspace:*",
-    "drizzle-kit": "^0.31.1",
+    "drizzle-kit": "^0.31.10",
     "typescript": "^5.8.3"
   }
 }

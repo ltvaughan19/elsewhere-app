@@ -686,8 +686,13 @@ h2 em {
     font-size: 0.72rem;
   }
 
-  .nav a:not(.nav-cta) {
+  .nav a:not(.nav-cta):not(.nav-login) {
     display: none;
+  }
+
+  .site-header .nav-login {
+    font-size: 0.72rem;
+    white-space: nowrap;
   }
 
   .progress-rail {

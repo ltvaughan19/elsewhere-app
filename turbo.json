@@ -10,7 +10,8 @@
       "persistent": true
     },
     "lint": {
-      "dependsOn": ["^lint"]
+      "dependsOn": ["^lint"],
+      "inputs": ["$TURBO_DEFAULT$", "../../eslint.config.mjs"]
     },
     "typecheck": {
       "dependsOn": ["^typecheck"]

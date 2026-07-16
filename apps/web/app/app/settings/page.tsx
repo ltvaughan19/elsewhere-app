@@ -4,15 +4,52 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import type { UserPlan } from "@expat-atlas/types";
 import { clearPlan, resolvePlan } from "@/lib/plan-store";
+import { createClient } from "@/lib/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
+
+interface AccountSummary {
+  email: string;
+  planTier: string | null;
+}
+
+async function loadAccountSummary(): Promise<AccountSummary | null> {
+  if (!isSupabaseConfigured()) return null;
+
+  const supabase = createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const profileResult = await supabase
+    .from("profiles")
+    .select("email,plan_tier")
+    .eq("id", user.id)
+    .maybeSingle();
+
+  return {
+    email: profileResult.data?.email ?? user.email ?? "",
+    planTier: profileResult.data?.plan_tier ?? null,
+  };
+}
 
 export default function SettingsPage() {
   const [plan, setPlan] = useState<UserPlan | null>(null);
+  const [account, setAccount] = useState<AccountSummary | null>(null);
+  const [accountLoaded, setAccountLoaded] = useState(false);
 
   useEffect(() => {
     let cancelled = false;
     void (async () => {
-      const p = await resolvePlan();
-      if (!cancelled) setPlan(p);
+      const [resolvedPlan, accountSummary] = await Promise.all([
+        resolvePlan(),
+        loadAccountSummary(),
+      ]);
+      if (!cancelled) {
+        setPlan(resolvedPlan);
+        setAccount(accountSummary);
+        setAccountLoaded(true);
+      }
     })();
     return () => {
       cancelled = true;
@@ -33,11 +70,19 @@ export default function SettingsPage() {
       <dl className="mt-8 space-y-4 rounded-xl border border-sand-200 bg-white p-6 text-sm">
         <div>
           <dt className="text-navy-800/60">Email</dt>
-          <dd className="text-navy-950">{plan?.email || "—"}</dd>
+          <dd className="text-navy-950">
+            {account?.email || plan?.email || "—"}
+          </dd>
         </div>
         <div>
           <dt className="text-navy-800/60">Plan tier</dt>
-          <dd className="capitalize text-navy-950">{plan?.planTier ?? "free"}</dd>
+          <dd className="capitalize text-navy-950">
+            {!accountLoaded
+              ? "Loading…"
+              : account?.planTier
+                ? account.planTier.replaceAll("_", " ")
+                : "Sign in to view"}
+          </dd>
         </div>
         <div>
           <dt className="text-navy-800/60">Onboarding</dt>
