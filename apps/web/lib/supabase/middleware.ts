@@ -1,5 +1,6 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { shouldRedirectInvalidRecovery } from "@/lib/auth/password-recovery";
 import type { Database } from "./database.types";
 
 export async function updateSession(request: NextRequest) {
@@ -29,7 +30,21 @@ export async function updateSession(request: NextRequest) {
   });
 
   // Refresh session — do not use getSession() for auth checks.
-  await supabase.auth.getClaims();
+  const { data: claimsData } = await supabase.auth.getClaims();
+
+  // Password changes require the authenticated recovery session established by
+  // the callback route. Do not expose a functional reset form without it.
+  if (
+    shouldRedirectInvalidRecovery(
+      request.nextUrl.pathname,
+      claimsData?.claims?.sub,
+    )
+  ) {
+    const recoveryUrl = request.nextUrl.clone();
+    recoveryUrl.pathname = "/forgot-password";
+    recoveryUrl.searchParams.set("error", "invalid_recovery_session");
+    return NextResponse.redirect(recoveryUrl);
+  }
 
   return supabaseResponse;
 }

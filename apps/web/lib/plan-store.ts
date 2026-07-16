@@ -172,6 +172,27 @@ export function createDemoAccount(email: string, displayName: string): UserPlan 
   return plan;
 }
 
+/** Attach account identity without discarding planning work already saved on this device. */
+export function connectLocalPlanIdentity(email: string, displayName: string): UserPlan {
+  const existing = loadPlan();
+  if (!existing) return createDemoAccount(email, displayName);
+
+  const existingName = existing.displayName.trim();
+  const name =
+    displayName.trim() ||
+    (existingName && existingName.toLowerCase() !== "guest" ? existingName : "") ||
+    email.split("@")[0] ||
+    "Planner";
+  const connected: UserPlan = {
+    ...existing,
+    email,
+    displayName: name,
+    updatedAt: new Date().toISOString(),
+  };
+  savePlan(connected);
+  return connected;
+}
+
 export function ensureGuestPlan(): UserPlan {
   const existing = loadPlan();
   if (existing) return existing;

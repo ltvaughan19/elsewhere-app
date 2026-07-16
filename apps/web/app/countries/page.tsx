@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { CountryPortalCard } from "@/components/country-portal/CountryPortalCard";
 import { getCountryPortalCards } from "@/lib/country-portals/queries";
 
 export const metadata: Metadata = {
-  title: "Country portals | Elsewhere",
+  title: "Countries | Elsewhere",
   description:
-    "Explore Elsewhere's country portal foundation for the Philippines, Thailand, and Mexico, with reviewed releases replacing clearly labeled previews.",
+    "Research the Philippines, Thailand, and Mexico with source-aware country guides and clearly labeled publication status.",
   alternates: { canonical: "https://elsewhereplan.com/countries" },
 };
 
@@ -13,59 +14,53 @@ export const revalidate = 3600;
 
 export default async function CountriesPage() {
   const portals = await getCountryPortalCards();
-  const publishedCount = portals.filter(
-    (portal) => portal.publicationState === "published",
-  ).length;
 
   return (
-    <div className="mx-auto max-w-7xl px-5 pb-20 pt-12 sm:px-6 sm:pb-28 sm:pt-20">
-      <header className="grid gap-12 border-b border-sand-200 pb-12 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-end lg:gap-20 sm:pb-16">
+    <div className="mx-auto max-w-6xl px-5 pb-20 pt-12 sm:px-6 sm:pb-24 sm:pt-16">
+      <header className="grid gap-8 border-b border-sand-200 pb-10 lg:grid-cols-[minmax(0,1fr)_19rem] lg:items-end lg:gap-16 sm:pb-12">
         <div className="max-w-3xl">
-          <p className="elsewhere-eyebrow">Country field guides</p>
-          <h1 className="mt-5 max-w-2xl font-display text-5xl leading-[0.98] text-cream sm:text-7xl">
+          <p className="elsewhere-eyebrow">Country research</p>
+          <h1 className="mt-4 max-w-3xl font-display text-5xl leading-[1.02] text-cream sm:text-6xl">
             One portal for the whole move.
           </h1>
-          <p className="mt-7 max-w-2xl text-lg leading-8 text-navy-800">
-            Entry, money, housing, healthcare, work, safety, arrival, and
-            long-term living—organized into one calm sequence with the source
-            beside the guidance.
+          <p className="mt-6 max-w-2xl text-base leading-7 text-muted sm:text-lg sm:leading-8">
+            Start with the decisions that shape a move: entry, long stays, money, healthcare, housing, work, and daily life.
           </p>
         </div>
 
-        <section
-          aria-label="Portal publication status"
-          className="border-l border-sand-200 pl-5 text-sm"
-        >
-          <p className="text-xs font-medium uppercase tracking-[0.14em] text-soft">
-            Library status
+        <aside className="border-l border-sand-200 pl-5 text-sm leading-6 text-muted">
+          <p className="font-medium text-cream">A deliberately small library</p>
+          <p className="mt-2">
+            Guidance stays unavailable until its sources and risk-sensitive claims pass review.
           </p>
-          <p className="mt-3 font-display text-4xl text-cream">
-            {publishedCount}
-            <span className="ml-2 font-sans text-sm text-soft">
-              of {portals.length} released
-            </span>
-          </p>
-          <p className="mt-3 leading-6 text-navy-800">
-            Built for international readers, with personal context layered in
-            before guidance is treated as relevant.
-          </p>
-        </section>
+          <Link href="/trust" className="mt-3 inline-flex min-h-11 items-center font-medium text-accent-cool hover:text-cream">
+            How review works <span aria-hidden="true" className="ml-2">&rarr;</span>
+          </Link>
+        </aside>
       </header>
 
-      <div className="mt-8" aria-label="Country dossiers">
+      <section className="mt-2" aria-label="Country guides">
         {portals.map((portal) => (
           <CountryPortalCard key={portal.slug} portal={portal} />
         ))}
-      </div>
+      </section>
 
-      <aside className="mt-12 grid gap-3 border-l-2 border-accent-cool pl-5 text-sm leading-7 text-navy-800 sm:grid-cols-[12rem_minmax(0,1fr)]">
-        <strong className="font-medium text-cream">Why previews stay sparse</strong>
-        <p className="max-w-3xl">
-          Elsewhere does not fill gaps with uncited prices, rankings, or visa
-          summaries. A dossier becomes public only after its guidance, sources,
-          professional checks where required, and page composition pass review.
-        </p>
-      </aside>
+      <section className="mt-12 grid gap-5 border-t border-sand-200 pt-8 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+        <div>
+          <h2 className="text-xl font-medium text-cream">Still deciding where to begin?</h2>
+          <p className="mt-2 max-w-2xl text-sm leading-6 text-muted">
+            Compare the initial countries side by side, or use Visa Compass to organize the questions you need to verify.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-x-6">
+          <Link href="/compare" className="inline-flex min-h-11 items-center text-sm font-medium text-accent-cool hover:text-cream">
+            Compare countries <span aria-hidden="true" className="ml-2">&rarr;</span>
+          </Link>
+          <Link href="/visa-compass" className="inline-flex min-h-11 items-center text-sm font-medium text-accent-cool hover:text-cream">
+            Open Visa Compass <span aria-hidden="true" className="ml-2">&rarr;</span>
+          </Link>
+        </div>
+      </section>
     </div>
   );
 }

@@ -51,9 +51,9 @@ function CompareColumn({ country }: { country: CountryCardData | null }) {
   );
 }
 
-export function CountryCompare() {
-  const [a, setA] = useState("philippines");
-  const [b, setB] = useState("thailand");
+export function CountryCompare({ initialCountry }: { initialCountry?: string }) {
+  const [a, setA] = useState(initialCountry ?? "philippines");
+  const [b, setB] = useState(initialCountry === "thailand" ? "philippines" : "thailand");
 
   const countryA = useMemo(
     () => SEED_COUNTRIES.find((c) => c.slug === a) ?? null,

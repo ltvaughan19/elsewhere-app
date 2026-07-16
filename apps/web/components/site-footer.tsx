@@ -1,93 +1,43 @@
 import Link from "next/link";
 import { TrustDisclaimer } from "@expat-atlas/ui";
 
+const footerLinks = [
+  { href: "/countries", label: "Countries" },
+  { href: "/compare", label: "Compare" },
+  { href: "/visa-compass", label: "Visa Compass" },
+  { href: "/trust", label: "How it works" },
+  { href: "/about", label: "About" },
+  { href: "/privacy", label: "Privacy" },
+];
+
 export function SiteFooter() {
   return (
-    <footer className="border-t border-sand-200 bg-[var(--color-void-elevated)] text-navy-950">
-      <div className="mx-auto max-w-6xl px-6 py-12">
-        <div className="grid gap-8 md:grid-cols-3">
-          <div>
+    <footer className="border-t border-sand-200 bg-void-elevated text-cream">
+      <div className="mx-auto max-w-7xl px-5 py-10 sm:px-6 sm:py-12">
+        <div className="flex flex-col gap-7 border-b border-sand-200 pb-8 lg:flex-row lg:items-start lg:justify-between">
+          <div className="max-w-sm">
             <p className="font-display text-2xl">Elsewhere</p>
-            <p className="mt-2 text-sm text-navy-800">One calm path abroad.</p>
+            <p className="mt-2 text-sm leading-6 text-muted">
+              Source-aware research and a practical plan for the whole move.
+            </p>
           </div>
-          <div className="text-sm text-navy-800">
-            <p className="mb-2 font-medium text-navy-950">Explore</p>
-            <ul className="space-y-1">
-              <li>
-                <Link href="/countries" className="hover:text-ocean-400">
-                  Countries
-                </Link>
-              </li>
-              <li>
-                <Link href="/passport-checklist" className="hover:text-ocean-400">
-                  Passport checklist
-                </Link>
-              </li>
-              <li>
-                <Link href="/budget-calculator" className="hover:text-ocean-400">
-                  Budget calculator
-                </Link>
-              </li>
-              <li>
-                <Link href="/corridors" className="hover:text-ocean-400">
-                  Launch corridors
-                </Link>
-              </li>
-              <li>
-                <Link href="/compare" className="hover:text-ocean-400">
-                  Compare countries
-                </Link>
-              </li>
-              <li>
-                <Link href="/visa-compass" className="hover:text-ocean-400">
-                  Visa Compass
-                </Link>
-              </li>
-              <li>
-                <Link href="/housing" className="hover:text-ocean-400">
-                  Housing strategy
-                </Link>
-              </li>
-              <li>
-                <Link href="/insurance" className="hover:text-ocean-400">
-                  Insurance guide
-                </Link>
-              </li>
+          <nav aria-label="Footer navigation">
+            <ul className="flex max-w-2xl flex-wrap gap-x-6 gap-y-1">
+              {footerLinks.map((link) => (
+                <li key={link.href}>
+                  <Link
+                    href={link.href}
+                    className="inline-flex min-h-11 min-w-11 items-center text-sm text-muted transition-colors duration-150 hover:text-cream"
+                  >
+                    {link.label}
+                  </Link>
+                </li>
+              ))}
             </ul>
-          </div>
-          <div className="text-sm text-navy-800">
-            <p className="mb-2 font-medium text-navy-950">Trust</p>
-            <ul className="space-y-1">
-              <li>
-                <Link href="/trust" className="hover:text-ocean-400">
-                  How we source information
-                </Link>
-              </li>
-              <li>
-                <Link href="/partners" className="hover:text-ocean-400">
-                  Partners
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="hover:text-ocean-400">
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link href="/privacy" className="hover:text-ocean-400">
-                  Privacy
-                </Link>
-              </li>
-              <li>
-                <Link href="/terms" className="hover:text-ocean-400">
-                  Terms
-                </Link>
-              </li>
-            </ul>
-          </div>
+          </nav>
         </div>
-        <div className="mt-8 border-t border-sand-200 pt-6">
-          <TrustDisclaimer />
+        <div className="pt-6">
+          <TrustDisclaimer className="max-w-4xl text-xs leading-5 text-soft" />
         </div>
       </div>
     </footer>

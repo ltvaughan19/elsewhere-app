@@ -1,6 +1,14 @@
 import { CountryCompare } from "@/components/country-compare";
 
-export default function ComparePage() {
+const supportedCountries = new Set(["philippines", "thailand", "mexico"]);
+
+export default async function ComparePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ country?: string }>;
+}) {
+  const { country } = await searchParams;
+  const initialCountry = country && supportedCountries.has(country) ? country : undefined;
   return (
     <div className="mx-auto max-w-6xl px-6 py-16">
       <h1 className="font-display text-4xl text-navy-950">Compare countries</h1>
@@ -9,7 +17,7 @@ export default function ComparePage() {
         long-stay potential. All figures are planning estimates.
       </p>
       <div className="mt-10">
-        <CountryCompare />
+        <CountryCompare initialCountry={initialCountry} />
       </div>
     </div>
   );

@@ -48,12 +48,30 @@ One project: put keys on this Vercel app only. Add redirect URLs for local + pro
 1. Create project name e.g. `elsewhere` (only one).  
 2. Copy URL + anon key + service role into Vercel + `apps/web/.env.local`.  
 3. Auth → URL configuration:
-   - Site URL = `NEXT_PUBLIC_APP_URL` (prod domain when ready)
+   - Site URL = `https://elsewhereplan.com`
    - Redirect allowlist includes:
      - `http://localhost:3000/**`
-     - `https://<your-vercel-host>/**`
-     - later `https://elsewhere.com/**` (single domain)
+     - the exact Vercel preview hostname pattern used by this project
+     - `https://elsewhereplan.com/auth/callback`
+   - Production email templates must use `{{ .RedirectTo }}` where the flow
+     supplies a redirect URL.
+   - Configure custom SMTP before relying on signup confirmation or password
+     recovery for real users.
 4. Do **not** point a second app at a second Supabase.
+
+### Password recovery now implemented
+
+1. `/forgot-password` requests the email with a redirect to
+   `/auth/callback?next=/reset-password`.
+2. The callback exchanges the one-time code for a cookie-backed session and
+   accepts only same-origin paths.
+3. Middleware prevents access to the functional reset form without an
+   authenticated recovery session.
+4. `/reset-password` updates the password and supports password managers and
+   pasted generated passwords.
+
+The production Site URL, redirect allowlist, email template, and custom SMTP
+must all be verified during rollout. Code alone cannot guarantee email delivery.
 
 ---
 

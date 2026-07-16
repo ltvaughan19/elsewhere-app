@@ -1,5 +1,5 @@
 import { AppSidebar } from "@/components/app-sidebar";
-import { TrustDisclaimer } from "@expat-atlas/ui";
+import { SiteHeader } from "@/components/site-header";
 
 export default function AppLayout({
   children,
@@ -7,14 +7,12 @@ export default function AppLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex min-h-screen flex-col bg-void md:flex-row">
+    <div className="min-h-screen bg-void">
+      <SiteHeader />
       <AppSidebar />
-      <div className="flex min-w-0 flex-1 flex-col">
-        <div className="flex-1 px-4 pb-28 pt-6 md:px-8 md:py-10">{children}</div>
-        <div className="mb-20 border-t border-sand-200 px-4 py-4 md:mb-0 md:px-8">
-          <TrustDisclaimer className="text-xs" />
-        </div>
-      </div>
+      <main className="mx-auto max-w-6xl px-5 pb-28 pt-8 sm:px-6 sm:pt-12 md:pb-16">
+        {children}
+      </main>
     </div>
   );
 }
