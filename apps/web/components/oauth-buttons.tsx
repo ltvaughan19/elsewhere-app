@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import {
   enabledOAuthProviders,
+  OAUTH_PROVIDER_LABELS,
   oauthCallbackUrl,
   type ElsewhereOAuthProvider,
 } from "@/lib/auth/oauth";
@@ -52,7 +53,8 @@ export function OAuthButtons({ nextPath, rememberDevice, onError }: OAuthButtons
     });
     if (error) {
       setBusy(null);
-      onError(`Elsewhere could not start ${provider === "google" ? "Google" : "Apple"} sign-in. Try again or use email.`);
+      const label = OAUTH_PROVIDER_LABELS[provider];
+      onError(`Elsewhere could not start ${label} sign-in. Try again or use email.`);
     }
   };
 
@@ -60,7 +62,9 @@ export function OAuthButtons({ nextPath, rememberDevice, onError }: OAuthButtons
     <div className="mt-8">
       <div className="grid gap-3">
         {providers.map((provider) => {
-          const label = provider === "google" ? "Google" : "Apple";
+          const label = OAUTH_PROVIDER_LABELS[provider];
+          const mark =
+            provider === "google" ? "G" : provider === "apple" ? "A" : "f";
           return (
             <button
               key={provider}
@@ -69,15 +73,21 @@ export function OAuthButtons({ nextPath, rememberDevice, onError }: OAuthButtons
               onClick={() => void continueWith(provider)}
               className="inline-flex min-h-12 w-full items-center justify-center gap-3 rounded-md border border-sand-300 bg-void-card px-5 text-sm font-medium text-cream transition-colors hover:bg-void-elevated disabled:cursor-wait disabled:opacity-60"
             >
-              <span aria-hidden="true" className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-sand-300 font-medium">
-                {provider === "google" ? "G" : "A"}
+              <span
+                aria-hidden="true"
+                className="inline-flex h-6 w-6 items-center justify-center rounded-full border border-sand-300 font-medium"
+              >
+                {mark}
               </span>
               {busy === provider ? `Connecting to ${label}…` : `Continue with ${label}`}
             </button>
           );
         })}
       </div>
-      <div className="my-6 flex items-center gap-3 text-xs uppercase tracking-[0.16em] text-soft" aria-hidden="true">
+      <div
+        className="my-6 flex items-center gap-3 text-xs uppercase tracking-[0.16em] text-soft"
+        aria-hidden="true"
+      >
         <span className="h-px flex-1 bg-sand-200" />
         <span>or use email</span>
         <span className="h-px flex-1 bg-sand-200" />

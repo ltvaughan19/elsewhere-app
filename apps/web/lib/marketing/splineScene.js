@@ -1,8 +1,8 @@
 import { Application } from "@splinetool/runtime";
 
 /** Exported from your Spline project (Code export). */
-export const SPLINE_SCENE_URL =
-  "https://prod.spline.design/Lnx4uENq006e5zkU/scene.splinecode";
+/** Self-hosted Code Export (Logo=No). Camera/lighting driven in this file unchanged. */
+export const SPLINE_SCENE_URL = "/earth/scene.splinecode";
 
 function smoothstep(a, b, x) {
   const t = Math.min(1, Math.max(0, (x - a) / (b - a)));

@@ -13,10 +13,25 @@
 | Official-source records | 109 unique source IDs |
 | Editorial state | Research staging |
 | Source-document default state | `draft` |
-| Public-release permission | **No** |
+| Public-release permission | **No** (v1 package prepared 2026-07-17 — MFA publish still required) |
 | Primary-source policy | Official government, immigration authority, or other first-party public authority wherever available |
 | Highest-priority launch hold | Digital Nomad Visa implementation and application status |
 | Intended portal sections | Overview; Entry and Stay; Money; Cities; Housing; Healthcare; Work and Tax; Safety; Moving and Arrival; Living and Renewals; Sources and Changes |
+
+## V1 Entry/Stay slice (confirmed 2026-07-17)
+
+First public release must use **only** these ledger IDs until a later release expands:
+
+| Ledger ID | Use |
+| --- | --- |
+| `PH-IMM-001` | DFA eVisa visa-free policy page — entry starting point |
+| `PH-IMM-003` | BI Temporary Visitor / visa waiver — stay pathway |
+| `PH-IMM-010` | BI e-Services — official online channel |
+
+**Out of scope for v1:** all `PH-DNV-*`, work-rights claims needing professional review, and fee claims from dated BI fee pages.
+
+Operational package (claim drafts, admin sequence, capture status): [`docs/operations/PH_V1_ENTRY_STAY_RELEASE.md`](../docs/operations/PH_V1_ENTRY_STAY_RELEASE.md)
+Staging evidence aid: [`outputs/ph-v1-evidence/`](./ph-v1-evidence/)
 
 ## How to read the ledger
 

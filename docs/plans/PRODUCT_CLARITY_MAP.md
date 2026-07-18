@@ -8,11 +8,46 @@
 
 ---
 
+## 0. North star (locked 2026-07-17)
+
+> **“I’m actually going — and I know the one thing to do before Sunday.”**
+
+**Leaving is the metric.** Research, quizzes, tools, claims, community, and paid
+features are useful only when they help a person take a trustworthy action in
+the real world. The core habit is:
+
+1. One next action this week.
+2. An official-source touch when the action depends on a factual rule.
+3. A human signal when accountability or belonging helps.
+
+Do not optimize for reading, quiz completion, tool count, or time in app as ends
+in themselves. Before prioritizing a feature, ask: **does this make leaving more
+real, safer, and more likely before the week ends?**
+
+### CEO operating covenant
+
+Every builder must surface a concise **`CEO Message:`** in substantive responses:
+the direction, risk, deadline, or decision that most protects the north star.
+Builders must challenge and rework failure-shaped requests instead of passively
+executing them: disconnected tools, vanity engagement, premature ecosystem
+scope, unsupported authority, or work that delays learning whether users take
+real-world action.
+
+Elsewhere cannot guarantee success. It can operate so failure signals arrive
+early: smallest trustworthy experiments, explicit deadlines, observable
+outcomes, and repeated course correction. The owner retains final authority
+after the conflict and safer alternative are made clear.
+
+---
+
 ## 1. What Elsewhere is (one sentence)
 
-A **calm relocation planning OS** — Fit Quiz → research path → checklists and tools — for people under pressure to move abroad. Not a travel blog, visa mill, or fake partner marketplace.
+A **calm relocation planning OS** that turns verified research into one doable
+weekly action for people under pressure to move abroad. Not a travel blog, visa
+mill, or fake partner marketplace.
 
-**Mission test:** Every page should answer *“What do I do next?”* honestly.
+**Mission test:** Every page should answer *“What do I do next — before this
+week ends?”* honestly.
 
 ---
 

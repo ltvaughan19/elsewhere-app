@@ -5,8 +5,8 @@ import { Application } from "@splinetool/runtime";
 import { GlobeHero } from "@/components/globe-hero";
 
 /** Locked visual source of truth — do not replace scene URL. */
-export const SPLINE_SCENE_URL =
-  "https://prod.spline.design/Lnx4uENq006e5zkU/scene.splinecode";
+/** Self-hosted Code Export (Logo=No). Matches marketing Earth scene binary. */
+export const SPLINE_SCENE_URL = "/earth/scene.splinecode";
 
 type EarthSplineProps = {
   className?: string;

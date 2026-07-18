@@ -1,0 +1,43 @@
+# PH-IMM-010 staging evidence (NOT a substitute for admin private store)
+
+ledger_id: PH-IMM-010
+canonical_url: https://e-services.immigration.gov.ph/
+publisher: Bureau of Immigration, Republic of the Philippines
+authority_level: immigration_authority
+capture_method: agent_web_fetch_then_normalized_text
+captured_at_utc: 2026-07-17T16:00:00.000Z
+note: >
+  Re-capture live in /admin before approving any claim. This file is a research
+  aid only. Private source-evidence bucket + SHA-256 from captureManualSnapshotAction
+  is the system of record.
+
+---BEGIN NORMALIZED TEXT---
+BI e-Services — Bureau of Immigration
+
+Welcome to Bureau of Immigration Online Services
+Manage your immigration needs in one convenient dashboard
+All Systems Operational
+
+Listed services (landing page):
+- ANNUAL REPORT — Submit annual reports for all registered aliens and ACR I-Card holders (except tourists).
+- CRUISE VISA WAIVER — Request visa waiver for cruise passengers from visa-required countries.
+- ECC-B/RP/SRC WITH AR COMPLIANCE — For departing immigrants/non-immigrants with valid ACR I-Cards, including Annual Report compliance.
+- EMIGRATION CLEARANCE CERTIFICATE - B — Secure exit clearance for ACR I-Card holders temporarily leaving the Philippines.
+- EXISTING SCHOOL REGISTRATION — Register previously accredited schools not yet onboard with BI's online system.
+- RETAIN/RE-ACQUIRE PHILIPPINE CITIZENSHIP — Apply to retain or re-acquire citizenship for naturalized Filipinos.
+- SPECIAL STUDY PERMIT — For foreign nationals below 18 or those taking non-degree courses under 1 year.
+- STUDENT VISA CONVERSION (9F) — For foreign nationals 18+ taking higher education in accredited institutions.
+- TOURIST VISA EXTENSION — Extend your tourist visa quickly and conveniently online.
+- VISA WAIVER — Extend your 30-day visa-free stay with a 29-day visa waiver.
+- WAIVER OF EXCLUSION GROUND — Apply for unaccompanied minors under 15 to enter the Philippines legally.
+
+Important Notice: You need to login first to access this service.
+
+Payment notice: when using online payment methods on this website, an additional charge may apply covering transaction processing costs incurred by the payment service provider.
+
+Contact Us:
+Direct Line — 8841-9650
+Email Address — eservices@immigration.gov.ph
+
+Account types described: INDIVIDUAL and SCHOOL ADMINISTRATOR.
+---END NORMALIZED TEXT---

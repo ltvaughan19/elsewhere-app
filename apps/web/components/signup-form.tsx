@@ -170,6 +170,7 @@ export function SignupForm() {
         </p>
         <p className="mt-6 border-t border-sand-200 pt-5 text-xs leading-5 text-soft">
           By creating an account, you agree to the <Link href="/terms" className="text-accent-cool underline underline-offset-4">terms</Link> and acknowledge the <Link href="/privacy" className="text-accent-cool underline underline-offset-4">privacy policy</Link>.
+          Your account stores planning work — it is not a government, immigration, or legal service.
         </p>
       </section>
     </div>

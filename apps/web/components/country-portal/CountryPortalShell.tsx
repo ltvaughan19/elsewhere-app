@@ -24,6 +24,28 @@ const previewStages = [
   },
 ];
 
+/** Official channels queued for Elsewhere's first PH evidence release — not reviewed claims. */
+const PH_V1_RESEARCH_LEADS = [
+  {
+    id: "PH-IMM-001",
+    title: "DFA Philippine eVisa — visa-free entry policy",
+    href: "https://evisa.gov.ph/page/policy?l2=Free+to+enter+the+Philippines+without+Visa",
+    note: "Nationality-specific entry rules — verify for your passport on the official page.",
+  },
+  {
+    id: "PH-IMM-003",
+    title: "Bureau of Immigration — Temporary Visitor / visa waiver",
+    href: "https://immigration.gov.ph/visas/visa-waiver/",
+    note: "Official pathway page for temporary visitor and visa-waiver research.",
+  },
+  {
+    id: "PH-IMM-010",
+    title: "Bureau of Immigration — e-Services",
+    href: "https://e-services.immigration.gov.ph/",
+    note: "Official online transaction dashboard. Confirm the service is listed before using it.",
+  },
+] as const;
+
 function formatDate(value?: string): string | null {
   if (!value) return null;
   const date = new Date(value);
@@ -126,6 +148,43 @@ function CountryPortalPreview({ portal }: { portal: CountryPortal }) {
               </li>
             ))}
           </ol>
+
+          {portal.slug === "philippines" ? (
+            <section className="mt-10 border-y border-sand-200 py-8" aria-labelledby="ph-v1-leads-heading">
+              <p className="elsewhere-eyebrow">Entry and stay · research leads</p>
+              <h2 id="ph-v1-leads-heading" className="mt-3 text-2xl font-medium text-cream">
+                Official channels to verify yourself
+              </h2>
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-muted">
+                These government pages are queued for Elsewhere&apos;s first sourced
+                Entry and Stay release. They are <strong className="font-medium text-cream">not</strong>{" "}
+                reviewed Elsewhere claims yet — open them directly, then return to your plan.
+              </p>
+              <ul className="mt-6 divide-y divide-sand-200 border-y border-sand-200">
+                {PH_V1_RESEARCH_LEADS.map((lead, index) => (
+                  <li key={lead.id} className="grid gap-2 py-5 sm:grid-cols-[2.5rem_minmax(0,1fr)] sm:gap-4">
+                    <span className="field-guide-index pt-0.5 text-xs text-soft" aria-hidden="true">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <div>
+                      <a
+                        href={lead.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-medium text-accent-cool underline decoration-accent-cool/40 underline-offset-4"
+                      >
+                        {lead.title}
+                      </a>
+                      <p className="mt-1 text-xs text-soft">
+                        {lead.id} · Official URL · not yet reviewed by Elsewhere
+                      </p>
+                      <p className="mt-2 text-sm leading-6 text-muted">{lead.note}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ) : null}
 
           <section className="mt-10 border-l-2 border-accent-sand pl-5">
             <h2 className="text-xl font-medium text-cream">Need a plan before the guide is released?</h2>

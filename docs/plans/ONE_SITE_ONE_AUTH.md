@@ -88,6 +88,27 @@ See also: `docs/plans/EMAIL_AND_SUPABASE.md` (Corridor Brief + Resend + plan-gat
 
 ---
 
+## Login methods (locked 2026-07-17; Facebook added by owner same day)
+
+**Ship these methods only:**
+
+| Method | Status | Role |
+|--------|--------|------|
+| Email / password | Live | Always available; no third-party dependency |
+| Google | Live | Default for most desktop/Android and ad landers |
+| Apple | Code-ready; enable after Developer ownership + secret-rotation owner + renewal date are recorded | iOS trust signal |
+| Facebook (Meta) | Code-ready; enable after Meta Developer app + Facebook Login are configured | Meta ads funnel one-tap |
+
+**Do not add** X, LinkedIn, GitHub, TikTok, Discord, or other social logins.
+
+OAuth buttons stay runtime-gated: the UI reads Supabase Auth provider settings and only renders providers that are actually enabled. Facebook uses Supabase’s `facebook` provider (Meta Login).
+
+Owner ops checklist: [`docs/operations/SOCIAL_LOGIN_ACTIVATION.md`](../operations/SOCIAL_LOGIN_ACTIVATION.md).
+
+Trust framing on login/signup: accounts save research and plans; they are not immigration, legal, or government services. Borrow trust from Google / Apple / Facebook marks only—never invent partner badges.
+
+---
+
 ## Env vars
 
 See `apps/web/.env.example`.

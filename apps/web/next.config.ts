@@ -4,7 +4,6 @@ const connectSources = [
   "'self'",
   "https://*.supabase.co",
   "wss://*.supabase.co",
-  "https://prod.spline.design",
   process.env.NEXT_PUBLIC_POSTHOG_HOST,
 ].filter(Boolean);
 const scriptSources = [
@@ -21,7 +20,7 @@ const contentSecurityPolicy = [
   "form-action 'self'",
   `script-src ${scriptSources.join(" ")}`,
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://prod.spline.design",
+  "img-src 'self' data: blob:",
   "font-src 'self' data:",
   `connect-src ${connectSources.join(" ")}`,
   "worker-src 'self' blob:",

@@ -11,6 +11,11 @@
 
 Elsewhere is a trust-first **expat transition operating system**. We help people under pressure to move abroad turn overwhelm into a clear next step — without acting as lawyers, accountants, or immigration consultants.
 
+**North star (locked 2026-07-17):** *“I’m actually going — and I know the one
+thing to do before Sunday.”* Leaving is the metric. Retention should come from a
+weekly action habit that advances a real move, not from producing more content
+to consume.
+
 **Strategy:** Build a **wide, scalable platform** (corridors, path packs, source claims, partners as data). **Publish narrow, deep content** first so users get real value and we never fake authority.
 
 **Lead with value:** Free tools that reduce fear and chaos. Monetize structure, depth, and verified pathways — never “approvals” or invented partners.

@@ -10,6 +10,14 @@
 
 Expat Atlas is an **expat transition operating system** — not a travel blog. It guides first-time expats, long-stay travelers, and remote workers from overwhelm to a structured, source-backed relocation plan.
 
+### North Star
+
+> **“I’m actually going — and I know the one thing to do before Sunday.”**
+
+Leaving is the metric. The product earns repeat use by giving each person one
+trustworthy action for this week—not by maximizing quizzes completed, pages
+read, or tools opened.
+
 ### User Journey
 
 **From:** “I want to live abroad but I don’t know what’s legal, safe, realistic, or affordable.”

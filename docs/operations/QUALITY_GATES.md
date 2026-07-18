@@ -15,9 +15,9 @@ The automated guardrail fails when:
 - the marketing or product header stops using the shared auth session;
 - trusted-device cookie behavior is removed from the browser or refresh middleware;
 - the auth callback stops using the safe internal redirect allowlist;
-- Google and Apple disappear from the supported provider set;
+- Google, Apple, or Facebook disappear from the supported provider set;
 - privileged Supabase keys appear in client code; or
-- the current builder handoff or this runbook disappears.
+- `docs/CURRENT.md` or this runbook disappears.
 
 ## Before a pull request or production release
 
@@ -46,7 +46,9 @@ Use one test account and verify this sequence on desktop and mobile:
 
 ## Social login activation check
 
-The interface reads Supabase Auth provider settings and only renders Google or Apple when that provider is enabled. This prevents dead buttons.
+The interface reads Supabase Auth provider settings and only renders Google, Apple, or Facebook when that provider is enabled. This prevents dead buttons.
+
+**Product lock (2026-07-17):** Email/password + Google + Apple + Facebook only. Do not add other social providers. See `docs/plans/ONE_SITE_ONE_AUTH.md` and `docs/operations/SOCIAL_LOGIN_ACTIVATION.md`.
 
 Before enabling a provider:
 

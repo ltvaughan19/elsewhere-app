@@ -1,0 +1,8 @@
+ledger_id: PH-IMM-010
+canonical_url: https://e-services.immigration.gov.ph/
+captured_at_utc: 2026-07-17T16:00:00.000Z
+capture_method: agent_normalized_text
+companion_file: PH-IMM-010.normalized.txt
+note: >
+  Staging aid only. Re-capture live in /admin before approving claims so
+  SHA-256 and private source-evidence path are the system of record.

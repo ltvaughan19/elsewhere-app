@@ -1,0 +1,10 @@
+ledger_id: PH-IMM-001
+canonical_url: https://evisa.gov.ph/page/policy?l2=Free+to+enter+the+Philippines+without+Visa
+publisher: Department of Foreign Affairs (Philippine eVisa)
+authority_level: official_government
+capture_status: pending_staff_live_capture
+blocked_reason: Builder network could not reach evisa.gov.ph (connection failed).
+instruction: >
+  Open the URL in a staff browser, confirm TLS and hostname, paste exact reviewed
+  page text into admin Capture manual snapshot, then approve Claim A only from
+  that snapshot. Do not invent nationality lists or stay lengths from memory.

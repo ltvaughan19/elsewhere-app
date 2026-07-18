@@ -1,0 +1,10 @@
+ledger_id: PH-IMM-003
+canonical_url: https://immigration.gov.ph/visas/visa-waiver/
+publisher: Bureau of Immigration
+authority_level: immigration_authority
+capture_status: pending_staff_live_capture
+blocked_reason: Builder network could not reach immigration.gov.ph (connection failed).
+instruction: >
+  Open the URL in a staff browser, confirm TLS and hostname, paste exact reviewed
+  page text into admin Capture manual snapshot, then approve Claim B only from
+  that snapshot. Do not invent fees, stay lengths, or eligibility.

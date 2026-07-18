@@ -8,6 +8,9 @@ This file guides AI agents (Cursor, GStack, Codex) working on **Expat Atlas**.
 
 - **Name:** Expat Atlas (codename: FarHome)
 - **Type:** Expat transition operating system — not a travel blog
+- **North star (locked 2026-07-17):** *“I’m actually going — and I know the one
+  thing to do before Sunday.”* Leaving is the metric. See
+  `docs/plans/PRODUCT_CLARITY_MAP.md` §0.
 - **Phase:** 0 complete; begin Phase 1 only after reading planning docs
 
 ---
@@ -85,6 +88,9 @@ Skills live in `~/.cursor/skills/` (see `SKILLS_INVENTORY.md`).
 ## Copy Tone
 
 Calm, direct, human, trustworthy. Answer: **"What do I do next?"**
+
+North star check: would this help someone feel *“I’m actually going — and I know
+the one thing to do before Sunday”*?
 
 Examples:
 - "Here is the safer next step."

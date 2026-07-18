@@ -90,7 +90,8 @@ export default function LoginPage() {
         <p className="elsewhere-eyebrow lg:hidden">Your private workspace</p>
         <h1 id="login-heading" className="mt-3 font-display text-5xl leading-none text-cream">Log in</h1>
         <p className="mt-4 text-base leading-7 text-muted">
-          Continue your plan and saved country research.
+          Continue your plan and saved country research. Your account stores planning
+          work — it is not a government, immigration, or legal service.
         </p>
 
         <TrustedDeviceControl checked={rememberDevice} onChange={setRememberDevice} />

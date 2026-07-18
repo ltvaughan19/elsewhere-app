@@ -3,13 +3,12 @@ import { enabledOAuthProviders, oauthCallbackUrl } from "./oauth";
 
 describe("social sign-in policy", () => {
   it("only exposes configured Elsewhere providers", () => {
-    expect(enabledOAuthProviders({ google: true, apple: false, github: true })).toEqual([
-      "google",
-    ]);
-    expect(enabledOAuthProviders({ google: true, apple: true })).toEqual([
-      "google",
-      "apple",
-    ]);
+    expect(
+      enabledOAuthProviders({ google: true, apple: false, facebook: false, github: true }),
+    ).toEqual(["google"]);
+    expect(
+      enabledOAuthProviders({ google: true, apple: true, facebook: true, github: true }),
+    ).toEqual(["google", "apple", "facebook"]);
   });
 
   it("keeps callback destinations on a safe internal path", () => {
