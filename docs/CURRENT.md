@@ -19,11 +19,20 @@ Leaving is the metric. Every builder response includes a **`CEO Message:`**. Vet
 
 ## Home PC — start here
 
+Until the PR below is merged into `main`, pull the feature branch first:
+
+PR: https://github.com/ltvaughan19/elsewhere-app/pull/new/chore/current-docs-and-earth-selfhost  
+Branch: `chore/current-docs-and-earth-selfhost`
+
 ```powershell
 cd C:\Users\brenden.vaughan\expat-atlas   # or your home clone path
 git fetch origin
+# After PR merge, use main only:
 git checkout main
 git pull origin main
+# If PR not merged yet:
+# git checkout chore/current-docs-and-earth-selfhost
+# git pull origin chore/current-docs-and-earth-selfhost
 pnpm install
 # Recreate apps/web/.env.local from password manager / Vercel / Supabase
 # (never copy secrets through chat or commit them)
