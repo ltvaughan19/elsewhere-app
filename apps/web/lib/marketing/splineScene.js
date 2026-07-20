@@ -511,8 +511,9 @@ export async function createSplineScene(canvas, { onReady, onError } = {}) {
     const dt = Math.min(0.05, (now - last) / 1000);
     last = now;
 
-    // Smooth follow of scroll progress (cinematic lag, not snappy)
-    if (!reducedMotion) {
+    // Desktop: cinematic lag. Mobile / reduced-motion: track scroll 1:1 (no rubber feel).
+    const mobileViewport = window.innerWidth < 768;
+    if (!reducedMotion && !mobileViewport) {
       progress += (targetProgress - progress) * Math.min(1, dt * 2.15);
     } else {
       progress = targetProgress;

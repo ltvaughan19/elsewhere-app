@@ -35,18 +35,39 @@ export async function bootMarketingExperience(root: HTMLElement): Promise<BootHa
   }
 
   let lenis: Lenis | null = null;
-  if (!reducedMotion) {
+  let lenisTicker: ((time: number) => void) | null = null;
+  const wantsDesktopSmoothScroll = () =>
+    !reducedMotion && window.innerWidth >= 768;
+
+  function destroyLenis() {
+    if (lenisTicker) {
+      gsap.ticker.remove(lenisTicker);
+      lenisTicker = null;
+    }
+    if (lenis) {
+      lenis.destroy();
+      lenis = null;
+    }
+    gsap.ticker.lagSmoothing(500, 33);
+  }
+
+  function setupLenis() {
+    destroyLenis();
+    if (!wantsDesktopSmoothScroll()) return;
     lenis = new Lenis({
       duration: 1.25,
       easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       smoothWheel: true,
     });
     lenis.on("scroll", ScrollTrigger.update);
-    gsap.ticker.add((time) => {
+    lenisTicker = (time: number) => {
       lenis?.raf(time * 1000);
-    });
+    };
+    gsap.ticker.add(lenisTicker);
     gsap.ticker.lagSmoothing(0);
   }
+
+  setupLenis();
 
   let questionTags: {
     setProgress: (p: number) => void;
@@ -172,11 +193,11 @@ export async function bootMarketingExperience(root: HTMLElement): Promise<BootHa
       id: "mobile-hero-reveal",
       trigger: root.querySelector("#hero"),
       start: "top top",
-      end: "top+=20% top",
+      end: "top+=12% top",
       onUpdate: (self) => {
-        if (self.progress >= 0.4) {
+        if (self.progress >= 0.2) {
           heroCopy.classList.add("is-mobile-revealed");
-        } else if (self.progress < 0.1) {
+        } else if (self.progress < 0.08) {
           heroCopy.classList.remove("is-mobile-revealed");
         }
       },
@@ -189,7 +210,9 @@ export async function bootMarketingExperience(root: HTMLElement): Promise<BootHa
   const onResizeReveal = () => {
     window.clearTimeout(resizeRevealTimer);
     resizeRevealTimer = window.setTimeout(() => {
+      setupLenis();
       setupMobileHeroReveal();
+      setupScrollProgressTriggers();
       ScrollTrigger.refresh();
     }, 150);
   };
@@ -200,34 +223,47 @@ export async function bootMarketingExperience(root: HTMLElement): Promise<BootHa
     mobileHeroRevealST?.kill();
   });
 
-  scrollTriggers.push(
-    ScrollTrigger.create({
+  let earthProgressST: ScrollTrigger | null = null;
+  let heroTagsST: ScrollTrigger | null = null;
+
+  function setupScrollProgressTriggers() {
+    earthProgressST?.kill();
+    heroTagsST?.kill();
+
+    // Mobile: native scroll + no scrub lag (finger and Earth stay in sync).
+    const useCinematicScrub = wantsDesktopSmoothScroll();
+
+    earthProgressST = ScrollTrigger.create({
       trigger: document.body,
       start: "top top",
       end: "bottom bottom",
-      scrub: reducedMotion ? false : 1.1,
+      scrub: useCinematicScrub ? 1.1 : false,
       onUpdate: (self) => {
         const p = self.progress;
         earthScene.setProgress(p);
         if (progressFill) progressFill.style.width = `${p * 100}%`;
       },
-    }),
-  );
+    });
 
-  scrollTriggers.push(
-    ScrollTrigger.create({
+    heroTagsST = ScrollTrigger.create({
       trigger: root.querySelector("#hero"),
       start: "top top",
       end: "bottom top",
-      scrub: reducedMotion ? false : 0.6,
+      scrub: useCinematicScrub ? 0.6 : false,
       onUpdate: (self) => {
         questionTags.setProgress(self.progress);
       },
       onLeave: () => questionTags.setProgress(1),
       onEnterBack: () => questionTags.setProgress(0),
       onLeaveBack: () => questionTags.setProgress(0),
-    }),
-  );
+    });
+  }
+
+  setupScrollProgressTriggers();
+  cleanups.push(() => {
+    earthProgressST?.kill();
+    heroTagsST?.kill();
+  });
 
   if (!reducedMotion && window.innerWidth > 768) {
     panels.forEach((section) => {
@@ -407,8 +443,7 @@ export async function bootMarketingExperience(root: HTMLElement): Promise<BootHa
       ScrollTrigger.getAll().forEach((t) => t.kill());
       questionTags.dispose();
       earthScene.dispose();
-      lenis?.destroy();
-      gsap.ticker.lagSmoothing(500, 33);
+      destroyLenis();
     },
   };
 }

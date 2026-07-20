@@ -801,11 +801,11 @@ h2 em {
    * Hero mobile:
    * 1) First paint = Earth + question tags only (no text card)
    * 2) After a light scroll → copy card fades in at the bottom
-   * Extra viewport height gives room to scroll before leaving the hero.
+   * Keep height modest so the first flick feels productive (not rubbery dead zone).
    */
   .hero.panel {
-    min-height: 135svh;
-    min-height: 135dvh;
+    min-height: 110svh;
+    min-height: 110dvh;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
