@@ -154,11 +154,11 @@ export function createQuestionTags(root, opts = {}) {
   /**
    * Presence while hero is on screen. Hard cut after hero leaves.
    * progress from hero ScrollTrigger: 0 at top, ~1 when bottom hits top.
+   * Hold full opacity until late leave so tags stay readable during normal scroll.
    */
   function heroPresence(p) {
-    // Stay visible through most of the hero; fade in last third of leave
     if (p >= 0.98) return 0;
-    return 1 - smoothstep(0.55, 0.92, p);
+    return 1 - smoothstep(0.82, 0.98, p);
   }
 
   function tickDesktop(dt, presence) {
@@ -170,7 +170,7 @@ export function createQuestionTags(root, opts = {}) {
       }
     }
 
-    const leave = smoothstep(0.55, 0.92, progress);
+    const leave = smoothstep(0.82, 0.98, progress);
     const cx = w * 0.5;
     const cy = h * 0.46;
     const base = Math.min(w, h);
