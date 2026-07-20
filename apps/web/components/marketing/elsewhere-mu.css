@@ -13,6 +13,8 @@ html.elsewhere-mu-active {
   --sans: var(--font-sans), "Outfit", system-ui, sans-serif;
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   scroll-behavior: auto;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
 }
 
 html.elsewhere-mu-active,
@@ -801,11 +803,11 @@ h2 em {
    * Hero mobile:
    * 1) First paint = Earth + question tags only (no text card)
    * 2) After a light scroll → copy card fades in at the bottom
-   * Keep height modest so the first flick feels productive (not rubbery dead zone).
+   * Keep height near one viewport so the first flick feels productive.
    */
   .hero.panel {
-    min-height: 110svh;
-    min-height: 110dvh;
+    min-height: 100svh;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
@@ -821,7 +823,7 @@ h2 em {
     z-index: 8;
     width: 100%;
     max-width: 100%;
-    margin: 0 0 12vh;
+    margin: 0 0 max(0.75rem, env(safe-area-inset-bottom, 0px));
     padding: 1.15rem 1.1rem 1.2rem;
     border-radius: 1.15rem 1.15rem 1rem 1rem;
     /* Transparent until revealed so Earth stays clear */

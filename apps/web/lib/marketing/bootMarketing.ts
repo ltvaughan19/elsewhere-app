@@ -85,10 +85,12 @@ export async function bootMarketingExperience(root: HTMLElement): Promise<BootHa
 
   let earthScene: {
     setProgress: (p: number) => void;
+    setSuspended?: (s: boolean) => void;
     dispose: () => void;
     hasCamera?: () => boolean;
   } = {
     setProgress: () => {},
+    setSuspended: () => {},
     dispose: () => {},
   };
 
@@ -193,11 +195,11 @@ export async function bootMarketingExperience(root: HTMLElement): Promise<BootHa
       id: "mobile-hero-reveal",
       trigger: root.querySelector("#hero"),
       start: "top top",
-      end: "top+=12% top",
+      end: "top+=8% top",
       onUpdate: (self) => {
-        if (self.progress >= 0.2) {
+        if (self.progress >= 0.15) {
           heroCopy.classList.add("is-mobile-revealed");
-        } else if (self.progress < 0.08) {
+        } else if (self.progress < 0.05) {
           heroCopy.classList.remove("is-mobile-revealed");
         }
       },
@@ -229,24 +231,62 @@ export async function bootMarketingExperience(root: HTMLElement): Promise<BootHa
   function setupScrollProgressTriggers() {
     earthProgressST?.kill();
     heroTagsST?.kill();
+    ScrollTrigger.getById("mobile-page-progress")?.kill();
 
     // Mobile: native scroll + no scrub lag (finger and Earth stay in sync).
     const useCinematicScrub = wantsDesktopSmoothScroll();
+    const heroEl = root.querySelector("#hero");
 
-    earthProgressST = ScrollTrigger.create({
-      trigger: document.body,
-      start: "top top",
-      end: "bottom bottom",
-      scrub: useCinematicScrub ? 1.1 : false,
-      onUpdate: (self) => {
-        const p = self.progress;
-        earthScene.setProgress(p);
-        if (progressFill) progressFill.style.width = `${p * 100}%`;
-      },
-    });
+    if (useCinematicScrub) {
+      earthProgressST = ScrollTrigger.create({
+        trigger: document.body,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 1.1,
+        onUpdate: (self) => {
+          earthScene.setProgress(self.progress);
+          if (progressFill) progressFill.style.width = `${self.progress * 100}%`;
+        },
+      });
+    } else {
+      // Mobile: camera completes across the hero (not the whole page), then WebGL sleeps.
+      earthProgressST = ScrollTrigger.create({
+        trigger: heroEl,
+        start: "top top",
+        end: "bottom top",
+        scrub: false,
+        onUpdate: (self) => {
+          earthScene.setProgress(self.progress);
+          earthScene.setSuspended?.(false);
+        },
+        onLeave: () => {
+          earthScene.setProgress(1);
+          earthScene.setSuspended?.(true);
+        },
+        onEnterBack: () => {
+          earthScene.setSuspended?.(false);
+        },
+        onLeaveBack: () => {
+          earthScene.setProgress(0);
+          earthScene.setSuspended?.(false);
+        },
+      });
+
+      // Lightweight page progress bar only (no Earth work).
+      ScrollTrigger.create({
+        id: "mobile-page-progress",
+        trigger: document.body,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: false,
+        onUpdate: (self) => {
+          if (progressFill) progressFill.style.width = `${self.progress * 100}%`;
+        },
+      });
+    }
 
     heroTagsST = ScrollTrigger.create({
-      trigger: root.querySelector("#hero"),
+      trigger: heroEl,
       start: "top top",
       end: "bottom top",
       scrub: useCinematicScrub ? 0.6 : false,

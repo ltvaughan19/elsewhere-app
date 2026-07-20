@@ -231,9 +231,12 @@ export async function createSplineScene(canvas, { onReady, onError } = {}) {
   const reducedMotion = window.matchMedia(
     "(prefers-reduced-motion: reduce)"
   ).matches;
+  const isMobileViewport = () => window.innerWidth < 768;
+  const mobileAtBoot = isMobileViewport();
 
+  // Mobile: on-demand rendering. Desktop: continuous cinematic loop.
   const app = new Application(canvas, {
-    renderMode: "continuous",
+    renderMode: mobileAtBoot ? "auto" : "continuous",
   });
 
   let camera = null;
@@ -244,6 +247,7 @@ export async function createSplineScene(canvas, { onReady, onError } = {}) {
   let targetProgress = 0;
   let earthSpin = 0;
   let ready = false;
+  let suspended = false;
   let baseCamPos = null;
   let objectNames = [];
   let rotationIsDegrees = false;
@@ -383,18 +387,28 @@ export async function createSplineScene(canvas, { onReady, onError } = {}) {
 
   function setProgress(p) {
     targetProgress = Math.min(1, Math.max(0, p));
-    if (reducedMotion) progress = targetProgress;
+    if (reducedMotion || isMobileViewport()) progress = targetProgress;
+    if (!suspended) {
+      try {
+        app.requestRender?.();
+      } catch {
+        /* ignore */
+      }
+    }
   }
 
   /**
    * Smooth cinematic approach: mostly in first ~60% of page scroll,
    * with gentle orbital rotation around the globe.
+   * On mobile, progress is hero-local (0→1 across the hero), so map the full path.
    */
   function applyCamera(p) {
     if (!camera?.position) return;
 
-    // Concentrate camera move on hero → mid story for a readable descent
-    const camSpan = smoothstep(0, 0.62, p);
+    const mobile = isMobileViewport();
+    // Desktop: concentrate move in first 62% of full-page scroll.
+    // Mobile: progress is already hero-scoped — use the full path.
+    const camSpan = mobile ? p : smoothstep(0, 0.62, p);
     // Smooth ease-in-out along the path (not linear snap)
     const pathT = camSpan * camSpan * (3 - 2 * camSpan);
 
@@ -508,11 +522,16 @@ export async function createSplineScene(canvas, { onReady, onError } = {}) {
   let raf = 0;
 
   function tick(now = performance.now()) {
+    if (suspended) {
+      raf = 0;
+      return;
+    }
+
     const dt = Math.min(0.05, (now - last) / 1000);
     last = now;
 
     // Desktop: cinematic lag. Mobile / reduced-motion: track scroll 1:1 (no rubber feel).
-    const mobileViewport = window.innerWidth < 768;
+    const mobileViewport = isMobileViewport();
     if (!reducedMotion && !mobileViewport) {
       progress += (targetProgress - progress) * Math.min(1, dt * 2.15);
     } else {
@@ -523,16 +542,56 @@ export async function createSplineScene(canvas, { onReady, onError } = {}) {
       applyCamera(progress);
       applyEarthSpin(dt);
       applyEarthSpin(0);
+      if (mobileViewport) {
+        try {
+          app.requestRender?.();
+        } catch {
+          /* ignore */
+        }
+      }
     }
 
     raf = requestAnimationFrame(tick);
   }
 
+  function ensureTicking() {
+    if (raf || suspended) return;
+    last = performance.now();
+    raf = requestAnimationFrame(tick);
+  }
+
   raf = requestAnimationFrame(tick);
+
+  function setSuspended(next) {
+    if (suspended === next) return;
+    suspended = next;
+    try {
+      if (suspended) {
+        if (raf) {
+          cancelAnimationFrame(raf);
+          raf = 0;
+        }
+        app.stop?.();
+        canvas.style.visibility = "hidden";
+      } else {
+        canvas.style.visibility = "visible";
+        app.play?.();
+        app.requestRender?.();
+        ensureTicking();
+      }
+    } catch {
+      /* ignore */
+    }
+  }
 
   function resize() {
     try {
-      app.setSize(canvas.clientWidth, canvas.clientHeight);
+      // Lower GPU fill-rate on phones — CSS still covers the viewport.
+      const scaleFactor = isMobileViewport() ? 0.6 : 1;
+      const w = Math.max(1, Math.round(canvas.clientWidth * scaleFactor));
+      const h = Math.max(1, Math.round(canvas.clientHeight * scaleFactor));
+      app.setSize(w, h);
+      app.requestRender?.();
     } catch {
       /* ignore */
     }
@@ -543,6 +602,7 @@ export async function createSplineScene(canvas, { onReady, onError } = {}) {
 
   return {
     setProgress,
+    setSuspended,
     getProgress: () => progress,
     getPose,
     getApp: () => app,
@@ -550,6 +610,7 @@ export async function createSplineScene(canvas, { onReady, onError } = {}) {
     hasCamera: () => cameraFound,
     dispose() {
       cancelAnimationFrame(raf);
+      raf = 0;
       window.removeEventListener("resize", resize);
       try {
         app.dispose?.();
