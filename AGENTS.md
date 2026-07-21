@@ -17,6 +17,13 @@ This file guides AI agents (Cursor, GStack, Codex) working on **Expat Atlas**.
 
 ## Required Reading (before coding)
 
+**Always first (day-to-day truth):**
+
+0. `docs/CURRENT.md` — live state, parked work, next focus
+0b. `docs/operations/CODEX_PH_V1_BUILD_PACKET.md` — when building PH v1 / admin publish path (Codex or Cursor). Re-read before continuing after each meaningful unit.
+
+Then the planning set:
+
 1. `PROJECT_BRIEF.md` — positioning, personas, principles
 2. `ARCHITECTURE.md` — stack, monorepo, routes
 3. `DATABASE_SCHEMA.md` — data model

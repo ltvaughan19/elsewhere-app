@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import type { StaffSession } from "@/lib/auth/staff";
 import { requireStaffSession } from "@/lib/auth/staff";
 import type { Enums, Json } from "@/lib/supabase/database.types";
+import { missingPhV1SourceDrafts, PH_V1_SOURCE_DRAFTS } from "@/lib/editorial/ph-v1";
 import {
   AUTHORITY_LEVELS,
   AUTHOR_ROLES,
@@ -335,6 +336,39 @@ export async function createSourceDocumentAction(formData: FormData) {
   }
 }
 
+export async function bootstrapPhV1SourcesAction(formData: FormData) {
+  const session = await requireStaffSession(AUTHOR_ROLES);
+  const fallbackSlug = safeCountrySlug(formData);
+  try {
+    const countrySlug = countrySlugFrom(formData);
+    if (countrySlug !== "philippines") {
+      throw new ActionInputError("The PH v1 package is available only in the Philippines workspace.");
+    }
+    const country = await countryForSlug(session.supabase, countrySlug);
+    const { data: existingSources, error: existingError } = await session.supabase
+      .from("source_documents")
+      .select("canonical_url, country_id")
+      .in("canonical_url", PH_V1_SOURCE_DRAFTS.map((source) => source.canonicalUrl));
+    if (existingError) throw existingError;
+    if ((existingSources ?? []).some((source) => source.country_id !== country.id)) {
+      throw new ActionInputError("A package URL is already assigned outside the Philippines workspace. Resolve that source record before bootstrapping.");
+    }
+    const missingSources = missingPhV1SourceDrafts((existingSources ?? []).map((source) => source.canonical_url));
+    if (missingSources.length === 0) {
+      redirectToWorkspace(countrySlug, "notice", "The three PH v1 source drafts already exist. No duplicates were created.");
+    }
+    const { error: insertError } = await session.supabase.from("source_documents").insert(
+      missingSources.map((source) => ({ authority_level: source.authorityLevel, canonical_url: source.canonicalUrl, country_id: country.id, created_by: session.userId, jurisdiction: "Philippines", publisher: source.publisher, source_language: "en", state: "draft" as const, title: source.title, translation_status: "not_needed" as const })),
+    );
+    if (insertError) throw insertError;
+    revalidateCountry(countrySlug);
+    redirectToWorkspace(countrySlug, "notice", `${missingSources.length} PH v1 source draft${missingSources.length === 1 ? "" : "s"} created. Open each live URL and capture exact reviewed text next.`);
+  } catch (error) {
+    rethrowNavigationSignal(error);
+    redirectToWorkspace(fallbackSlug, "error", friendlyError(error));
+  }
+}
+
 export async function captureManualSnapshotAction(formData: FormData) {
   const session = await requireStaffSession(AUTHOR_ROLES);
   const fallbackSlug = safeCountrySlug(formData);
@@ -456,7 +490,7 @@ export async function createClaimDraftAction(formData: FormData) {
     const userMeaning = optionalText(formData, "user_meaning", "What this means", 5_000);
     const evidenceExcerpt = optionalText(formData, "evidence_excerpt", "Evidence excerpt", 1_000);
     const exactLocator = requiredText(formData, "exact_locator", "Exact locator", 2, 500);
-    const supportNote = optionalText(formData, "support_note", "Citation note", 1_000);
+    const supportNote = requiredText(formData, "support_note", "Evidence boundary note", 10, 1_000);
 
     const [categoryResult, sectionResult, sourceResult, snapshotResult] = await Promise.all([
       session.supabase

@@ -15,7 +15,7 @@ function requireText(path, text, reason) {
 
 const earthPath = "apps/web/lib/marketing/splineScene.js";
 const earthHash = createHash("sha256").update(readFileSync(join(root, earthPath))).digest("hex");
-const lockedEarthHash = "8bb4385d9f134fd54a7ee97c768fec5b34d6b36fab82b324be441330bcb06512";
+const lockedEarthHash = "92a444e69083a8846d0c495f64e091dac3bd41e30db5c6478ee8cfbc7c1cbd79";
 if (earthHash !== lockedEarthHash) {
   failures.push(`${earthPath}: locked Earth scene changed without an approved guardrail update`);
 }

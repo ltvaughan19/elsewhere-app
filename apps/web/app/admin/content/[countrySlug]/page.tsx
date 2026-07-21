@@ -1,6 +1,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireStaffSession } from "@/lib/auth/staff";
+import {
+  isPhV1ClaimTemplateId,
+  evaluatePhV1Readiness,
+  PH_V1_CLAIM_TEMPLATES,
+  PH_V1_NEXT_ACTION,
+  PH_V1_SOURCE_DRAFTS,
+} from "@/lib/editorial/ph-v1";
 import type { Json, Tables } from "@/lib/supabase/database.types";
 import {
   AdminCard,
@@ -17,6 +24,7 @@ import {
 } from "../../_components/admin-ui";
 import {
   addReleaseItemAction,
+  bootstrapPhV1SourcesAction,
   captureManualSnapshotAction,
   createClaimDraftAction,
   createContentBlockDraftAction,
@@ -163,7 +171,7 @@ export default async function CountryEditorialWorkspacePage({
   searchParams,
 }: {
   params: Promise<{ countrySlug: string }>;
-  searchParams: Promise<{ notice?: string; error?: string }>;
+  searchParams: Promise<{ notice?: string; error?: string; claim_template?: string; block_template?: string }>;
 }) {
   const [{ countrySlug: rawCountrySlug }, feedback] = await Promise.all([params, searchParams]);
   if (!isLaunchCountrySlug(rawCountrySlug)) notFound();
@@ -315,6 +323,50 @@ export default async function CountryEditorialWorkspacePage({
   const editableReleases = releases.filter(
     (release) => release.state === "draft" || release.state === "ready",
   );
+  const isPhV1 = countrySlug === "philippines";
+  const phSources = PH_V1_SOURCE_DRAFTS.map((requiredSource) => {
+    const source = sources.find((item) => item.canonical_url === requiredSource.canonicalUrl);
+    const sourceSnapshots = source
+      ? snapshots.filter((snapshot) => snapshot.source_document_id === source.id)
+      : [];
+    return { ...requiredSource, source, snapshots: sourceSnapshots };
+  });
+  const selectedTemplate =
+    isPhV1 && isPhV1ClaimTemplateId(feedback.claim_template)
+      ? PH_V1_CLAIM_TEMPLATES[feedback.claim_template]
+      : null;
+  const templateSource = selectedTemplate
+    ? phSources.find((item) => item.ledgerId === selectedTemplate.ledgerId)
+    : null;
+  const templateSnapshot = templateSource?.snapshots[0];
+  const entryStaySection = sections.find((section) => section.slug === "entry-and-stay");
+  const templateCategory = selectedTemplate
+    ? categories.find((category) => category.slug === selectedTemplate.categorySlug)
+    : null;
+  const latestOpenRelease = editableReleases[0];
+  const openReleaseIds = new Set(editableReleases.map((release) => release.id));
+  const approvedPinnedClaimCount = releaseClaims.filter((item) =>
+    openReleaseIds.has(item.release_id) &&
+    claimVersions.some((version) => version.id === item.claim_version_id && version.workflow_state === "approved"),
+  ).length;
+  const approvedNextActionPinned = releaseBlocks.some((item) => {
+    const block = blocks.find((candidate) => candidate.id === item.content_block_id);
+    const version = blockVersions.find((candidate) => candidate.id === item.content_block_version_id);
+    return openReleaseIds.has(item.release_id) && block?.kind === "next_action" && version?.workflow_state === "approved";
+  });
+  const nextActionSupportVersion = claimVersions.find((version) => {
+    const claim = claims.find((candidate) => candidate.id === version.claim_id);
+    return claim?.claim_slug === PH_V1_CLAIM_TEMPLATES.C.claimSlug;
+  }) ?? claimVersions[0];
+  const phReadiness = evaluatePhV1Readiness({
+    canAuthor,
+    aal,
+    sourceCount: phSources.filter((item) => item.source).length,
+    snapshotCount: phSources.filter((item) => item.snapshots.length > 0).length,
+    approvedPinnedClaimCount,
+    approvedNextActionPinned,
+    releaseState: latestOpenRelease?.state,
+  });
 
   return (
     <div className="space-y-10">
@@ -347,6 +399,56 @@ export default async function CountryEditorialWorkspacePage({
             Some linked version details could not be loaded. Do not review or publish until the page
             refreshes without this warning.
           </PermissionNote>
+        ) : null}
+        {isPhV1 ? (
+          <AdminCard className="border-accent-sand/35 bg-accent-sand/5">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+              <div>
+                <p className="elsewhere-eyebrow">PH v1 Entry/Stay</p>
+                <h2 className="mt-2 font-display text-2xl text-cream">Operator readiness</h2>
+                <p className="mt-2 max-w-2xl text-sm text-muted">
+                  Live blockers for the draft package. Draft helpers never capture evidence, approve records, or publish.
+                </p>
+              </div>
+              {canAuthor ? (
+                <form action={bootstrapPhV1SourcesAction}>
+                  <input type="hidden" name="country_slug" value={countrySlug} />
+                  <button type="submit" className={secondaryButtonClass}>Create missing source drafts</button>
+                </form>
+              ) : null}
+            </div>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+              {[
+                { label: "Staff role", ready: phReadiness.staffRole, detail: canAuthor ? `${role} can draft` : `${role} cannot draft` },
+                { label: "MFA for publish", ready: phReadiness.mfa, detail: aal === "aal2" ? "AAL2 ready" : "Enable MFA before publish" },
+                { label: "Package sources", ready: phReadiness.sources, detail: `${phSources.filter((item) => item.source?.state === "draft").length} draft / ${phSources.filter((item) => item.source?.state === "verified").length} verified` },
+                { label: "Required snapshots", ready: phReadiness.snapshots, detail: `${phSources.filter((item) => item.snapshots.length > 0).length} of 3 captured` },
+                { label: "Approved claims pinned", ready: phReadiness.claims, detail: `${approvedPinnedClaimCount} approved version${approvedPinnedClaimCount === 1 ? "" : "s"} in open releases` },
+                { label: "Approved next action", ready: phReadiness.nextAction, detail: approvedNextActionPinned ? "Pinned to open release" : "Missing from open release" },
+                { label: "Release state", ready: phReadiness.release, detail: latestOpenRelease ? `Release ${latestOpenRelease.release_number} / ${latestOpenRelease.state}` : "No draft release" },
+              ].map((check) => (
+                <div key={check.label} className="rounded-xl border border-sand-200 bg-void-elevated p-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-xs font-medium text-cream">{check.label}</p>
+                    <StatusBadge value={check.ready ? "verified" : "changes_requested"} label={check.ready ? "Ready" : "Blocked"} />
+                  </div>
+                  <p className="mt-2 text-xs text-soft">{check.detail}</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-5 grid gap-3 lg:grid-cols-3">
+              {phSources.map((item) => (
+                <div key={item.ledgerId} className="rounded-xl border border-sand-200 px-4 py-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="font-mono text-xs text-accent-sand">{item.ledgerId}</p>
+                    <StatusBadge value={item.snapshots.length > 0 ? "verified" : "draft"} label={item.snapshots.length > 0 ? "Snapshot present" : "Capture needed"} />
+                  </div>
+                  <p className="mt-2 text-xs text-muted">{item.source ? item.source.title : "Source draft missing"}</p>
+                </div>
+              ))}
+            </div>
+            <p className="mt-4 text-xs text-warning">Stop point: a human must open each live official URL, inspect it, and paste the exact reviewed text. MFA and all existing review gates remain required before publishing.</p>
+          </AdminCard>
         ) : null}
         <nav className="flex gap-2 overflow-x-auto border-y border-sand-200 py-3 text-sm">
           {[
@@ -509,6 +611,27 @@ export default async function CountryEditorialWorkspacePage({
           description="One claim should express one fact or planning statement. The precise wording, user summary, applicability, exact source snapshot, and locator travel together as version 1."
         />
         {!canAuthor ? <PermissionNote>Your {role} role can review claim versions but cannot create them.</PermissionNote> : null}
+        {isPhV1 ? (
+          <AdminCard className="p-4 md:p-5">
+            <h3 className="font-display text-xl text-cream">Snapshot-gated PH v1 helpers</h3>
+            <p className="mt-2 text-xs text-soft">These load bounded draft wording from the reviewed release package. The matching source must have a human-captured snapshot.</p>
+            <div className="mt-4 grid gap-3 sm:grid-cols-3">
+              {(Object.keys(PH_V1_CLAIM_TEMPLATES) as Array<keyof typeof PH_V1_CLAIM_TEMPLATES>).map((templateId) => {
+                const template = PH_V1_CLAIM_TEMPLATES[templateId];
+                const ledger = phSources.find((item) => item.ledgerId === template.ledgerId);
+                return ledger?.snapshots.length ? (
+                  <Link key={templateId} href={`?claim_template=${templateId}#claims`} className={quietButtonClass}>
+                    Load Claim {templateId} / {template.ledgerId}
+                  </Link>
+                ) : (
+                  <span key={templateId} className="rounded-xl border border-sand-200 px-4 py-3 text-xs text-soft">
+                    Claim {templateId} locked / capture {template.ledgerId}
+                  </span>
+                );
+              })}
+            </div>
+          </AdminCard>
+        ) : null}
         <AdminCard>
           <h3 className="font-display text-xl text-cream">Draft a claim with its primary citation</h3>
           <form action={createClaimDraftAction} className="mt-5">
@@ -516,11 +639,11 @@ export default async function CountryEditorialWorkspacePage({
             <fieldset disabled={!canAuthor || snapshots.length === 0} className="grid gap-4 disabled:opacity-55 sm:grid-cols-2">
               <div>
                 <FieldLabel htmlFor="claim-name" help="Internal identifier; spaces become hyphens.">Internal claim name</FieldLabel>
-                <input id="claim-name" name="claim_slug" required minLength={2} maxLength={120} placeholder="tourist-entry-duration" className={fieldClass} />
+                <input id="claim-name" name="claim_slug" required minLength={2} maxLength={120} defaultValue={selectedTemplate?.claimSlug} placeholder="tourist-entry-duration" className={fieldClass} />
               </div>
               <div>
                 <FieldLabel htmlFor="claim-category">Claim category</FieldLabel>
-                <select id="claim-category" name="category_id" required defaultValue="" className={fieldClass}>
+                <select id="claim-category" name="category_id" required defaultValue={templateCategory?.id ?? ""} className={fieldClass}>
                   <option value="" disabled>Choose…</option>
                   {categories.map((category) => (
                     <option key={category.id} value={category.id}>{category.name} · {category.portal_section_slug}</option>
@@ -529,7 +652,7 @@ export default async function CountryEditorialWorkspacePage({
               </div>
               <div>
                 <FieldLabel htmlFor="claim-section">Matching portal section</FieldLabel>
-                <select id="claim-section" name="portal_section_id" required defaultValue="" className={fieldClass}>
+                <select id="claim-section" name="portal_section_id" required defaultValue={selectedTemplate ? entryStaySection?.id ?? "" : ""} className={fieldClass}>
                   <option value="" disabled>Choose…</option>
                   {sections.map((section) => <option key={section.id} value={section.id}>{section.title}</option>)}
                 </select>
@@ -537,7 +660,7 @@ export default async function CountryEditorialWorkspacePage({
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <FieldLabel htmlFor="claim-risk">Risk</FieldLabel>
-                  <select id="claim-risk" name="risk_level" required defaultValue="high" className={fieldClass}>
+                  <select id="claim-risk" name="risk_level" required defaultValue={selectedTemplate?.riskLevel ?? "high"} className={fieldClass}>
                     {RISK_LEVELS.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
                   </select>
                 </div>
@@ -550,15 +673,15 @@ export default async function CountryEditorialWorkspacePage({
               </div>
               <div className="sm:col-span-2">
                 <FieldLabel htmlFor="precise-claim" help="Internal, exact wording. Avoid interpreting eligibility for an individual.">Precise factual statement</FieldLabel>
-                <textarea id="precise-claim" name="precise_text" required minLength={10} maxLength={10000} className={textareaClass} />
+                <textarea id="precise-claim" name="precise_text" required minLength={10} maxLength={10000} defaultValue={selectedTemplate?.preciseText} className={textareaClass} />
               </div>
               <div className="sm:col-span-2">
                 <FieldLabel htmlFor="public-summary" help="Calm plain language; general planning only.">Public summary</FieldLabel>
-                <textarea id="public-summary" name="public_summary" required minLength={10} maxLength={5000} className={textareaClass} />
+                <textarea id="public-summary" name="public_summary" required minLength={10} maxLength={5000} defaultValue={selectedTemplate?.publicSummary} className={textareaClass} />
               </div>
               <div className="sm:col-span-2">
                 <FieldLabel htmlFor="user-meaning">What this means for a planner</FieldLabel>
-                <textarea id="user-meaning" name="user_meaning" maxLength={5000} className={textareaClass} />
+                <textarea id="user-meaning" name="user_meaning" maxLength={5000} defaultValue={selectedTemplate?.userMeaning} className={textareaClass} />
               </div>
               <div>
                 <FieldLabel htmlFor="citizenship-codes" help="Two-letter codes, comma separated. Leave blank if universal.">Citizenship scope</FieldLabel>
@@ -578,14 +701,14 @@ export default async function CountryEditorialWorkspacePage({
               </div>
               <div>
                 <FieldLabel htmlFor="claim-source">Primary source</FieldLabel>
-                <select id="claim-source" name="source_document_id" required defaultValue="" className={fieldClass}>
+                <select id="claim-source" name="source_document_id" required defaultValue={templateSource?.source?.id ?? ""} className={fieldClass}>
                   <option value="" disabled>Choose…</option>
                   {sources.map((source) => <option key={source.id} value={source.id}>{sourceLabel(source)} · {source.state}</option>)}
                 </select>
               </div>
               <div>
                 <FieldLabel htmlFor="claim-snapshot">Exact retained evidence</FieldLabel>
-                <select id="claim-snapshot" name="source_snapshot_id" required defaultValue="" className={fieldClass}>
+                <select id="claim-snapshot" name="source_snapshot_id" required defaultValue={templateSnapshot?.id ?? ""} className={fieldClass}>
                   <option value="" disabled>Choose…</option>
                   {snapshots.map((snapshot) => {
                     const source = sources.find((item) => item.id === snapshot.source_document_id);
@@ -595,7 +718,7 @@ export default async function CountryEditorialWorkspacePage({
               </div>
               <div>
                 <FieldLabel htmlFor="exact-locator" help="Heading, section, article number, or page.">Exact locator</FieldLabel>
-                <input id="exact-locator" name="exact_locator" required minLength={2} maxLength={500} className={fieldClass} />
+                <input id="exact-locator" name="exact_locator" required minLength={2} maxLength={500} defaultValue={selectedTemplate?.exactLocator} className={fieldClass} />
               </div>
               <div>
                 <FieldLabel htmlFor="claim-locale">Claim language</FieldLabel>
@@ -613,7 +736,10 @@ export default async function CountryEditorialWorkspacePage({
                 <input type="checkbox" name="requires_professional_review" className="h-4 w-4 accent-accent-sand" />
                 Require licensed professional review before publication
               </label>
-              <input type="hidden" name="support_note" value="Primary evidence selected by an Elsewhere editor." />
+              <div className="sm:col-span-2">
+                <FieldLabel htmlFor="support-note" help="Required: say what the selected evidence does not establish.">Evidence boundary note</FieldLabel>
+                <textarea id="support-note" name="support_note" required minLength={10} maxLength={1000} defaultValue={selectedTemplate?.supportNote} className={textareaClass} />
+              </div>
               <div className="sm:col-span-2">
                 <button type="submit" className={primaryButtonClass}>Save claim and citation draft</button>
               </div>
@@ -674,43 +800,50 @@ export default async function CountryEditorialWorkspacePage({
         />
         <AdminCard>
           <h3 className="font-display text-xl text-cream">Draft a content block</h3>
+          {isPhV1 ? (
+            nextActionSupportVersion ? (
+              <Link href="?block_template=next_action#content" className={`${quietButtonClass} mt-4`}>Load PH v1 next-action draft</Link>
+            ) : (
+              <p className="mt-3 text-xs text-warning">The next-action helper unlocks after a snapshot-backed PH v1 claim exists.</p>
+            )
+          ) : null}
           <form action={createContentBlockDraftAction} className="mt-5">
             <input type="hidden" name="country_slug" value={countrySlug} />
             <fieldset disabled={!canAuthor || claimVersions.length === 0} className="grid gap-4 disabled:opacity-55 sm:grid-cols-2">
               <div>
                 <FieldLabel htmlFor="block-name" help="Internal identifier; spaces become hyphens.">Internal block name</FieldLabel>
-                <input id="block-name" name="block_slug" required minLength={2} maxLength={120} className={fieldClass} />
+                <input id="block-name" name="block_slug" required minLength={2} maxLength={120} defaultValue={feedback.block_template === "next_action" ? PH_V1_NEXT_ACTION.blockSlug : undefined} className={fieldClass} />
               </div>
               <div>
                 <FieldLabel htmlFor="block-section">Portal section</FieldLabel>
-                <select id="block-section" name="portal_section_id" required defaultValue="" className={fieldClass}>
+                <select id="block-section" name="portal_section_id" required defaultValue={feedback.block_template === "next_action" ? entryStaySection?.id ?? "" : ""} className={fieldClass}>
                   <option value="" disabled>Choose…</option>
                   {sections.map((section) => <option key={section.id} value={section.id}>{section.title}</option>)}
                 </select>
               </div>
               <div>
                 <FieldLabel htmlFor="block-kind">Display format</FieldLabel>
-                <select id="block-kind" name="kind" required defaultValue="rich_text" className={fieldClass}>
+                <select id="block-kind" name="kind" required defaultValue={feedback.block_template === "next_action" ? "next_action" : "rich_text"} className={fieldClass}>
                   {CONTENT_BLOCK_KINDS.map((kind) => <option key={kind.value} value={kind.value}>{kind.label}</option>)}
                 </select>
               </div>
               <div>
                 <FieldLabel htmlFor="block-risk">Content risk</FieldLabel>
-                <select id="block-risk" name="risk_level" required defaultValue="low" className={fieldClass}>
+                <select id="block-risk" name="risk_level" required defaultValue={feedback.block_template === "next_action" ? "high" : "low"} className={fieldClass}>
                   {RISK_LEVELS.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
                 </select>
               </div>
               <div className="sm:col-span-2">
                 <FieldLabel htmlFor="block-title">Public heading</FieldLabel>
-                <input id="block-title" name="title" maxLength={500} className={fieldClass} />
+                <input id="block-title" name="title" maxLength={500} defaultValue={feedback.block_template === "next_action" ? PH_V1_NEXT_ACTION.title : undefined} className={fieldClass} />
               </div>
               <div className="sm:col-span-2">
                 <FieldLabel htmlFor="block-body" help="Separate paragraphs with a blank line. Do not paste HTML.">Public content</FieldLabel>
-                <textarea id="block-body" name="body_text" required minLength={10} maxLength={20000} className={`${textareaClass} min-h-48`} />
+                <textarea id="block-body" name="body_text" required minLength={10} maxLength={20000} defaultValue={feedback.block_template === "next_action" ? PH_V1_NEXT_ACTION.body : undefined} className={`${textareaClass} min-h-48`} />
               </div>
               <div className="sm:col-span-2">
                 <FieldLabel htmlFor="supporting-claim" help="Required for traceability on every public content block.">Supporting claim version</FieldLabel>
-                <select id="supporting-claim" name="supporting_claim_version_id" required defaultValue="" className={fieldClass}>
+                <select id="supporting-claim" name="supporting_claim_version_id" required defaultValue={feedback.block_template === "next_action" ? nextActionSupportVersion?.id ?? "" : ""} className={fieldClass}>
                   <option value="" disabled>Choose…</option>
                   {claimVersions.map((version) => {
                     const claim = claims.find((item) => item.id === version.claim_id);

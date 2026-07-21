@@ -44,4 +44,5 @@ Full smoke checklist and next priorities: **`docs/CURRENT.md`**.
 | Release checks | `docs/operations/QUALITY_GATES.md` |
 | Apple / Facebook enable | `docs/operations/SOCIAL_LOGIN_ACTIVATION.md` |
 | PH first claims | `docs/operations/PH_V1_ENTRY_STAY_RELEASE.md` |
+| Codex PH build brief | `docs/operations/CODEX_PH_V1_BUILD_PACKET.md` |
 | Source monitor | `docs/operations/SOURCE_MONITOR_RUNBOOK.md` |

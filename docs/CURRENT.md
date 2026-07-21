@@ -1,11 +1,16 @@
 # Elsewhere — Current state (start here)
 
-**Updated:** 2026-07-20  
+**Updated:** 2026-07-21  
 **Repo:** https://github.com/ltvaughan19/elsewhere-app  
 **Production:** https://elsewhereplan.com  
 **Local folder name may still be:** `expat-atlas`
 
 This is the **only** day-to-day handoff. Older dated notes live in `docs/archive/` for history.
+
+**Codex / Sol Ultra:** paste the starter block in
+`docs/operations/CODEX_PH_V1_BUILD_PACKET.md` into Codex. That packet is the
+build brief. Cursor skill: `.cursor/skills/elsewhere-codex-brief/SKILL.md`.
+Always re-read this file + the packet before continuing after each unit.
 
 ---
 
@@ -56,7 +61,21 @@ End of session: `git status` → commit (never `.env.local`) → `git push origi
 - Casual Earth/camera edits — locked unless explicit approval.
 
 ### Next focus (content)
-Get **real PH Entry/Stay claims** live via admin MFA publish. See § “PH content autopilot” below and `docs/operations/PH_V1_ENTRY_STAY_RELEASE.md`.
+Get **real PH Entry/Stay claims** live via admin MFA publish.
+
+**Codex Phase A (build now):** operator readiness panel + draft source bootstrap +
+claim/block helpers — see `docs/operations/CODEX_PH_V1_BUILD_PACKET.md`.
+Human still owns live capture + MFA publish.
+
+
+**Phase A implemented locally (2026-07-21):** `/admin/content/philippines` now
+has a live readiness panel, an idempotent three-source draft bootstrap, and
+snapshot-gated Claim A-C / `next_action` draft helpers. Claim citations require
+an explicit evidence-boundary note. Existing review RPCs and the MFA publish
+gate are unchanged. Human capture, review, MFA, and publishing have not been
+attempted.
+**Production read (2026-07-21):** PH still preview; **0** sources/claims/blocks;
+draft release #1 empty; one admin membership exists; **no verified MFA factor yet**.
 
 ---
 
@@ -116,6 +135,9 @@ Get **real PH Entry/Stay claims** live via admin MFA publish. See § “PH conte
 Ledger: **PH-IMM-001**, **PH-IMM-003**, **PH-IMM-010**.  
 Hard holds: Digital Nomad Visa claims, work-rights claims, stale fee tables.
 
+**Codex build brief:** `docs/operations/CODEX_PH_V1_BUILD_PACKET.md`  
+(Phase A = admin operator tooling; Phase B = weekly dashboard habit — deferred)
+
 Staging files under `outputs/ph-v1-evidence/` are helpers only — evidence that counts lives in private admin storage after you capture.
 
 ---
@@ -141,6 +163,7 @@ Email + Google + Apple + Facebook only. Buttons only when that provider is enabl
 | Path | Role |
 |------|------|
 | **`docs/CURRENT.md`** | **Start here — current truth** |
+| `docs/operations/CODEX_PH_V1_BUILD_PACKET.md` | Codex Phase A brief + paste starter |
 | `docs/operations/*` | Gates, social login, PH v1, source monitor |
 | `docs/plans/PRODUCT_CLARITY_MAP.md` | North star + product picture |
 | `docs/plans/ONE_SITE_ONE_AUTH.md` | Auth architecture lock |
@@ -154,10 +177,11 @@ Email + Google + Apple + Facebook only. Buttons only when that provider is enabl
 
 ## Next build order
 
-1. **PH v1** — staff capture → review → MFA publish (Entry/Stay)
-2. Weekly next-action on plan/dashboard (“one thing before Sunday”)
-3. Facebook when Meta ads start; Apple when budget allows
-4. Source-monitor only with explicit decision
-5. Mobile scroll retest on a real phone when available
+1. **Codex Phase A** — PH admin readiness + draft bootstrap + claim helpers (`CODEX_PH_V1_BUILD_PACKET.md`)
+2. **Human** — MFA enable → live capture IMM-001/003/010 → review → MFA publish
+3. Weekly next-action on plan/dashboard (“one thing before Sunday”) — Phase B, after publish
+4. Facebook when Meta ads start; Apple when budget allows
+5. Source-monitor only with explicit decision
+6. Mobile scroll retest on a real phone when available
 
 Run `pnpm check:guardrails` during work; `pnpm check:release` before ship.
