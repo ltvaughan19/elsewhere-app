@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { requireStaffSession } from "@/lib/auth/staff";
+import { AdminMfaStepUp } from "@/components/admin-mfa-step-up";
+import { verifiedTotpFactorSummaries } from "@/lib/auth/mfa";
 import { StatusBadge } from "./_components/admin-ui";
 
 export const dynamic = "force-dynamic";
@@ -10,6 +12,10 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   const session = await requireStaffSession();
+  const factorResult = session.aal === "aal1"
+    ? await session.supabase.auth.mfa.listFactors()
+    : null;
+  const verifiedTotpFactors = verifiedTotpFactorSummaries(factorResult?.data?.all ?? []);
 
   return (
     <div className="min-h-screen bg-void">
@@ -49,6 +55,12 @@ export default async function AdminLayout({
               Country publishing
             </Link>
             <Link
+              href="/app/settings#account-security-heading"
+              className="min-h-11 shrink-0 rounded-xl px-3 py-2.5 text-sm text-muted transition-colors hover:bg-void-card hover:text-cream"
+            >
+              Account security
+            </Link>
+            <Link
               href="/trust"
               className="min-h-11 shrink-0 rounded-xl px-3 py-2.5 text-sm text-muted transition-colors hover:bg-void-card hover:text-cream"
             >
@@ -71,7 +83,12 @@ export default async function AdminLayout({
           </div>
         </aside>
 
-        <main className="min-w-0 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">{children}</main>
+        <main className="min-w-0 px-4 py-6 sm:px-6 lg:px-8 lg:py-8">
+          {session.aal === "aal1" && verifiedTotpFactors.length > 0 ? (
+            <AdminMfaStepUp factors={verifiedTotpFactors} />
+          ) : null}
+          {children}
+        </main>
       </div>
     </div>
   );

@@ -1,16 +1,21 @@
 # Elsewhere — Current state (start here)
 
-**Updated:** 2026-07-21  
+**Updated:** 2026-07-21 (end-of-day office → home handoff)  
 **Repo:** https://github.com/ltvaughan19/elsewhere-app  
 **Production:** https://elsewhereplan.com  
 **Local folder name may still be:** `expat-atlas`
 
 This is the **only** day-to-day handoff. Older dated notes live in `docs/archive/` for history.
 
-**Codex / Sol Ultra:** paste the starter block in
-`docs/operations/CODEX_PH_V1_BUILD_PACKET.md` into Codex. That packet is the
-build brief. Cursor skill: `.cursor/skills/elsewhere-codex-brief/SKILL.md`.
-Always re-read this file + the packet before continuing after each unit.
+**Canonical clone (both machines):** `C:\Users\brenden.vaughan\expat-atlas`  
+Ignore `Documents\Codex\**\elsewhere-app` worktrees — they are not product truth.
+
+**Cursor is the control tower.** Codex (Sol Ultra) is for short, briefed build bursts only. Do not burn Sol on vague chats. Grok is for casual talk only — not PH/admin/trust work.
+
+**Codex / Sol Ultra:** paste starters from
+`docs/operations/CODEX_PH_V1_BUILD_PACKET.md`. Skill:
+`.cursor/skills/elsewhere-codex-brief/SKILL.md`. Always re-read this file +
+the packet before continuing after each unit.
 
 ---
 
@@ -25,7 +30,7 @@ Leaving is the metric. Every builder response includes a **`CEO Message:`**. Vet
 ## Home PC — start here
 
 ```powershell
-cd C:\Users\brenden.vaughan\expat-atlas   # or your home clone path
+cd C:\Users\brenden.vaughan\expat-atlas
 git fetch origin
 git checkout main
 git pull origin main
@@ -40,42 +45,55 @@ Smoke:
 1. http://localhost:3000 — Earth from `/earth/scene.splinecode` (not `prod.spline.design`); no Spline logo
 2. Login shows Google (Apple/Facebook only if enabled in Supabase)
 3. Signed-in header shows Account / Continue Plan across `/`, Countries, Plan
+4. `/app/settings` — Account security section exists (enroll / manage TOTP)
+5. `/admin` — staff only; MFA badge; step-up prompt if enrolled but still AAL1
 
-**Ignore** any `Documents\Codex\...\elsewhere-app` folders. Those are old agent worktrees. Only this git repo is truth.
+**Ignore** any `Documents\Codex\...\elsewhere-app` folders.
 
-End of session: `git status` → commit (never `.env.local`) → `git push origin main` → update **this file** if priorities changed.
+End of session: `git status` → commit (never `.env.local`) → `git push origin main` → update **this file**.
 
 ---
 
-## Session wrap — 2026-07-20
+## Session wrap — 2026-07-21 (office)
 
-### Shipped recently
-- Self-hosted Earth binary; logo flag false; guardrails lock hash
-- Hero question tags hold until late scroll leave
-- Mobile: native scroll (no Lenis), lighter scrub, WebGL sleeps past hero, ~0.6 canvas scale
-- Docs consolidated into this file + `docs/archive/2026-07/`
+### Shipped on `main` (commit `63c229d` and follow-ups)
 
-### Parked
-- **Mobile scroll feel** — improved but still imperfect on real phones; owner phone dead; revisit later. Do not keep tuning blindly.
-- **Earth markers** — old branch; not priority.
-- Casual Earth/camera edits — locked unless explicit approval.
+**Phase A — PH operator tooling (done, on GitHub):**
+- Live readiness panel on `/admin/content/philippines`
+- Idempotent three-source draft bootstrap (PH-IMM-001 / 003 / 010)
+- Snapshot-gated Claim A–C + `next_action` draft helpers
+- Required evidence-boundary (`supportNote`) on every claim
+- Helpers live in `apps/web/lib/editorial/ph-v1.ts` (+ tests)
+- Codex build packet + Cursor skill for always-read briefing
+- Earth guardrail re-locked: `splineScene.js` hash
+  `92a444e69083a8846d0c495f64e091dac3bd41e30db5c6478ee8cfbc7c1cbd79`
+  (file itself unchanged; prior mobile work had left the lock stale)
+- `pnpm check:guardrails` was green after re-lock
 
-### Next focus (content)
-Get **real PH Entry/Stay claims** live via admin MFA publish.
+**MFA enrollment UI (Cursor-reviewed 2026-07-21, shipping this wrap):**
+- App previously **checked** AAL2 but had **no enroll screen**
+- Account security on `/app/settings`; admin AAL1→AAL2 step-up when enrolled;
+  shared challenge form; `lib/auth/mfa.ts` helpers + tests
+- Key files: `apps/web/components/account-security.tsx`,
+  `admin-mfa-step-up.tsx`, `mfa-challenge-form.tsx`, `lib/auth/mfa.ts`,
+  edits to `app/app/settings/page.tsx` + `app/admin/layout.tsx`
+- Publish gate still requires `session.aal === "aal2"` — unchanged
+- Human has **not** enrolled yet (verified factors still 0 until home session)
 
-**Codex Phase A (build now):** operator readiness panel + draft source bootstrap +
-claim/block helpers — see `docs/operations/CODEX_PH_V1_BUILD_PACKET.md`.
-Human still owns live capture + MFA publish.
+### Confirmed live DB (2026-07-21)
+- Philippines still **preview**
+- **0** PH sources / claims / blocks in production (draft release #1 empty)
+- **1** active staff with publish-capable role (owner)
+- **0** verified MFA factors before enrollment UI
+- Supabase project TOTP MFA **enabled** (owner confirmed)
+- Owner has Google Authenticator ready on phone
 
-
-**Phase A implemented locally (2026-07-21):** `/admin/content/philippines` now
-has a live readiness panel, an idempotent three-source draft bootstrap, and
-snapshot-gated Claim A-C / `next_action` draft helpers. Claim citations require
-an explicit evidence-boundary note. Existing review RPCs and the MFA publish
-gate are unchanged. Human capture, review, MFA, and publishing have not been
-attempted.
-**Production read (2026-07-21):** PH still preview; **0** sources/claims/blocks;
-draft release #1 empty; one admin membership exists; **no verified MFA factor yet**.
+### Parked (do not reopen unless asked)
+- Mobile scroll feel on real phones
+- Earth markers / casual Earth camera edits
+- Cursor↔Codex auto-orchestration loop (owner chose human control)
+- Weekly dashboard “one thing before Sunday” (**Phase B** — after PH publish)
+- Apple / Facebook enable, source-monitor worker, TH/MX deep content
 
 ---
 
@@ -86,11 +104,13 @@ draft release #1 empty; one admin membership exists; **no verified MFA factor ye
 | One Next site + one Supabase | Live |
 | Auth continuity across shells | Live |
 | Email + Google login | Live |
-| Apple + Facebook login | Code-ready; `docs/operations/SOCIAL_LOGIN_ACTIVATION.md` |
+| Apple + Facebook login | Code-ready; deferred |
 | Trusted-device cookie + logout | Live |
 | Country portals PH/TH/MX | Preview structure; **no MFA-published claims yet** |
-| Editorial + source-monitor schema | Live (9 migrations); worker not provisioned |
-| Self-hosted Earth | Live at `apps/web/public/earth/scene.splinecode` |
+| Editorial schema (9 migrations) | Live; worker not provisioned |
+| PH admin Phase A operator tools | Live in code on `main` |
+| MFA enroll + AAL2 step-up UI | Live in code (enroll still human) |
+| Self-hosted Earth | Live; checksums locked |
 | Corridor Brief / Resend | Live |
 | Guardrails + `pnpm check:release` | Live |
 
@@ -98,47 +118,54 @@ draft release #1 empty; one admin membership exists; **no verified MFA factor ye
 
 ## What is explicitly not done
 
-1. **PH v1 MFA publish** — package ready (IMM-001/003/010). Needs human-visible snapshots + review + MFA.
-2. **Weekly “one thing before Sunday”** on plan/dashboard.
-3. **Apple Sign in** — deferred ($99/yr Developer Program).
-4. **Facebook Login** — enable when Meta ads imminent.
-5. **Supabase Pro** session time-box / leaked-password — deferred.
-6. **Source-monitor worker** — explicit rollout only.
-7. **TH/MX content** — after PH v1 pattern works.
-8. **Mobile scroll polish** — parked until real-device retest.
+1. **Human MFA enroll** — open `/app/settings` → Account security → scan QR with Google Authenticator → verify 6-digit code → then step up to AAL2 on `/admin`
+2. **Human live capture** — PH-IMM-001, 003, 010 exact text into admin snapshots
+3. **Human review + MFA publish** of PH Entry/Stay release
+4. Weekly “one thing before Sunday” on plan/dashboard (Phase B)
+5. Apple / Facebook / Pro session hardening / source-monitor / TH-MX / mobile polish
+
+---
+
+## Resume at home — exact next steps (human-first)
+
+Cursor walks these click-by-click. Do **not** invent `.gov.ph` text. Do **not** ask Codex to publish.
+
+1. `git pull origin main` on the shared `expat-atlas` clone
+2. Start local (or use production if preferred for staff admin)
+3. Sign in as the staff account
+4. **Enroll MFA:** `/app/settings` → Account security → add authenticator → scan QR → confirm code
+5. Open `/admin` → enter code if step-up shown → badge should show MFA active / AAL2
+6. Go to `/admin/content/philippines`
+7. Use readiness panel + **Bootstrap draft sources** (idempotent)
+8. For each ledger URL: open live page in browser → paste exact reviewed text into Capture manual snapshot
+9. Use Claim A–C / next_action helpers **only after** the matching snapshot exists
+10. Approve source → claim → block → release QA
+11. MFA-publish
+12. Smoke `https://elsewhereplan.com/countries/philippines`
+
+Package: `docs/operations/PH_V1_ENTRY_STAY_RELEASE.md`  
+Hard holds: DNV claims, work-rights, stale fees, “you qualify.”
 
 ---
 
 ## PH content autopilot (human vs AI)
 
-**“Staff”** = a Supabase user with active `staff_memberships` (you, if admin/publisher). Not a hired newsroom. Agents are not staff and must not invent `.gov.ph` text.
+**“Staff”** = Supabase user with active `staff_memberships`. Agents are not staff.
 
 ### What only a human must do
-1. Confirm your account is in `staff_memberships` with a role that can author (and ideally publish).
-2. Enable MFA on that account before publish (aal2 required).
-3. Open each live official URL in your browser and **see** the page.
-4. Paste the **exact text you reviewed** into admin “Capture manual snapshot.”
-5. Approve sources/claims (ideally a second person as reviewer; solo OK if honest).
-6. MFA-publish the country release.
-7. Smoke `https://elsewhereplan.com/countries/philippines`.
+1. Enroll + use MFA (AAL2)
+2. Open live official URLs and paste exact reviewed text
+3. Approve / publish honestly
+4. Smoke the public portal after publish
 
-### What AI builders (Cursor / Codex) can speed up
-- Walk you through `/admin/content/philippines` click-by-click.
-- Pre-fill claim **draft wording** from `PH_V1_ENTRY_STAY_RELEASE.md` (never as published truth).
-- Check admin UI / server actions / RLS when something blocks.
-- Diff published portal vs expected trust labels.
-- Keep CURRENT.md and ops docs in sync.
-- **Cannot:** invent snapshot text for unreachable gov pages; skip MFA; claim “you qualify.”
+### What AI builders can speed up
+- Click-by-click coaching
+- Draft claim wording from the ops package (never as published truth)
+- Fix admin UI / action blockers
+- Keep this file current
+- **Cannot:** invent snapshot text; skip MFA; claim “you qualify.”
 
-### Exact package
-`docs/operations/PH_V1_ENTRY_STAY_RELEASE.md`  
-Ledger: **PH-IMM-001**, **PH-IMM-003**, **PH-IMM-010**.  
-Hard holds: Digital Nomad Visa claims, work-rights claims, stale fee tables.
-
-**Codex build brief:** `docs/operations/CODEX_PH_V1_BUILD_PACKET.md`  
-(Phase A = admin operator tooling; Phase B = weekly dashboard habit — deferred)
-
-Staging files under `outputs/ph-v1-evidence/` are helpers only — evidence that counts lives in private admin storage after you capture.
+Staging aids only: `outputs/ph-v1-evidence/` — not the system of record.
 
 ---
 
@@ -154,7 +181,7 @@ Email + Google + Apple + Facebook only. Buttons only when that provider is enabl
 - Scene: **self-hosted** `/earth/scene.splinecode` (Logo = false)
 - Camera + glare: `apps/web/lib/marketing/splineScene.js` — do not casual-edit
 - Guardrails lock JS checksum + binary checksum + `logo === false`
-- Free Spline plan does **not** stamp logo on the live self-hosted binary
+- Locked JS hash (2026-07-21): `92a444e69083a8846d0c495f64e091dac3bd41e30db5c6478ee8cfbc7c1cbd79`
 
 ---
 
@@ -163,11 +190,11 @@ Email + Google + Apple + Facebook only. Buttons only when that provider is enabl
 | Path | Role |
 |------|------|
 | **`docs/CURRENT.md`** | **Start here — current truth** |
-| `docs/operations/CODEX_PH_V1_BUILD_PACKET.md` | Codex Phase A brief + paste starter |
-| `docs/operations/*` | Gates, social login, PH v1, source monitor |
+| `docs/operations/CODEX_PH_V1_BUILD_PACKET.md` | Codex Phase A brief |
+| `docs/operations/PH_V1_ENTRY_STAY_RELEASE.md` | PH Entry/Stay package |
+| `docs/operations/*` | Gates, social login, source monitor |
 | `docs/plans/PRODUCT_CLARITY_MAP.md` | North star + product picture |
 | `docs/plans/ONE_SITE_ONE_AUTH.md` | Auth architecture lock |
-| `docs/plans/ELSEWHERE_FOUNDATION.md` | Mission / values |
 | `docs/archive/` | Superseded notes only |
 | `HANDOFF.md` | Thin pointer + dual-PC rule |
 
@@ -177,11 +204,12 @@ Email + Google + Apple + Facebook only. Buttons only when that provider is enabl
 
 ## Next build order
 
-1. **Codex Phase A** — PH admin readiness + draft bootstrap + claim helpers (`CODEX_PH_V1_BUILD_PACKET.md`)
-2. **Human** — MFA enable → live capture IMM-001/003/010 → review → MFA publish
-3. Weekly next-action on plan/dashboard (“one thing before Sunday”) — Phase B, after publish
-4. Facebook when Meta ads start; Apple when budget allows
-5. Source-monitor only with explicit decision
-6. Mobile scroll retest on a real phone when available
+1. **Human** — MFA enroll → AAL2 step-up → live capture IMM-001/003/010 → review → MFA publish
+2. Weekly next-action on plan/dashboard (“one thing before Sunday”) — Phase B, after publish
+3. Facebook when Meta ads start; Apple when budget allows
+4. Source-monitor only with explicit decision
+5. Mobile scroll retest on a real phone when available
 
 Run `pnpm check:guardrails` during work; `pnpm check:release` before ship.
+
+**CEO Message for home resume:** The tooling is ready; the only thing between Elsewhere and a real Philippines next-action is your authenticator enroll plus three honest live captures — not another feature.

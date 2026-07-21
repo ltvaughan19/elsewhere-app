@@ -6,6 +6,7 @@ import type { UserPlan } from "@expat-atlas/types";
 import { clearPlan, resolvePlan } from "@/lib/plan-store";
 import { createClient } from "@/lib/supabase/client";
 import { isSupabaseConfigured } from "@/lib/supabase/config";
+import { AccountSecurity } from "@/components/account-security";
 import { useAuthSession } from "@/components/auth-session-provider";
 
 interface AccountSummary {
@@ -98,6 +99,7 @@ export default function SettingsPage() {
           </dd>
         </div>
       </dl>
+      {status === "authenticated" ? <AccountSecurity /> : null}
       <p className="mt-6 text-sm text-navy-800/70">
         When you are logged in, your Fit Quiz plan syncs to your Elsewhere account.
         Guests keep a device-only copy until signup.

@@ -28,6 +28,10 @@ pnpm --filter @expat-atlas/web dev
 
 Full smoke checklist and next priorities: **`docs/CURRENT.md`**.
 
+**2026-07-21 resume:** MFA enroll UI should be on `main`. First human steps =
+Account security on `/app/settings` → enroll Google Authenticator → AAL2 on
+`/admin` → PH capture. Cursor is the control tower; Codex only for briefed builds.
+
 ---
 
 ## Ignore on this PC
