@@ -38,6 +38,39 @@ early: smallest trustworthy experiments, explicit deadlines, observable
 outcomes, and repeated course correction. The owner retains final authority
 after the conflict and safer alternative are made clear.
 
+### Strategic edge (locked 2026-07-22)
+
+Compete on **certainty + time-to-first-real-action**, not on “AI answers” or a
+new abstract framework. The frontier UX is the **Sunday Action** pattern on
+every serious surface:
+
+1. One primary next action (doable this week).
+2. Trust strip (source / freshness / not legal advice).
+3. Done this week? (user marks complete, including offline).
+4. Evidence boundary (what this supports — and does **not**).
+
+**Corridors, not brochures.** Pages help someone cross a life-event path
+(e.g. US → PH Entry/Stay), not browse a wiki.
+
+**Reality is the moat.** Official pages authorize claims after human-attested
+capture + review. Forums/blogs are anecdotal UX research only — never legal
+authority. AI may discover URLs, draft wording from packages, and design UI;
+AI may **not** invent stay lengths, nationality lists, fees, or “you qualify.”
+
+**Solo-operator model (current reality):** No hired writers or partners yet.
+Owner is the MFA-gated publisher, not a content author inventing guidance.
+Staff work = open the official URL, attest what the page says, approve, publish.
+Later: source-monitor auto-detects page change → marks stale → human re-approves
+(high value, after the first wedge exists). Designated country reps come after
+revenue — do not wait for them to ship Phase A.
+
+**Sequence (ruthless):** PH publish + Sunday Action live → weekly habit (Phase B)
+→ TH/MX / referrals / multilingual (Phase C). Do not invent a second product
+philosophy from ChatGPT/Hormozi notes; those reinforce this edge only.
+
+**Value test:** Does this raise dream outcome × perceived likelihood, or shrink
+time/effort to a trustworthy next step? If not, park it.
+
 ---
 
 ## 1. What Elsewhere is (one sentence)

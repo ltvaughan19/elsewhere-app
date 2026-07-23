@@ -1,21 +1,24 @@
 # Elsewhere — Current state (start here)
 
-**Updated:** 2026-07-21 (end-of-day office → home handoff)  
+**Updated:** 2026-07-22  
 **Repo:** https://github.com/ltvaughan19/elsewhere-app  
 **Production:** https://elsewhereplan.com  
 **Local folder name may still be:** `expat-atlas`
 
 This is the **only** day-to-day handoff. Older dated notes live in `docs/archive/` for history.
 
-**Canonical clone (both machines):** `C:\Users\brenden.vaughan\expat-atlas`  
-Ignore `Documents\Codex\**\elsewhere-app` worktrees — they are not product truth.
+**Canonical clone:** `C:\Users\brenden.vaughan\expat-atlas`  
+Ignore `Documents\Codex\**\elsewhere-app` worktrees.
 
-**Cursor is the control tower.** Codex (Sol Ultra) is for short, briefed build bursts only. Do not burn Sol on vague chats. Grok is for casual talk only — not PH/admin/trust work.
+**Cursor = control tower.** Codex = briefed build bursts only. Grok = casual talk only.
 
-**Codex / Sol Ultra:** paste starters from
-`docs/operations/CODEX_PH_V1_BUILD_PACKET.md`. Skill:
-`.cursor/skills/elsewhere-codex-brief/SKILL.md`. Always re-read this file +
-the packet before continuing after each unit.
+**Strategic edge (do not reopen):** `docs/plans/PRODUCT_CLARITY_MAP.md` §0
+“Strategic edge” — Sunday Action pattern; corridors not brochures; reality moat;
+solo MFA publisher (not hired newsroom); sequence A→B→C.
+
+**Codex:** idle until Cursor pastes a new unit. Phase A tooling + MFA UI are on
+`main`. Next Codex candidates (later): Sunday Action UI on portal/dashboard,
+or source-monitor worker — **not** inventing PH claim text.
 
 ---
 
@@ -126,22 +129,54 @@ End of session: `git status` → commit (never `.env.local`) → `git push origi
 
 ---
 
-## Resume at home — exact next steps (human-first)
+## Session wrap — 2026-07-22
 
-Cursor walks these click-by-click. Do **not** invent `.gov.ph` text. Do **not** ask Codex to publish.
+- Strategic edge baked into `docs/plans/PRODUCT_CLARITY_MAP.md` §0 (Sunday Action,
+  solo MFA publisher, A→B→C). Codex idle until Cursor pastes a new unit.
+- Hormozi / ChatGPT notes = reinforcement only; not a second roadmap.
+- **Stopped mid MFA enroll walkthrough** — resume with the steps below.
+- Official PH URLs already locked in package; capture = witness, not authorship.
+- Auto-update (source-monitor) remains high-value **after** first publish.
 
-1. `git pull origin main` on the shared `expat-atlas` clone
-2. Start local (or use production if preferred for staff admin)
-3. Sign in as the staff account
-4. **Enroll MFA:** `/app/settings` → Account security → add authenticator → scan QR → confirm code
-5. Open `/admin` → enter code if step-up shown → badge should show MFA active / AAL2
-6. Go to `/admin/content/philippines`
-7. Use readiness panel + **Bootstrap draft sources** (idempotent)
-8. For each ledger URL: open live page in browser → paste exact reviewed text into Capture manual snapshot
-9. Use Claim A–C / next_action helpers **only after** the matching snapshot exists
-10. Approve source → claim → block → release QA
-11. MFA-publish
-12. Smoke `https://elsewhereplan.com/countries/philippines`
+---
+
+## MFA enroll — click-by-click (do this first)
+
+Use production or local with staff login. Phone: Google Authenticator ready.
+
+**Step 1 — open settings**
+1. Open https://elsewhereplan.com/app/settings  
+   (or http://localhost:3000/app/settings with `.env.local`)
+2. Sign in as the staff admin account
+3. Scroll to **Account security / Authenticator app MFA**
+4. Click **Add authenticator**
+5. Stop when the **QR code** (and optional manual secret) appears
+
+**Step 2 — verify (after QR is up)**
+1. In Google Authenticator → add account → scan QR (or type manual secret)
+2. Enter the current **6-digit code** in Elsewhere → Verify authenticator
+3. Badge should show **AAL2 verified** (or similar)
+
+**Step 3 — admin step-up**
+1. Open https://elsewhereplan.com/admin (or local `/admin`)
+2. If prompted, enter a fresh 6-digit code
+3. Header badge should show MFA active / ready to publish
+
+Then continue PH capture (below). Tell Cursor “QR is up” or “MFA enrolled” to resume coaching.
+
+---
+
+## Resume next — human-first sequence
+
+Cursor walks click-by-click. Do **not** invent `.gov.ph` text. Do **not** ask Codex to publish. Codex stays idle unless Cursor pastes a unit.
+
+1. `git pull origin main` on `C:\Users\brenden.vaughan\expat-atlas`
+2. Finish **MFA enroll** (section above)
+3. `/admin/content/philippines` → readiness panel → **Bootstrap draft sources**
+4. For each ledger URL: open live page → paste exact text into Capture manual snapshot
+5. Claim A–C / `next_action` helpers **only after** matching snapshot exists
+6. Approve source → claim → block → release QA → MFA-publish
+7. Smoke https://elsewhereplan.com/countries/philippines
 
 Package: `docs/operations/PH_V1_ENTRY_STAY_RELEASE.md`  
 Hard holds: DNV claims, work-rights, stale fees, “you qualify.”
@@ -150,22 +185,38 @@ Hard holds: DNV claims, work-rights, stale fees, “you qualify.”
 
 ## PH content autopilot (human vs AI)
 
-**“Staff”** = Supabase user with active `staff_memberships`. Agents are not staff.
+**“Staff”** = you with active `staff_memberships` + MFA. Not a hired newsroom.
+Agents are not staff.
 
-### What only a human must do
+**Official listings for PH v1 are already chosen** (do not re-hunt randomly):
+
+| ID | URL |
+|----|-----|
+| PH-IMM-001 | https://evisa.gov.ph/page/policy?l2=Free+to+enter+the+Philippines+without+Visa |
+| PH-IMM-003 | https://immigration.gov.ph/visas/visa-waiver/ |
+| PH-IMM-010 | https://e-services.immigration.gov.ph/ |
+
+Full package: `docs/operations/PH_V1_ENTRY_STAY_RELEASE.md`.
+
+### What only a human must do (attestation, not authorship)
 1. Enroll + use MFA (AAL2)
-2. Open live official URLs and paste exact reviewed text
-3. Approve / publish honestly
-4. Smoke the public portal after publish
+2. Open each live official URL and paste the **exact text you see** into Capture
+   (this is witnessing the page — not writing an article)
+3. Approve / MFA-publish
+4. Smoke the public portal
 
-### What AI builders can speed up
-- Click-by-click coaching
-- Draft claim wording from the ops package (never as published truth)
-- Fix admin UI / action blockers
-- Keep this file current
-- **Cannot:** invent snapshot text; skip MFA; claim “you qualify.”
+### What AI / Cursor can do
+- Find and list official URLs; design Sunday Action UX; draft claim helpers from
+  the package; coach click-by-click; later build source-monitor (detect change →
+  mark stale → human re-approve)
+- **Cannot:** invent snapshot text; skip MFA; publish; claim “you qualify”;
+  treat forum scrape as legal authority
 
-Staging aids only: `outputs/ph-v1-evidence/` — not the system of record.
+**Auto-update (high value, after first publish):** worker fetches official URLs,
+diffs hashes, marks claims stale, opens review. Humans never “rewrite policy” —
+they re-attest the live page. Schema exists; worker not provisioned yet.
+
+Staging aids only: `outputs/ph-v1-evidence/`.
 
 ---
 
@@ -212,4 +263,5 @@ Email + Google + Apple + Facebook only. Buttons only when that provider is enabl
 
 Run `pnpm check:guardrails` during work; `pnpm check:release` before ship.
 
-**CEO Message for home resume:** The tooling is ready; the only thing between Elsewhere and a real Philippines next-action is your authenticator enroll plus three honest live captures — not another feature.
+**CEO Message for next resume:** Finish MFA enroll from CURRENT.md, then witness
+three official PH pages — that unlocks the first real Sunday Action, not more tooling.

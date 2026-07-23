@@ -24,6 +24,9 @@ description: >-
 - Treat `outputs/ph-v1-evidence/` as staging aids only — not publishable truth.
 - Do not casual-edit Earth/Spline camera or the self-hosted scene binary.
 - Prefer fixing trust-gate clarity over weakening a gate.
+- Read `docs/plans/PRODUCT_CLARITY_MAP.md` §0 Strategic edge (Sunday Action,
+  solo MFA publisher, A→B→C sequence). Do not invent a competing framework.
+- Source-monitor may detect change and mark stale; it must never auto-publish.
 
 ## Paste starter for Codex
 

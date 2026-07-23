@@ -7,7 +7,8 @@
 Leaving is the metric. Features must serve a weekly leaving habit (one next
 action → optional official-source touch → optional human signal). Do not
 prioritize ecosystem, Meta, or more tools until that habit is proven with real
-users. Full statement: `docs/plans/PRODUCT_CLARITY_MAP.md` §0.
+users. Full statement: `docs/plans/PRODUCT_CLARITY_MAP.md` §0 (including
+Strategic edge / Sunday Action).
 
 Every response must include a concise **`CEO Message:`** applying the permanent
 internal CEO lens. Veto and rework failure-shaped directions; do not merely

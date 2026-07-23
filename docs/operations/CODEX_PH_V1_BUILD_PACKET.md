@@ -1,8 +1,13 @@
 # Codex build packet — PH v1 Entry/Stay
 
-**Updated:** 2026-07-21  
+**Updated:** 2026-07-22  
 **Owner direction:** Plan here in Cursor; Codex executes this packet.  
-**North star:** *“I’m actually going — and I know the one thing to do before Sunday.”* Leaving is the metric.
+**North star:** *“I’m actually going — and I know the one thing to do before Sunday.”* Leaving is the metric.  
+**Status:** Phase A operator tooling + MFA enroll UI shipped on `main`.  
+**Codex now:** do nothing until Cursor pastes a new unit. Human MFA → capture →
+publish first. Next possible units: Sunday Action surfaces, or source-monitor
+worker (detect/stale only — never auto-publish). Re-read
+`docs/plans/PRODUCT_CLARITY_MAP.md` §0 Strategic edge before any new build.
 
 ---
 
