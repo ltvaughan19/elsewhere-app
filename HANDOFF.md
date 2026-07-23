@@ -28,9 +28,10 @@ pnpm --filter @expat-atlas/web dev
 
 Full smoke checklist and next priorities: **`docs/CURRENT.md`**.
 
-**2026-07-22 wrap:** Strategic edge in PRODUCT_CLARITY_MAP §0. MFA enroll
-walkthrough is in `docs/CURRENT.md` (stopped mid Step 1). Next: finish MFA →
-PH capture. Cursor = control tower; Codex idle until pasted a unit.
+**2026-07-23 wrap:** MFA enrolled (step up to AAL2 after each login). Admin
+redirect loop + MFA contrast fixed on `main`. Next: confirm `/admin` → PH
+capture IMM-001/003/010. Say **“walk me through PH capture”**. Cursor =
+control tower; Codex idle.
 
 ---
 

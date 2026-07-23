@@ -1,6 +1,6 @@
 # Elsewhere — Current state (start here)
 
-**Updated:** 2026-07-22  
+**Updated:** 2026-07-23 (handoff)  
 **Repo:** https://github.com/ltvaughan19/elsewhere-app  
 **Production:** https://elsewhereplan.com  
 **Local folder name may still be:** `expat-atlas`
@@ -16,9 +16,8 @@ Ignore `Documents\Codex\**\elsewhere-app` worktrees.
 “Strategic edge” — Sunday Action pattern; corridors not brochures; reality moat;
 solo MFA publisher (not hired newsroom); sequence A→B→C.
 
-**Codex:** idle until Cursor pastes a new unit. Phase A tooling + MFA UI are on
-`main`. Next Codex candidates (later): Sunday Action UI on portal/dashboard,
-or source-monitor worker — **not** inventing PH claim text.
+**Codex:** idle until Cursor pastes a new unit. Next candidates (later): Sunday
+Action UI, or source-monitor worker — **not** inventing PH claim text.
 
 ---
 
@@ -48,8 +47,8 @@ Smoke:
 1. http://localhost:3000 — Earth from `/earth/scene.splinecode` (not `prod.spline.design`); no Spline logo
 2. Login shows Google (Apple/Facebook only if enabled in Supabase)
 3. Signed-in header shows Account / Continue Plan across `/`, Countries, Plan
-4. `/app/settings` — Account security section exists (enroll / manage TOTP)
-5. `/admin` — staff only; MFA badge; step-up prompt if enrolled but still AAL1
+4. `/app/settings` — Account security; TOTP enrolled; step up to AAL2 after login if needed
+5. `/admin` — staff only; should load (no login↔admin loop); MFA badge / step-up if AAL1
 
 **Ignore** any `Documents\Codex\...\elsewhere-app` folders.
 
@@ -57,46 +56,26 @@ End of session: `git status` → commit (never `.env.local`) → `git push origi
 
 ---
 
-## Session wrap — 2026-07-21 (office)
+## Session wrap — 2026-07-23
 
-### Shipped on `main` (commit `63c229d` and follow-ups)
+### Human progress
+- **MFA enrolled** on `brenden@elsewhereplan.com` (Google Authenticator, factor verified)
+- After logout/login, session starts **AAL1** → use Settings “Verify this session” (or admin step-up) to reach **AAL2**
+- Owner confirmed AAL2 badge after code entry
 
-**Phase A — PH operator tooling (done, on GitHub):**
-- Live readiness panel on `/admin/content/philippines`
-- Idempotent three-source draft bootstrap (PH-IMM-001 / 003 / 010)
-- Snapshot-gated Claim A–C + `next_action` draft helpers
-- Required evidence-boundary (`supportNote`) on every claim
-- Helpers live in `apps/web/lib/editorial/ph-v1.ts` (+ tests)
-- Codex build packet + Cursor skill for always-read briefing
-- Earth guardrail re-locked: `splineScene.js` hash
-  `92a444e69083a8846d0c495f64e091dac3bd41e30db5c6478ee8cfbc7c1cbd79`
-  (file itself unchanged; prior mobile work had left the lock stale)
-- `pnpm check:guardrails` was green after re-lock
+### Shipped on `main` today / recently
+- `7c51974` — Fix `/admin`↔`/login` redirect loop (getUser for identity; signed-in-not-staff → dashboard)
+- `bfbccf4` — MFA success/notice contrast on dark theme (`text-success` not raw emerald)
+- Prior: Phase A PH admin tooling (`63c229d`), MFA UI (`14c4b20`), strategic edge docs (`ce7eb69`)
 
-**MFA enrollment UI (Cursor-reviewed 2026-07-21, shipping this wrap):**
-- App previously **checked** AAL2 but had **no enroll screen**
-- Account security on `/app/settings`; admin AAL1→AAL2 step-up when enrolled;
-  shared challenge form; `lib/auth/mfa.ts` helpers + tests
-- Key files: `apps/web/components/account-security.tsx`,
-  `admin-mfa-step-up.tsx`, `mfa-challenge-form.tsx`, `lib/auth/mfa.ts`,
-  edits to `app/app/settings/page.tsx` + `app/admin/layout.tsx`
-- Publish gate still requires `session.aal === "aal2"` — unchanged
-- Human has **not** enrolled yet (verified factors still 0 until home session)
+### Still true
+- PH portal still **preview**; no MFA-published claims yet
+- Capture = witness official pages (not authorship); URLs locked in package below
+- Codex idle unless Cursor pastes a unit
 
-### Confirmed live DB (2026-07-21)
-- Philippines still **preview**
-- **0** PH sources / claims / blocks in production (draft release #1 empty)
-- **1** active staff with publish-capable role (owner)
-- **0** verified MFA factors before enrollment UI
-- Supabase project TOTP MFA **enabled** (owner confirmed)
-- Owner has Google Authenticator ready on phone
-
-### Parked (do not reopen unless asked)
-- Mobile scroll feel on real phones
-- Earth markers / casual Earth camera edits
-- Cursor↔Codex auto-orchestration loop (owner chose human control)
-- Weekly dashboard “one thing before Sunday” (**Phase B** — after PH publish)
-- Apple / Facebook enable, source-monitor worker, TH/MX deep content
+### Parked
+- Mobile scroll / Earth markers / Cursor↔Codex auto-loop / Phase B weekly habit /
+  Apple·Facebook / source-monitor worker / TH·MX deep content
 
 ---
 
@@ -107,12 +86,11 @@ End of session: `git status` → commit (never `.env.local`) → `git push origi
 | One Next site + one Supabase | Live |
 | Auth continuity across shells | Live |
 | Email + Google login | Live |
-| Apple + Facebook login | Code-ready; deferred |
-| Trusted-device cookie + logout | Live |
-| Country portals PH/TH/MX | Preview structure; **no MFA-published claims yet** |
+| Staff MFA enroll + AAL2 step-up | **Live — owner enrolled** |
+| Admin access (no redirect loop) | Live on `main` |
+| PH admin Phase A operator tools | Live |
+| Country portals PH/TH/MX | Preview; **no MFA-published claims yet** |
 | Editorial schema (9 migrations) | Live; worker not provisioned |
-| PH admin Phase A operator tools | Live in code on `main` |
-| MFA enroll + AAL2 step-up UI | Live in code (enroll still human) |
 | Self-hosted Earth | Live; checksums locked |
 | Corridor Brief / Resend | Live |
 | Guardrails + `pnpm check:release` | Live |
@@ -121,65 +99,43 @@ End of session: `git status` → commit (never `.env.local`) → `git push origi
 
 ## What is explicitly not done
 
-1. **Human MFA enroll** — open `/app/settings` → Account security → scan QR with Google Authenticator → verify 6-digit code → then step up to AAL2 on `/admin`
+1. **Confirm `/admin` loads cleanly** after AAL2 (if any glitch: logout → login → Settings step-up → `/admin`)
 2. **Human live capture** — PH-IMM-001, 003, 010 exact text into admin snapshots
 3. **Human review + MFA publish** of PH Entry/Stay release
 4. Weekly “one thing before Sunday” on plan/dashboard (Phase B)
-5. Apple / Facebook / Pro session hardening / source-monitor / TH-MX / mobile polish
+5. Source-monitor auto-stale worker; Apple / Facebook; TH/MX; mobile polish
 
 ---
 
-## Session wrap — 2026-07-22
+## MFA — how it works now (already enrolled)
 
-- Strategic edge baked into `docs/plans/PRODUCT_CLARITY_MAP.md` §0 (Sunday Action,
-  solo MFA publisher, A→B→C). Codex idle until Cursor pastes a new unit.
-- Hormozi / ChatGPT notes = reinforcement only; not a second roadmap.
-- **Stopped mid MFA enroll walkthrough** — resume with the steps below.
-- Official PH URLs already locked in package; capture = witness, not authorship.
-- Auto-update (source-monitor) remains high-value **after** first publish.
+Factor is enrolled. **Each new login** may be AAL1 until you step up:
 
----
+1. https://elsewhereplan.com/app/settings → **Verify this session** → 6-digit code → **AAL2 verified**
+2. Or `/admin` step-up box if shown
+3. Do **not** click Add authenticator unless rotating a compromised secret
 
-## MFA enroll — click-by-click (do this first)
-
-Use production or local with staff login. Phone: Google Authenticator ready.
-
-**Step 1 — open settings**
-1. Open https://elsewhereplan.com/app/settings  
-   (or http://localhost:3000/app/settings with `.env.local`)
-2. Sign in as the staff admin account
-3. Scroll to **Account security / Authenticator app MFA**
-4. Click **Add authenticator**
-5. Stop when the **QR code** (and optional manual secret) appears
-
-**Step 2 — verify (after QR is up)**
-1. In Google Authenticator → add account → scan QR (or type manual secret)
-2. Enter the current **6-digit code** in Elsewhere → Verify authenticator
-3. Badge should show **AAL2 verified** (or similar)
-
-**Step 3 — admin step-up**
-1. Open https://elsewhereplan.com/admin (or local `/admin`)
-2. If prompted, enter a fresh 6-digit code
-3. Header badge should show MFA active / ready to publish
-
-Then continue PH capture (below). Tell Cursor “QR is up” or “MFA enrolled” to resume coaching.
+Optional later: Remove + re-enroll if the secret was ever shared in a screenshot.
 
 ---
 
-## Resume next — human-first sequence
+## Resume next — PH capture (human-first)
 
-Cursor walks click-by-click. Do **not** invent `.gov.ph` text. Do **not** ask Codex to publish. Codex stays idle unless Cursor pastes a unit.
+Cursor walks click-by-click. Do **not** invent `.gov.ph` text. Codex stays idle unless pasted a unit.
 
 1. `git pull origin main` on `C:\Users\brenden.vaughan\expat-atlas`
-2. Finish **MFA enroll** (section above)
-3. `/admin/content/philippines` → readiness panel → **Bootstrap draft sources**
-4. For each ledger URL: open live page → paste exact text into Capture manual snapshot
-5. Claim A–C / `next_action` helpers **only after** matching snapshot exists
-6. Approve source → claim → block → release QA → MFA-publish
-7. Smoke https://elsewhereplan.com/countries/philippines
+2. Sign in → Settings step-up to **AAL2** if needed
+3. Confirm https://elsewhereplan.com/admin loads (MFA badge OK)
+4. `/admin/content/philippines` → readiness panel → **Bootstrap draft sources**
+5. For each ledger URL: open live page → paste **exact text you see** into Capture manual snapshot
+6. Claim A–C / `next_action` helpers **only after** matching snapshot exists
+7. Approve source → claim → block → release QA → MFA-publish
+8. Smoke https://elsewhereplan.com/countries/philippines
 
 Package: `docs/operations/PH_V1_ENTRY_STAY_RELEASE.md`  
 Hard holds: DNV claims, work-rights, stale fees, “you qualify.”
+
+Tell Cursor: **“walk me through PH capture”** or **“admin MFA looks good”**.
 
 ---
 
@@ -199,7 +155,7 @@ Agents are not staff.
 Full package: `docs/operations/PH_V1_ENTRY_STAY_RELEASE.md`.
 
 ### What only a human must do (attestation, not authorship)
-1. Enroll + use MFA (AAL2)
+1. Keep MFA usable (step up to AAL2 each session as needed)
 2. Open each live official URL and paste the **exact text you see** into Capture
    (this is witnessing the page — not writing an article)
 3. Approve / MFA-publish
@@ -255,13 +211,12 @@ Email + Google + Apple + Facebook only. Buttons only when that provider is enabl
 
 ## Next build order
 
-1. **Human** — MFA enroll → AAL2 step-up → live capture IMM-001/003/010 → review → MFA publish
+1. **Human** — AAL2 → `/admin` OK → live capture IMM-001/003/010 → review → MFA publish
 2. Weekly next-action on plan/dashboard (“one thing before Sunday”) — Phase B, after publish
-3. Facebook when Meta ads start; Apple when budget allows
-4. Source-monitor only with explicit decision
+3. Source-monitor (detect/stale only) with explicit decision
+4. Facebook when Meta ads start; Apple when budget allows
 5. Mobile scroll retest on a real phone when available
 
 Run `pnpm check:guardrails` during work; `pnpm check:release` before ship.
 
-**CEO Message for next resume:** Finish MFA enroll from CURRENT.md, then witness
-three official PH pages — that unlocks the first real Sunday Action, not more tooling.
+**CEO Message for next resume:** MFA is done — open `/admin` at AAL2 and witness the three official PH pages so the first Sunday Action can ship.
