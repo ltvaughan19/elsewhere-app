@@ -33,8 +33,12 @@ export default function LoginPage() {
     const destination = safeNextPath(
       new URLSearchParams(window.location.search).get("next"),
     );
-    router.replace(destination);
-    router.refresh();
+    // Avoid hammering /admin while a staff gate is resolving — one replace + refresh.
+    const timer = window.setTimeout(() => {
+      router.replace(destination);
+      router.refresh();
+    }, 150);
+    return () => window.clearTimeout(timer);
   }, [router, status]);
 
   const submit = async (event: React.FormEvent) => {

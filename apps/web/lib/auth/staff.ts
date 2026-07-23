@@ -22,48 +22,70 @@ const ALL_STAFF_ROLES: readonly StaffRole[] = [
   "admin",
 ];
 
-const getCachedStaffSession = cache(async (): Promise<StaffSession | null> => {
-  if (!isSupabaseConfigured()) return null;
+type StaffLookup =
+  | { kind: "anonymous" }
+  | { kind: "signed_in_not_staff"; userId: string }
+  | { kind: "staff"; session: StaffSession };
+
+const getCachedStaffLookup = cache(async (): Promise<StaffLookup> => {
+  if (!isSupabaseConfigured()) return { kind: "anonymous" };
 
   const supabase = await createClient();
-  const { data, error } = await supabase.auth.getClaims();
-  const userId = data?.claims?.sub;
+  // Prefer getUser() for identity — after MFA step-up, client cookies can be
+  // valid while getClaims()-only checks briefly fail and cause /admin↔/login loops.
+  const {
+    data: { user },
+    error: userError,
+  } = await supabase.auth.getUser();
 
-  if (error || typeof userId !== "string" || !userId) return null;
+  if (userError || !user) return { kind: "anonymous" };
 
   const { data: membership, error: membershipError } = await supabase
     .from("staff_memberships")
     .select("role, active")
-    .eq("user_id", userId)
+    .eq("user_id", user.id)
     .eq("active", true)
     .maybeSingle();
 
-  if (membershipError || !membership) return null;
+  if (membershipError || !membership) {
+    return { kind: "signed_in_not_staff", userId: user.id };
+  }
+
+  const { data: claimsData } = await supabase.auth.getClaims();
+  const aal = claimsData?.claims?.aal === "aal2" ? "aal2" : "aal1";
 
   return {
-    supabase,
-    userId,
-    role: membership.role,
-    aal: data.claims.aal === "aal2" ? "aal2" : "aal1",
+    kind: "staff",
+    session: {
+      supabase,
+      userId: user.id,
+      role: membership.role,
+      aal,
+    },
   };
 });
 
 export async function getStaffSession(): Promise<StaffSession | null> {
-  return getCachedStaffSession();
+  const lookup = await getCachedStaffLookup();
+  return lookup.kind === "staff" ? lookup.session : null;
 }
 
 export async function requireStaffSession(
   allowedRoles: readonly StaffRole[] = ALL_STAFF_ROLES,
 ): Promise<StaffSession> {
-  const session = await getCachedStaffSession();
+  const lookup = await getCachedStaffLookup();
 
-  if (!session) {
+  if (lookup.kind === "anonymous") {
     redirect("/login?next=%2Fadmin");
   }
 
-  if (!allowedRoles.includes(session.role)) {
+  if (lookup.kind === "signed_in_not_staff") {
     redirect("/app/dashboard?notice=staff-access-required");
   }
 
-  return session;
+  if (!allowedRoles.includes(lookup.session.role)) {
+    redirect("/app/dashboard?notice=staff-access-required");
+  }
+
+  return lookup.session;
 }
