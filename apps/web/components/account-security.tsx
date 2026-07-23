@@ -168,13 +168,13 @@ export function AccountSecurity() {
             Add a time-based one-time password to protect sensitive account and staff publishing actions.
           </p>
         </div>
-        <span className={`w-fit rounded-full border px-3 py-1 text-xs font-medium ${currentLevel === "aal2" ? "border-emerald-200 bg-emerald-50 text-emerald-800" : "border-amber-200 bg-amber-50 text-amber-800"}`}>
+        <span className={`w-fit rounded-full border px-3 py-1 text-xs font-medium ${currentLevel === "aal2" ? "border-success/40 bg-success/15 text-success" : "border-warning/40 bg-warning/15 text-warning"}`}>
           {currentLevel === "aal2" ? "AAL2 verified" : "AAL1 session"}
         </span>
       </div>
 
-      {error ? <p role="alert" className="mt-4 border-l-2 border-red-300 pl-3 text-red-700">{error}</p> : null}
-      {notice ? <p role="status" className="mt-4 border-l-2 border-emerald-300 pl-3 text-emerald-700">{notice}</p> : null}
+      {error ? <p role="alert" className="mt-4 border-l-2 border-danger pl-3 text-sm text-danger">{error}</p> : null}
+      {notice ? <p role="status" className="mt-4 border-l-2 border-success pl-3 text-sm font-medium text-success">{notice}</p> : null}
 
       <div className="mt-6">
         <h3 className="font-medium text-navy-950">Existing factors</h3>
@@ -201,7 +201,7 @@ export function AccountSecurity() {
                     disabled={busy || needsStepUp}
                     onClick={() => void unenroll(factor)}
                     title={needsStepUp ? "Verify MFA before removing this factor" : undefined}
-                    className="min-h-10 rounded-full border border-red-200 px-4 text-xs font-medium text-red-800 disabled:cursor-not-allowed disabled:opacity-45"
+                    className="min-h-10 rounded-full border border-danger/40 px-4 text-xs font-medium text-danger disabled:cursor-not-allowed disabled:opacity-45"
                   >
                     Remove
                   </button>
@@ -213,10 +213,10 @@ export function AccountSecurity() {
       </div>
 
       {currentLevel === "aal1" && verifiedFactors.length > 0 ? (
-        <div className="mt-6 rounded-xl border border-amber-200 bg-amber-50 p-4">
-          <h3 className="font-medium text-navy-950">Verify this session</h3>
-          <p className="mt-1 text-xs text-navy-800/70">Step up to AAL2 before removing verified factors or using staff publish actions.</p>
-          <MfaChallengeForm factors={verifiedFactors} tone="light" onVerified={async () => {
+        <div className="mt-6 rounded-xl border border-warning/35 bg-warning/10 p-4">
+          <h3 className="font-medium text-cream">Verify this session</h3>
+          <p className="mt-1 text-xs text-muted">Step up to AAL2 before removing verified factors or using staff publish actions.</p>
+          <MfaChallengeForm factors={verifiedFactors} tone="dark" onVerified={async () => {
             setNotice("Session verified at AAL2.");
             await loadSecurity();
             router.refresh();
@@ -225,27 +225,27 @@ export function AccountSecurity() {
       ) : null}
 
       {enrollment ? (
-        <div className="mt-6 rounded-xl border border-sand-300 bg-sand-50 p-5">
-          <h3 className="font-medium text-navy-950">Finish authenticator setup</h3>
-          <p className="mt-2 text-navy-800/70">Scan the QR code, or enter the manual secret in your authenticator app. Then verify one current code.</p>
+        <div className="mt-6 rounded-xl border border-sand-300 bg-void-elevated p-5">
+          <h3 className="font-medium text-cream">Finish authenticator setup</h3>
+          <p className="mt-2 text-muted">Scan the QR code, or enter the manual secret in your authenticator app. Then verify one current code.</p>
           <div className="mt-5 grid gap-5 sm:grid-cols-[220px_minmax(0,1fr)] sm:items-start">
-            <Image src={totpQrDataUrl(enrollment.qrCode)} alt="QR code for the new Elsewhere authenticator factor" width={220} height={220} unoptimized className="rounded-lg border border-sand-200 bg-white" />
+            <Image src={totpQrDataUrl(enrollment.qrCode)} alt="QR code for the new Elsewhere authenticator factor" width={220} height={220} unoptimized className="rounded-lg border border-sand-200 bg-[#ffffff]" />
             <div>
-              <p className="text-xs font-medium uppercase tracking-wider text-navy-800/60">Manual secret</p>
-              <code className="mt-2 block break-all rounded-lg border border-sand-200 bg-white p-3 text-sm text-navy-950">{enrollment.secret}</code>
-              <p className="mt-2 text-xs text-navy-800/60">Treat this secret like a password. Do not paste it into support messages.</p>
+              <p className="text-xs font-medium uppercase tracking-wider text-soft">Manual secret</p>
+              <code className="mt-2 block break-all rounded-lg border border-sand-200 bg-void-card p-3 text-sm text-cream">{enrollment.secret}</code>
+              <p className="mt-2 text-xs text-soft">Treat this secret like a password. Do not paste it into support messages.</p>
             </div>
           </div>
           <form onSubmit={finishEnrollment} className="mt-5">
-            <label htmlFor="mfa-enrollment-code" className="font-medium text-navy-950">6-digit authenticator code</label>
+            <label htmlFor="mfa-enrollment-code" className="font-medium text-cream">6-digit authenticator code</label>
             <div className="mt-2 flex flex-col gap-3 sm:flex-row">
-              <input id="mfa-enrollment-code" type="text" inputMode="numeric" autoComplete="one-time-code" pattern="[0-9]{6}" maxLength={6} required value={enrollmentCode} onChange={(event) => setEnrollmentCode(normalizeTotpCode(event.target.value))} className="min-h-12 flex-1 rounded-xl border border-sand-300 bg-white px-4 font-mono text-lg tracking-[0.3em] text-navy-950" />
-              <button type="submit" disabled={busy} className="min-h-12 rounded-full bg-navy-950 px-5 font-medium text-white disabled:cursor-wait disabled:opacity-50">{busy ? "Verifying..." : "Verify authenticator"}</button>
+              <input id="mfa-enrollment-code" type="text" inputMode="numeric" autoComplete="one-time-code" pattern="[0-9]{6}" maxLength={6} required value={enrollmentCode} onChange={(event) => setEnrollmentCode(normalizeTotpCode(event.target.value))} className="min-h-12 flex-1 rounded-xl border border-sand-300 bg-void-card px-4 font-mono text-lg tracking-[0.3em] text-cream" />
+              <button type="submit" disabled={busy} className="min-h-12 rounded-full bg-accent-sand px-5 font-medium text-accent-ink disabled:cursor-wait disabled:opacity-50">{busy ? "Verifying..." : "Verify authenticator"}</button>
             </div>
           </form>
         </div>
       ) : (
-        <button type="button" disabled={busy || loading} onClick={() => void startEnrollment()} className="mt-6 min-h-11 rounded-full bg-navy-950 px-5 font-medium text-white disabled:cursor-wait disabled:opacity-50">
+        <button type="button" disabled={busy || loading} onClick={() => void startEnrollment()} className="mt-6 min-h-11 rounded-full bg-accent-sand px-5 font-medium text-accent-ink disabled:cursor-wait disabled:opacity-50">
           {busy ? "Starting..." : "Add authenticator"}
         </button>
       )}
