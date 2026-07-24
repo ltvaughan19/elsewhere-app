@@ -1,6 +1,6 @@
 # Elsewhere — Current state (start here)
 
-**Updated:** 2026-07-23 (handoff)  
+**Updated:** 2026-07-24 (home handoff — mid PH capture)  
 **Repo:** https://github.com/ltvaughan19/elsewhere-app  
 **Production:** https://elsewhereplan.com  
 **Local folder name may still be:** `expat-atlas`
@@ -16,8 +16,7 @@ Ignore `Documents\Codex\**\elsewhere-app` worktrees.
 “Strategic edge” — Sunday Action pattern; corridors not brochures; reality moat;
 solo MFA publisher (not hired newsroom); sequence A→B→C.
 
-**Codex:** idle until Cursor pastes a new unit. Next candidates (later): Sunday
-Action UI, or source-monitor worker — **not** inventing PH claim text.
+**Codex:** idle until Cursor pastes a new unit. Do **not** invent PH claim text.
 
 ---
 
@@ -26,6 +25,17 @@ Action UI, or source-monitor worker — **not** inventing PH claim text.
 > **“I’m actually going — and I know the one thing to do before Sunday.”**
 
 Leaving is the metric. Every builder response includes a **`CEO Message:`**. Veto failure-shaped work (tool sprawl, vanity engagement, premature ecosystem, fake authority). See `.cursor/rules/ceo-north-star.mdc`.
+
+---
+
+## Tell Cursor at home (copy-paste)
+
+```
+Read docs/CURRENT.md. Continue PH v1 human capture from where we left off:
+PH-IMM-001 done; next is PH-IMM-003 then 010 using the paste files in
+outputs/ph-v1-evidence/. Walk me click-by-click on
+https://elsewhereplan.com/admin/content/philippines — exact UI labels only.
+```
 
 ---
 
@@ -56,22 +66,99 @@ End of session: `git status` → commit (never `.env.local`) → `git push origi
 
 ---
 
-## Session wrap — 2026-07-23
+## Session wrap — 2026-07-24 (office → home)
+
+### Human progress (production admin)
+- Staff admin works for Google user `brenden@elsewhereplan.com` (Admin + **MFA Active** / AAL2 confirmed in screenshot)
+- `/admin/content/philippines` open and usable
+- **Create missing source drafts** already done → **Package sources: 3 draft / 0 verified**
+- **PH-IMM-001 captured** → badge **Snapshot present**; **Required snapshots: 1 of 3 captured**
+- Red banner **“That exact evidence is already captured for this source.”** = re-paste of 001 (safe to ignore; do not re-capture 001)
+- **PH-IMM-003** and **PH-IMM-010** still **Capture needed**
+- Claims / next action / release still **Blocked** (expected until 3 snapshots + drafts + approvals)
+- Release row shows **Release 1 / draft** (empty/open draft exists — do not publish yet)
+
+### Paste assists ready in repo
+| Ledger | File | Status |
+|--------|------|--------|
+| PH-IMM-001 | `outputs/ph-v1-evidence/PH-IMM-001.capture-paste.txt` | **Already attested in admin** — keep for audit; do not re-submit |
+| PH-IMM-003 | `outputs/ph-v1-evidence/PH-IMM-003.capture-paste.txt` | **Next paste** |
+| PH-IMM-010 | `outputs/ph-v1-evidence/PH-IMM-010.capture-paste.txt` | After 003 |
+
+AI may fetch/copy for paste assist. **Human must skim live URL, paste, click Retain.** That is attestation, not authorship.
+
+### Exact admin UI labels (do not hunt)
+Page: https://elsewhereplan.com/admin/content/philippines  
+Title: **Philippines editorial workspace**  
+Top card: **Operator readiness** (eyebrow **PH v1 Entry/Stay**)
+
+Nav chips: **`1. Sources`** · **`2. Claims`** · **`3. Page content`** · **`4. Releases`**
+
+**Capture form** (right card under Sources — ignore left **Register a source document**):
+
+| On-screen label | What to do |
+|-----------------|------------|
+| Card title | **Capture reviewed evidence** |
+| **Source document** | Dropdown (exact option text below) |
+| **Capture label** | Short note e.g. `BI visa-waiver page, reviewed July 2026` |
+| **Exact reviewed text** | Paste from matching `.capture-paste.txt` |
+| Submit button | **`Retain exact evidence`** |
+
+**Dropdown option strings** (`publisher — title`):
+- 001 (done): `Department of Foreign Affairs — DFA Philippine eVisa — visa-free entry policy`
+- 003 (next): `Bureau of Immigration — Bureau of Immigration — Temporary Visitor Visa / visa waiver`
+- 010: `Bureau of Immigration — Bureau of Immigration — e-Services`
+
+Success banner: **Exact evidence retained privately with a SHA-256 fingerprint for reproducible review.**
+
+### Resume order at home (tight)
+
+1. `git pull origin main` on canonical clone
+2. Sign in → https://elsewhereplan.com/app/settings → **Verify this session** if AAL1 → AAL2
+3. Confirm `/admin` shows Admin + MFA Active
+4. Open philippines workspace → confirm **PH-IMM-001 Snapshot present** / **1 of 3**
+5. **Capture PH-IMM-003** (nav **1. Sources** → Capture reviewed evidence → dropdown for 003 → paste file → **Retain exact evidence**)
+6. Confirm **2 of 3** and **PH-IMM-003 Snapshot present**
+7. **Capture PH-IMM-010** same way with its paste file → **3 of 3**
+8. Only then: nav **`2. Claims`** → use **Load Claim A / PH-IMM-001**, then B, then C (helpers unlock per snapshot)
+9. Each claim: review prefilled text → **Save claim and citation draft** (do not invent eligibility)
+10. Nav **`3. Page content`** → **Load PH v1 next-action draft** → **Save content draft**
+11. Nav **`4. Releases`** → pin claim versions + next_action → review → MFA publish
+12. Smoke https://elsewhereplan.com/countries/philippines
+
+**Do not** click **Create missing source drafts** again unless a source shows **Source draft missing**.  
+**Do not** invent `.gov.ph` facts or say “you qualify.”  
+Hard holds: DNV, work-rights, stale fees as current gospel.
+
+Official URLs:
+
+| ID | URL |
+|----|-----|
+| PH-IMM-001 | https://evisa.gov.ph/page/policy?l2=Free+to+enter+the+Philippines+without+Visa |
+| PH-IMM-003 | https://immigration.gov.ph/visas/visa-waiver/ |
+| PH-IMM-010 | https://e-services.immigration.gov.ph/ |
+
+Package: `docs/operations/PH_V1_ENTRY_STAY_RELEASE.md`
+
+### Claim helper unlock text (after snapshots)
+Under **Snapshot-gated PH v1 helpers**:
+- Unlocked link looks like: **Load Claim A / PH-IMM-001**
+- Locked span looks like: **Claim B locked / capture PH-IMM-003**
+
+Submit on claim form: **Save claim and citation draft**
+
+---
+
+## Session wrap — 2026-07-23 (prior)
 
 ### Human progress
-- **MFA enrolled** on `brenden@elsewhereplan.com` (Google Authenticator, factor verified)
-- After logout/login, session starts **AAL1** → use Settings “Verify this session” (or admin step-up) to reach **AAL2**
-- Owner confirmed AAL2 badge after code entry
+- **MFA enrolled** on `brenden@elsewhereplan.com` (Google Authenticator)
+- After logout/login, session starts **AAL1** → Settings “Verify this session” → **AAL2**
 
-### Shipped on `main` today / recently
-- `7c51974` — Fix `/admin`↔`/login` redirect loop (getUser for identity; signed-in-not-staff → dashboard)
-- `bfbccf4` — MFA success/notice contrast on dark theme (`text-success` not raw emerald)
-- Prior: Phase A PH admin tooling (`63c229d`), MFA UI (`14c4b20`), strategic edge docs (`ce7eb69`)
-
-### Still true
-- PH portal still **preview**; no MFA-published claims yet
-- Capture = witness official pages (not authorship); URLs locked in package below
-- Codex idle unless Cursor pastes a unit
+### Shipped on `main` (still true)
+- `7c51974` — Fix `/admin`↔`/login` redirect loop
+- `bfbccf4` — MFA success/notice contrast
+- Prior: Phase A PH admin tooling, MFA UI, strategic edge docs
 
 ### Parked
 - Mobile scroll / Earth markers / Cursor↔Codex auto-loop / Phase B weekly habit /
@@ -87,8 +174,9 @@ End of session: `git status` → commit (never `.env.local`) → `git push origi
 | Auth continuity across shells | Live |
 | Email + Google login | Live |
 | Staff MFA enroll + AAL2 step-up | **Live — owner enrolled** |
-| Admin access (no redirect loop) | Live on `main` |
+| Admin access (no redirect loop) | Live |
 | PH admin Phase A operator tools | Live |
+| PH capture progress | **1/3 snapshots (001 done)** |
 | Country portals PH/TH/MX | Preview; **no MFA-published claims yet** |
 | Editorial schema (9 migrations) | Live; worker not provisioned |
 | Self-hosted Earth | Live; checksums locked |
@@ -99,9 +187,9 @@ End of session: `git status` → commit (never `.env.local`) → `git push origi
 
 ## What is explicitly not done
 
-1. **Confirm `/admin` loads cleanly** after AAL2 (if any glitch: logout → login → Settings step-up → `/admin`)
-2. **Human live capture** — PH-IMM-001, 003, 010 exact text into admin snapshots
-3. **Human review + MFA publish** of PH Entry/Stay release
+1. Capture **PH-IMM-003** and **PH-IMM-010** snapshots
+2. Claim A–C drafts + `next_action` draft
+3. Source/claim/release reviews + MFA publish of PH Entry/Stay
 4. Weekly “one thing before Sunday” on plan/dashboard (Phase B)
 5. Source-monitor auto-stale worker; Apple / Facebook; TH/MX; mobile polish
 
@@ -115,64 +203,23 @@ Factor is enrolled. **Each new login** may be AAL1 until you step up:
 2. Or `/admin` step-up box if shown
 3. Do **not** click Add authenticator unless rotating a compromised secret
 
-Optional later: Remove + re-enroll if the secret was ever shared in a screenshot.
-
----
-
-## Resume next — PH capture (human-first)
-
-Cursor walks click-by-click. Do **not** invent `.gov.ph` text. Codex stays idle unless pasted a unit.
-
-1. `git pull origin main` on `C:\Users\brenden.vaughan\expat-atlas`
-2. Sign in → Settings step-up to **AAL2** if needed
-3. Confirm https://elsewhereplan.com/admin loads (MFA badge OK)
-4. `/admin/content/philippines` → readiness panel → **Bootstrap draft sources**
-5. For each ledger URL: open live page → paste **exact text you see** into Capture manual snapshot
-6. Claim A–C / `next_action` helpers **only after** matching snapshot exists
-7. Approve source → claim → block → release QA → MFA-publish
-8. Smoke https://elsewhereplan.com/countries/philippines
-
-Package: `docs/operations/PH_V1_ENTRY_STAY_RELEASE.md`  
-Hard holds: DNV claims, work-rights, stale fees, “you qualify.”
-
-Tell Cursor: **“walk me through PH capture”** or **“admin MFA looks good”**.
-
 ---
 
 ## PH content autopilot (human vs AI)
 
-**“Staff”** = you with active `staff_memberships` + MFA. Not a hired newsroom.
-Agents are not staff.
+**“Staff”** = you with active `staff_memberships` + MFA. Agents are not staff.
 
-**Official listings for PH v1 are already chosen** (do not re-hunt randomly):
-
-| ID | URL |
-|----|-----|
-| PH-IMM-001 | https://evisa.gov.ph/page/policy?l2=Free+to+enter+the+Philippines+without+Visa |
-| PH-IMM-003 | https://immigration.gov.ph/visas/visa-waiver/ |
-| PH-IMM-010 | https://e-services.immigration.gov.ph/ |
-
-Full package: `docs/operations/PH_V1_ENTRY_STAY_RELEASE.md`.
-
-### What only a human must do (attestation, not authorship)
-1. Keep MFA usable (step up to AAL2 each session as needed)
-2. Open each live official URL and paste the **exact text you see** into Capture
-   (this is witnessing the page — not writing an article)
+### What only a human must do
+1. Step up to AAL2 each session as needed
+2. Skim live official URL + paste exact text → **Retain exact evidence**
 3. Approve / MFA-publish
 4. Smoke the public portal
 
 ### What AI / Cursor can do
-- Find and list official URLs; design Sunday Action UX; draft claim helpers from
-  the package; coach click-by-click; later build source-monitor (detect change →
-  mark stale → human re-approve)
-- **Cannot:** invent snapshot text; skip MFA; publish; claim “you qualify”;
-  treat forum scrape as legal authority
-
-**Auto-update (high value, after first publish):** worker fetches official URLs,
-diffs hashes, marks claims stale, opens review. Humans never “rewrite policy” —
-they re-attest the live page. Schema exists; worker not provisioned yet.
-
-Staging aids only: `outputs/ph-v1-evidence/`.
+- Fetch official pages into `outputs/ph-v1-evidence/*.capture-paste.txt`
+- Walk click-by-click with exact UI labels
+- Prefill Claim A–C / next_action helpers after snapshots exist
+- **Cannot:** invent snapshot text; skip MFA; publish; claim “you qualify”
 
 ---
 
@@ -211,7 +258,7 @@ Email + Google + Apple + Facebook only. Buttons only when that provider is enabl
 
 ## Next build order
 
-1. **Human** — AAL2 → `/admin` OK → live capture IMM-001/003/010 → review → MFA publish
+1. **Human** — finish captures 003 + 010 → Claim A–C + next_action → review → MFA publish
 2. Weekly next-action on plan/dashboard (“one thing before Sunday”) — Phase B, after publish
 3. Source-monitor (detect/stale only) with explicit decision
 4. Facebook when Meta ads start; Apple when budget allows
@@ -219,4 +266,4 @@ Email + Google + Apple + Facebook only. Buttons only when that provider is enabl
 
 Run `pnpm check:guardrails` during work; `pnpm check:release` before ship.
 
-**CEO Message for next resume:** MFA is done — open `/admin` at AAL2 and witness the three official PH pages so the first Sunday Action can ship.
+**CEO Message for next resume:** 001 is attested — capture 003 then 010 with the paste files, then unlock Claim helpers; do not reopen encyclopedia scope before first PH publish.

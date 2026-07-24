@@ -28,10 +28,11 @@ pnpm --filter @expat-atlas/web dev
 
 Full smoke checklist and next priorities: **`docs/CURRENT.md`**.
 
-**2026-07-23 wrap:** MFA enrolled (step up to AAL2 after each login). Admin
-redirect loop + MFA contrast fixed on `main`. Next: confirm `/admin` → PH
-capture IMM-001/003/010. Say **“walk me through PH capture”**. Cursor =
-control tower; Codex idle.
+**2026-07-24 wrap:** MFA + admin OK. PH capture mid-flight: **IMM-001 done**
+(1/3 snapshots). Next at home: capture **003 then 010** using
+`outputs/ph-v1-evidence/*.capture-paste.txt`, then Claim A–C helpers.
+Say **“continue PH capture from CURRENT”**. Cursor = control tower; Codex idle.
+Full board + exact UI labels: **`docs/CURRENT.md`**.
 
 ---
 
