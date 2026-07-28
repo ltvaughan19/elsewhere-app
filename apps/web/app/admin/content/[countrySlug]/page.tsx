@@ -78,6 +78,17 @@ function sourceLabel(source: SourceDocument): string {
   return `${source.publisher} — ${source.title}`;
 }
 
+function snapshotOptionLabel(
+  snapshot: SourceSnapshot,
+  source: SourceDocument | undefined,
+  ledgerId?: string,
+): string {
+  const title = source?.title ?? source?.publisher ?? "Source";
+  const capture = snapshot.captured_title?.trim() || "untitled capture";
+  const ledger = ledgerId ? `${ledgerId} · ` : "";
+  return `${ledger}${title} · ${capture} · ${formatDate(snapshot.captured_at)} · ${snapshot.content_hash.slice(0, 10)}`;
+}
+
 function bodyPreview(body: Json): string {
   if (typeof body === "object" && body !== null && !Array.isArray(body)) {
     const text = body.text;
@@ -707,13 +718,26 @@ export default async function CountryEditorialWorkspacePage({
                 </select>
               </div>
               <div>
-                <FieldLabel htmlFor="claim-snapshot">Exact retained evidence</FieldLabel>
+                <FieldLabel htmlFor="claim-snapshot" help="Pick the snapshot that belongs to the Primary source above. When a PH helper is loaded, matching ledger snapshots are listed first.">Exact retained evidence</FieldLabel>
                 <select id="claim-snapshot" name="source_snapshot_id" required defaultValue={templateSnapshot?.id ?? ""} className={fieldClass}>
                   <option value="" disabled>Choose…</option>
-                  {snapshots.map((snapshot) => {
-                    const source = sources.find((item) => item.id === snapshot.source_document_id);
-                    return <option key={snapshot.id} value={snapshot.id}>{source?.publisher ?? "Source"} · {formatDate(snapshot.captured_at)} · {snapshot.content_hash.slice(0, 10)}</option>;
-                  })}
+                  {[...snapshots]
+                    .sort((a, b) => {
+                      const preferred = templateSource?.source?.id;
+                      if (!preferred) return 0;
+                      const aMatch = a.source_document_id === preferred ? 0 : 1;
+                      const bMatch = b.source_document_id === preferred ? 0 : 1;
+                      return aMatch - bMatch;
+                    })
+                    .map((snapshot) => {
+                      const source = sources.find((item) => item.id === snapshot.source_document_id);
+                      const ledgerId = phSources.find((item) => item.source?.id === snapshot.source_document_id)?.ledgerId;
+                      return (
+                        <option key={snapshot.id} value={snapshot.id}>
+                          {snapshotOptionLabel(snapshot, source, ledgerId)}
+                        </option>
+                      );
+                    })}
                 </select>
               </div>
               <div>

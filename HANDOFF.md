@@ -28,11 +28,11 @@ pnpm --filter @expat-atlas/web dev
 
 Full smoke checklist and next priorities: **`docs/CURRENT.md`**.
 
-**2026-07-24 wrap:** MFA + admin OK. PH capture mid-flight: **IMM-001 done**
-(1/3 snapshots). Next at home: capture **003 then 010** using
-`outputs/ph-v1-evidence/*.capture-paste.txt`, then Claim A–C helpers.
-Say **“continue PH capture from CURRENT”**. Cursor = control tower; Codex idle.
-Full board + exact UI labels: **`docs/CURRENT.md`**.
+**2026-07-28 wrap:** PH capture 3/3 done. Claims A+B + next_action drafted and
+mostly pinned. **Claim C never saved** — helper used High risk but
+`stay-options` requires Critical (server rejects). Fix in `ph-v1.ts`; on prod
+set Risk = Critical then save → pin → review → MFA publish.
+Say **“continue from CURRENT Claim C critical”**. Full board: **`docs/CURRENT.md`**.
 
 ---
 

@@ -26,7 +26,8 @@ export const PH_V1_CLAIM_TEMPLATES = {
     supportNote: "Supports the official pathway description only; it does not support current fees from other pages, individual eligibility, or a promise that online filing is available.",
   },
   C: {
-    ledgerId: "PH-IMM-010", claimSlug: "bi-official-online-services-channel", categorySlug: "stay-options", riskLevel: "high",
+    // stay-options category default_risk_level is critical — high is rejected by createClaimDraftAction
+    ledgerId: "PH-IMM-010", claimSlug: "bi-official-online-services-channel", categorySlug: "stay-options", riskLevel: "critical",
     preciseText: "The Bureau of Immigration operates an official online services dashboard at e-services.immigration.gov.ph for selected immigration transactions. Users must log in to access services. Elsewhere does not process payments or filings on behalf of users.",
     publicSummary: "The Bureau of Immigration operates an official online dashboard for selected immigration transactions. Confirm that the service you need is currently listed before using it.",
     userMeaning: "Use the official BI domain and verify the transaction shown there. Elsewhere does not file applications, accept government payments, or decide eligibility.",

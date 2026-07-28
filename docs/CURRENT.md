@@ -1,269 +1,224 @@
 # Elsewhere — Current state (start here)
 
-**Updated:** 2026-07-24 (home handoff — mid PH capture)  
+**Updated:** 2026-07-28 (strong handoff — Claim C blocked by risk mismatch)  
 **Repo:** https://github.com/ltvaughan19/elsewhere-app  
 **Production:** https://elsewhereplan.com  
-**Local folder name may still be:** `expat-atlas`
+**Canonical clone:** `C:\Users\brenden.vaughan\expat-atlas`
 
-This is the **only** day-to-day handoff. Older dated notes live in `docs/archive/` for history.
-
-**Canonical clone:** `C:\Users\brenden.vaughan\expat-atlas`  
-Ignore `Documents\Codex\**\elsewhere-app` worktrees.
-
-**Cursor = control tower.** Codex = briefed build bursts only. Grok = casual talk only.
-
-**Strategic edge (do not reopen):** `docs/plans/PRODUCT_CLARITY_MAP.md` §0
-“Strategic edge” — Sunday Action pattern; corridors not brochures; reality moat;
-solo MFA publisher (not hired newsroom); sequence A→B→C.
-
-**Codex:** idle until Cursor pastes a new unit. Do **not** invent PH claim text.
+Cursor = control tower. Codex = idle unless pasted a unit. Do not invent `.gov.ph` text.
 
 ---
 
-## North star (locked)
+## Tell Cursor (copy-paste)
+
+```
+Read docs/CURRENT.md. Resume PH v1 publish path.
+DB-verified: Claim C bi-official-online-services-channel does NOT exist yet.
+Root cause: stay-options category requires critical risk; Claim C helper
+prefilled High impact, so createClaimDraftAction rejects with
+"This category requires at least critical risk handling."
+Fix already in repo (ph-v1.ts riskLevel → critical). On production until
+deployed: manually set Risk = Critical impact, then Save claim C, pin to
+Release 1, then reviews. Walk click-by-click with exact UI labels.
+```
+
+---
+
+## North star
 
 > **“I’m actually going — and I know the one thing to do before Sunday.”**
 
-Leaving is the metric. Every builder response includes a **`CEO Message:`**. Veto failure-shaped work (tool sprawl, vanity engagement, premature ecosystem, fake authority). See `.cursor/rules/ceo-north-star.mdc`.
+Include **`CEO Message:`** every response. Veto encyclopedia / fake authority / tool sprawl before first PH publish.
 
 ---
 
-## Tell Cursor at home (copy-paste)
-
-```
-Read docs/CURRENT.md. Continue PH v1 human capture from where we left off:
-PH-IMM-001 done; next is PH-IMM-003 then 010 using the paste files in
-outputs/ph-v1-evidence/. Walk me click-by-click on
-https://elsewhereplan.com/admin/content/philippines — exact UI labels only.
-```
-
----
-
-## Home PC — start here
+## Home / next machine start
 
 ```powershell
 cd C:\Users\brenden.vaughan\expat-atlas
-git fetch origin
-git checkout main
 git pull origin main
 pnpm install
-# Recreate apps/web/.env.local from password manager / Vercel / Supabase
-# (never copy secrets through chat or commit them)
+# recreate apps/web/.env.local from password manager if needed
 pnpm --filter @expat-atlas/web dev
 ```
 
-Smoke:
-
-1. http://localhost:3000 — Earth from `/earth/scene.splinecode` (not `prod.spline.design`); no Spline logo
-2. Login shows Google (Apple/Facebook only if enabled in Supabase)
-3. Signed-in header shows Account / Continue Plan across `/`, Countries, Plan
-4. `/app/settings` — Account security; TOTP enrolled; step up to AAL2 after login if needed
-5. `/admin` — staff only; should load (no login↔admin loop); MFA badge / step-up if AAL1
-
-**Ignore** any `Documents\Codex\...\elsewhere-app` folders.
-
-End of session: `git status` → commit (never `.env.local`) → `git push origin main` → update **this file**.
+Ignore `Documents\Codex\**\elsewhere-app`.
 
 ---
 
-## Session wrap — 2026-07-24 (office → home)
+## DB-verified board (2026-07-28 evening)
 
-### Human progress (production admin)
-- Staff admin works for Google user `brenden@elsewhereplan.com` (Admin + **MFA Active** / AAL2 confirmed in screenshot)
-- `/admin/content/philippines` open and usable
-- **Create missing source drafts** already done → **Package sources: 3 draft / 0 verified**
-- **PH-IMM-001 captured** → badge **Snapshot present**; **Required snapshots: 1 of 3 captured**
-- Red banner **“That exact evidence is already captured for this source.”** = re-paste of 001 (safe to ignore; do not re-capture 001)
-- **PH-IMM-003** and **PH-IMM-010** still **Capture needed**
-- Claims / next action / release still **Blocked** (expected until 3 snapshots + drafts + approvals)
-- Release row shows **Release 1 / draft** (empty/open draft exists — do not publish yet)
+Queried production Supabase (`kjrmtklvfecvzlhlzuaf`). Do not trust memory over this table.
 
-### Paste assists ready in repo
-| Ledger | File | Status |
-|--------|------|--------|
-| PH-IMM-001 | `outputs/ph-v1-evidence/PH-IMM-001.capture-paste.txt` | **Already attested in admin** — keep for audit; do not re-submit |
-| PH-IMM-003 | `outputs/ph-v1-evidence/PH-IMM-003.capture-paste.txt` | **Next paste** |
-| PH-IMM-010 | `outputs/ph-v1-evidence/PH-IMM-010.capture-paste.txt` | After 003 |
+### Sources (all draft, all have 1 snapshot)
 
-AI may fetch/copy for paste assist. **Human must skim live URL, paste, click Retain.** That is attestation, not authorship.
+| Ledger | Title | Snapshot hash (prefix) |
+|--------|-------|------------------------|
+| PH-IMM-001 | DFA Philippine eVisa — visa-free entry policy | `9dd656c35c` |
+| PH-IMM-003 | BI Temporary Visitor Visa / visa waiver | `da668e376b` |
+| PH-IMM-010 | BI e-Services | `eb6f4697ac` |
 
-### Exact admin UI labels (do not hunt)
-Page: https://elsewhereplan.com/admin/content/philippines  
-Title: **Philippines editorial workspace**  
-Top card: **Operator readiness** (eyebrow **PH v1 Entry/Stay**)
+### Claims
 
-Nav chips: **`1. Sources`** · **`2. Claims`** · **`3. Page content`** · **`4. Releases`**
+| Slug | Exists? | State |
+|------|---------|-------|
+| `dfa-visa-free-policy-page` | **Yes** | draft v1 |
+| `bi-temporary-visitor-visa-waiver-page` | **Yes** | draft v1 |
+| `bi-official-online-services-channel` | **NO — never saved** | — |
 
-**Capture form** (right card under Sources — ignore left **Register a source document**):
+### Content
 
-| On-screen label | What to do |
-|-----------------|------------|
-| Card title | **Capture reviewed evidence** |
-| **Source document** | Dropdown (exact option text below) |
-| **Capture label** | Short note e.g. `BI visa-waiver page, reviewed July 2026` |
-| **Exact reviewed text** | Paste from matching `.capture-paste.txt` |
-| Submit button | **`Retain exact evidence`** |
+| Slug | Exists? |
+|------|---------|
+| `start-with-official-entry-and-stay-channels` (next_action) | **Yes** draft v1 |
 
-**Dropdown option strings** (`publisher — title`):
-- 001 (done): `Department of Foreign Affairs — DFA Philippine eVisa — visa-free entry policy`
-- 003 (next): `Bureau of Immigration — Bureau of Immigration — Temporary Visitor Visa / visa waiver`
-- 010: `Bureau of Immigration — Bureau of Immigration — e-Services`
+### Release 1
 
-Success banner: **Exact evidence retained privately with a SHA-256 fingerprint for reproducible review.**
+- State: **draft**
+- Notes: `Initial source-backed portal release.`
+- Pinned claims: **2** (A + B only)
+- Pinned blocks: **1** (next_action)
+- Approved: **0 / 0**
 
-### Resume order at home (tight)
+### Operator readiness (expected UI)
 
-1. `git pull origin main` on canonical clone
-2. Sign in → https://elsewhereplan.com/app/settings → **Verify this session** if AAL1 → AAL2
-3. Confirm `/admin` shows Admin + MFA Active
-4. Open philippines workspace → confirm **PH-IMM-001 Snapshot present** / **1 of 3**
-5. **Capture PH-IMM-003** (nav **1. Sources** → Capture reviewed evidence → dropdown for 003 → paste file → **Retain exact evidence**)
-6. Confirm **2 of 3** and **PH-IMM-003 Snapshot present**
-7. **Capture PH-IMM-010** same way with its paste file → **3 of 3**
-8. Only then: nav **`2. Claims`** → use **Load Claim A / PH-IMM-001**, then B, then C (helpers unlock per snapshot)
-9. Each claim: review prefilled text → **Save claim and citation draft** (do not invent eligibility)
-10. Nav **`3. Page content`** → **Load PH v1 next-action draft** → **Save content draft**
-11. Nav **`4. Releases`** → pin claim versions + next_action → review → MFA publish
-12. Smoke https://elsewhereplan.com/countries/philippines
+- Package sources: Ready (3 draft / 0 verified)
+- Required snapshots: Ready (3 of 3)
+- Approved claims pinned: Blocked
+- Approved next action: Blocked
+- Release state: Blocked (Release 1 / draft)
+- MFA: was AAL2 when last confirmed
 
-**Do not** click **Create missing source drafts** again unless a source shows **Source draft missing**.  
-**Do not** invent `.gov.ph` facts or say “you qualify.”  
-Hard holds: DNV, work-rights, stale fees as current gospel.
+### Postgres log clue
 
-Official URLs:
-
-| ID | URL |
-|----|-----|
-| PH-IMM-001 | https://evisa.gov.ph/page/policy?l2=Free+to+enter+the+Philippines+without+Visa |
-| PH-IMM-003 | https://immigration.gov.ph/visas/visa-waiver/ |
-| PH-IMM-010 | https://e-services.immigration.gov.ph/ |
-
-Package: `docs/operations/PH_V1_ENTRY_STAY_RELEASE.md`
-
-### Claim helper unlock text (after snapshots)
-Under **Snapshot-gated PH v1 helpers**:
-- Unlocked link looks like: **Load Claim A / PH-IMM-001**
-- Locked span looks like: **Claim B locked / capture PH-IMM-003**
-
-Submit on claim form: **Save claim and citation draft**
+Repeated: `duplicate key value violates unique constraint "release_claim_versions_pkey"` — user re-pinned A/B while Claim C missing. Harmless; ignore if red banner mentions duplicate.
 
 ---
 
-## Session wrap — 2026-07-23 (prior)
+## Root cause — Claim C save failure (locked)
 
-### Human progress
-- **MFA enrolled** on `brenden@elsewhereplan.com` (Google Authenticator)
-- After logout/login, session starts **AAL1** → Settings “Verify this session” → **AAL2**
+`claim_categories.stay-options` has `default_risk_level = critical`.
 
-### Shipped on `main` (still true)
-- `7c51974` — Fix `/admin`↔`/login` redirect loop
-- `bfbccf4` — MFA success/notice contrast
-- Prior: Phase A PH admin tooling, MFA UI, strategic edge docs
+`createClaimDraftAction` rejects any risk **below** category default:
 
-### Parked
-- Mobile scroll / Earth markers / Cursor↔Codex auto-loop / Phase B weekly habit /
-  Apple·Facebook / source-monitor worker / TH·MX deep content
+> "This category requires at least critical risk handling."
+
+Claim C helper previously set `riskLevel: "high"`. Form looked filled; Save redirected with error (easy to miss). **Claim C never entered DB.**
+
+**Code fix (local / to ship):** `apps/web/lib/editorial/ph-v1.ts` Claim C `riskLevel` → `"critical"`.
+
+**Until production deploy:** on the Claim C form set **Risk** dropdown to **`Critical impact`** (not High impact), then Save.
+
+Also note: `US, CA, GB` / `tourism, retirement` on Citizenship / Purposes are **HTML placeholders**, not values. Leave empty.
+
+Snapshot dropdown (pre-label-fix deploy): pick hash **`eb6f4697ac`** for Claim C.
 
 ---
 
-## What is live
+## Exact next clicks (do in order)
+
+### 1) Create Claim C (blocked step)
+
+1. https://elsewhereplan.com/admin/content/philippines  
+2. AAL2 if needed (Settings → Verify this session)  
+3. Nav **`2. Claims`** → **`Load Claim C / PH-IMM-010`**  
+4. Set required dropdowns:
+
+| Field | Value |
+|-------|-------|
+| **Claim category** | `Legal stay options · entry-and-stay` |
+| **Matching portal section** | `Entry and legal stay` |
+| **Risk** | **`Critical impact`** ← mandatory |
+| **Confidence** | `Low — unresolved or incomplete` |
+| **Primary source** | `Bureau of Immigration — Bureau of Immigration — e-Services · draft` |
+| **Exact retained evidence** | ends with **`eb6f4697ac`** |
+| **Exact locator** | `"Welcome to Bureau of Immigration Online Services" and service list` |
+| **Evidence boundary note** | helper text about official channel only / not every visa type |
+
+5. Leave citizenship + purposes empty (placeholder ghosts OK)  
+6. **`Save claim and citation draft`**  
+7. Success banner must say: **Claim, first version, and exact primary citation saved atomically as a draft.**  
+8. Card appears: **`bi-official-online-services-channel`**
+
+If red banner: **copy the exact text** into Cursor.
+
+### 2) Pin Claim C to Release 1
+
+Nav **`4. Releases`** → **Add a claim version**:
+
+| Field | Value |
+|-------|-------|
+| **Draft release** | `Release 1 · draft` |
+| **Exact claim version** | `bi-official-online-services-channel · v1 · draft` |
+| **Sort order** | `30` |
+
+**`Pin claim version`** → Release 1 **Claims** counter = **3**.
+
+Do **not** create a new release.
+
+### 3) Reviews (after Claims = 3)
+
+Approve in this order (each uses **Review decision** + checkboxes + **Record permanent review**):
+
+1. Three sources (under **1. Sources**) → approve / verify per ReviewForm  
+2. Three claim versions (under each claim card) → approve  
+3. next_action block version → approve  
+4. Release 1 review → approve / mark ready  
+
+Exact decision labels: see `REVIEW_DECISIONS` in `apps/web/app/admin/content/constants.ts`.
+
+### 4) MFA publish (last)
+
+Only when Release 1 is **ready** and session is **AAL2**:
+
+- Checkbox: confirm replace public release  
+- **`Publish exact release`**  
+- Smoke: https://elsewhereplan.com/countries/philippines  
+
+Hard holds: no DNV claims, no “you qualify,” no stale fees as gospel.
+
+---
+
+## Paste assists (repo)
+
+| File | Status |
+|------|--------|
+| `outputs/ph-v1-evidence/PH-IMM-001.capture-paste.txt` | Attested (hash `9dd656c35c`) |
+| `outputs/ph-v1-evidence/PH-IMM-003.capture-paste.txt` | Attested (`da668e376b`) |
+| `outputs/ph-v1-evidence/PH-IMM-010.capture-paste.txt` | Attested (`eb6f4697ac`) |
+
+---
+
+## Code / UX fixes in flight (not required to unblock Claim C manually)
+
+1. Claim C helper risk → `critical` (`ph-v1.ts`) — **must commit/deploy**  
+2. Snapshot option labels include ledger + title + capture label (`[countrySlug]/page.tsx`) — local; deploy when shipping  
+3. Optional later: surface server action errors more visibly; filter snapshot dropdown by selected primary source
+
+---
+
+## What is live / not done
 
 | Area | Status |
 |------|--------|
-| One Next site + one Supabase | Live |
-| Auth continuity across shells | Live |
-| Email + Google login | Live |
-| Staff MFA enroll + AAL2 step-up | **Live — owner enrolled** |
-| Admin access (no redirect loop) | Live |
-| PH admin Phase A operator tools | Live |
-| PH capture progress | **1/3 snapshots (001 done)** |
-| Country portals PH/TH/MX | Preview; **no MFA-published claims yet** |
-| Editorial schema (9 migrations) | Live; worker not provisioned |
-| Self-hosted Earth | Live; checksums locked |
-| Corridor Brief / Resend | Live |
-| Guardrails + `pnpm check:release` | Live |
+| MFA + staff admin | Live |
+| PH sources + 3 snapshots | Live |
+| Claims A + B + next_action | Draft |
+| Claim C | **Missing — create with Critical risk** |
+| Release 1 pin complete | No (2/3 claims) |
+| Reviews + MFA publish | Not started |
+| Phase B Sunday habit UI | Parked |
+| Codex | Idle |
 
 ---
 
-## What is explicitly not done
-
-1. Capture **PH-IMM-003** and **PH-IMM-010** snapshots
-2. Claim A–C drafts + `next_action` draft
-3. Source/claim/release reviews + MFA publish of PH Entry/Stay
-4. Weekly “one thing before Sunday” on plan/dashboard (Phase B)
-5. Source-monitor auto-stale worker; Apple / Facebook; TH/MX; mobile polish
-
----
-
-## MFA — how it works now (already enrolled)
-
-Factor is enrolled. **Each new login** may be AAL1 until you step up:
-
-1. https://elsewhereplan.com/app/settings → **Verify this session** → 6-digit code → **AAL2 verified**
-2. Or `/admin` step-up box if shown
-3. Do **not** click Add authenticator unless rotating a compromised secret
-
----
-
-## PH content autopilot (human vs AI)
-
-**“Staff”** = you with active `staff_memberships` + MFA. Agents are not staff.
-
-### What only a human must do
-1. Step up to AAL2 each session as needed
-2. Skim live official URL + paste exact text → **Retain exact evidence**
-3. Approve / MFA-publish
-4. Smoke the public portal
-
-### What AI / Cursor can do
-- Fetch official pages into `outputs/ph-v1-evidence/*.capture-paste.txt`
-- Walk click-by-click with exact UI labels
-- Prefill Claim A–C / next_action helpers after snapshots exist
-- **Cannot:** invent snapshot text; skip MFA; publish; claim “you qualify”
-
----
-
-## Login methods (locked)
-
-Email + Google + Apple + Facebook only. Buttons only when that provider is enabled in Supabase.
-
----
-
-## Earth / Spline
-
-- Runtime: `@splinetool/runtime` (npm)
-- Scene: **self-hosted** `/earth/scene.splinecode` (Logo = false)
-- Camera + glare: `apps/web/lib/marketing/splineScene.js` — do not casual-edit
-- Guardrails lock JS checksum + binary checksum + `logo === false`
-- Locked JS hash (2026-07-21): `92a444e69083a8846d0c495f64e091dac3bd41e30db5c6478ee8cfbc7c1cbd79`
-
----
-
-## Doc map (keep clean)
+## Doc map
 
 | Path | Role |
 |------|------|
-| **`docs/CURRENT.md`** | **Start here — current truth** |
-| `docs/operations/CODEX_PH_V1_BUILD_PACKET.md` | Codex Phase A brief |
-| `docs/operations/PH_V1_ENTRY_STAY_RELEASE.md` | PH Entry/Stay package |
-| `docs/operations/*` | Gates, social login, source monitor |
-| `docs/plans/PRODUCT_CLARITY_MAP.md` | North star + product picture |
-| `docs/plans/ONE_SITE_ONE_AUTH.md` | Auth architecture lock |
-| `docs/archive/` | Superseded notes only |
-| `HANDOFF.md` | Thin pointer + dual-PC rule |
+| **`docs/CURRENT.md`** | **This file — start here** |
+| `docs/operations/PH_V1_ENTRY_STAY_RELEASE.md` | Claim package wording |
+| `HANDOFF.md` | Thin dual-PC pointer |
+| `docs/plans/PRODUCT_CLARITY_MAP.md` | North star + strategic edge |
 
-**Rule:** Do not create new `*-handoff-YYYY-MM-DD.md` for routine work. Update this file.
-
----
-
-## Next build order
-
-1. **Human** — finish captures 003 + 010 → Claim A–C + next_action → review → MFA publish
-2. Weekly next-action on plan/dashboard (“one thing before Sunday”) — Phase B, after publish
-3. Source-monitor (detect/stale only) with explicit decision
-4. Facebook when Meta ads start; Apple when budget allows
-5. Mobile scroll retest on a real phone when available
-
-Run `pnpm check:guardrails` during work; `pnpm check:release` before ship.
-
-**CEO Message for next resume:** 001 is attested — capture 003 then 010 with the paste files, then unlock Claim helpers; do not reopen encyclopedia scope before first PH publish.
+**CEO Message for resume:** Claim C failed on risk floor (High &lt; Critical for stay-options) — set Critical, save, pin to Release 1, then review/publish; do not reopen scope.
