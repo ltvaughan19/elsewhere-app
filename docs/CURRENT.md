@@ -1,6 +1,6 @@
 # Elsewhere — Current state (start here)
 
-**Updated:** 2026-07-28 (strong handoff — Claim C blocked by risk mismatch)  
+**Updated:** 2026-07-31 (admin source self-attest live; resume source Approve)  
 **Repo:** https://github.com/ltvaughan19/elsewhere-app  
 **Production:** https://elsewhereplan.com  
 **Canonical clone:** `C:\Users\brenden.vaughan\expat-atlas`
@@ -12,15 +12,23 @@ Cursor = control tower. Codex = idle unless pasted a unit. Do not invent `.gov.p
 ## Tell Cursor (copy-paste)
 
 ```
-Read docs/CURRENT.md. Resume PH v1 publish path.
-DB-verified: Claim C bi-official-online-services-channel does NOT exist yet.
-Root cause: stay-options category requires critical risk; Claim C helper
-prefilled High impact, so createClaimDraftAction rejects with
-"This category requires at least critical risk handling."
-Fix already in repo (ph-v1.ts riskLevel → critical). On production until
-deployed: manually set Risk = Critical impact, then Save claim C, pin to
-Release 1, then reviews. Walk click-by-click with exact UI labels.
+Read docs/CURRENT.md. Resume PH v1: approve 3 sources (admin self-attest
+migration is live), then approve claim A/B/C versions, next_action block,
+then Release 1 → MFA publish. Exact UI labels only.
 ```
+
+---
+
+## 2026-07-31 — admin source self-attest
+
+**Decision:** Option A — solo MFA publisher may self-approve sources as **admin**.
+
+**Shipped:** migration `20260731143000_admin_source_self_attest` applied to production.
+- Non-admins still cannot approve sources they authored.
+- Admins can; audit sets `selfAttestedByAdmin: true`.
+
+**Board now:** Claim C exists + pinned (Release 1 = 3 claims + next_action).  
+**Next:** Approve three sources → claims → block → release → MFA publish.
 
 ---
 
