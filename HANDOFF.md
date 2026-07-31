@@ -28,11 +28,11 @@ pnpm --filter @expat-atlas/web dev
 
 Full smoke checklist and next priorities: **`docs/CURRENT.md`**.
 
-**2026-07-28 wrap:** PH capture 3/3 done. Claims A+B + next_action drafted and
-mostly pinned. **Claim C never saved** — helper used High risk but
-`stay-options` requires Critical (server rejects). Fix in `ph-v1.ts`; on prod
-set Risk = Critical then save → pin → review → MFA publish.
-Say **“continue from CURRENT Claim C critical”**. Full board: **`docs/CURRENT.md`**.
+**2026-07-31 wrap:** PH v1 almost shipped. Sources **verified**, claims A–C +
+next_action **approved and pinned**. Release 1 still **draft**. Next: Approve
+Release 1 (notes required) → MFA **Publish exact release** → smoke
+`/countries/philippines`. Say **“continue from CURRENT release QA”**.
+Cursor = control tower; Codex idle.
 
 ---
 
