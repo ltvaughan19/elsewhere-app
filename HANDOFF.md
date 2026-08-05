@@ -28,11 +28,10 @@ pnpm --filter @expat-atlas/web dev
 
 Full smoke checklist and next priorities: **`docs/CURRENT.md`**.
 
-**2026-07-31 wrap:** PH v1 almost shipped. Sources **verified**, claims A–C +
-next_action **approved and pinned**. Release 1 still **draft**. Next: Approve
-Release 1 (notes required) → MFA **Publish exact release** → smoke
-`/countries/philippines`. Say **“continue from CURRENT release QA”**.
-Cursor = control tower; Codex idle.
+**2026-08-05 wrap:** **PH Release 1 published.** Entry/Stay + Sunday Action live
+on `/countries/philippines`. Next: warm users try the official next step;
+Phase B weekly habit after evidence of use. Say **“continue from CURRENT Phase B”**.
+Cursor = control tower; Codex idle. Full board: **`docs/CURRENT.md`**.
 
 ---
 
