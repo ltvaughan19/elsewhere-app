@@ -1,4 +1,11 @@
-export type PlanTier = "free" | "explorer" | "builder" | "serious_move";
+export type PlanTier = "free" | "explorer";
+
+/** Product card ids on /pricing — not all map 1:1 to plan_tier. */
+export type PricingProductId =
+  | PlanTier
+  | "serious_move"
+  | "builder"
+  | "concierge";
 
 export type PartnerStatus =
   | "draft"
@@ -52,7 +59,7 @@ export interface VisaCardData {
 }
 
 export interface PricingTier {
-  id: PlanTier | "concierge";
+  id: PricingProductId;
   name: string;
   price: string;
   period: string;
@@ -60,6 +67,8 @@ export interface PricingTier {
   features: string[];
   cta: string;
   highlighted?: boolean;
+  /** When true, CTA is not a purchase path (proof scope). */
+  comingLater?: boolean;
 }
 
 export type ReadinessBlocker =
@@ -93,6 +102,16 @@ export interface ReadinessResult {
   warningFlags: string[];
 }
 
+/** Minimal Free-habit progress — lives inside user_plans.plan JSON (no new table). */
+export interface SundayActionProgress {
+  /** ISO week key, e.g. 2026-W32 */
+  completedWeekKey?: string;
+  completedAt?: string;
+  /** Published next_action block slug when marked done */
+  actionSlug?: string;
+  countrySlug?: string;
+}
+
 export interface UserPlan {
   email: string;
   displayName: string;
@@ -101,6 +120,7 @@ export interface UserPlan {
   answers: OnboardingAnswers | null;
   readiness: ReadinessResult | null;
   savedCountrySlugs: string[];
+  sundayActionProgress?: SundayActionProgress;
   createdAt: string;
   updatedAt: string;
 }

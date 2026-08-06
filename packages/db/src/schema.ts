@@ -183,6 +183,11 @@ export const profiles = pgTable(
     email: text("email"),
     planTier: text("plan_tier").notNull().default("free"),
     digestOptIn: boolean("digest_opt_in").notNull().default(true),
+    stripeCustomerId: text("stripe_customer_id"),
+    stripeSubscriptionId: text("stripe_subscription_id"),
+    seriousMovePurchasedAt: timestamp("serious_move_purchased_at", {
+      withTimezone: true,
+    }),
     createdAt: timestamp("created_at", { withTimezone: true })
       .notNull()
       .defaultNow(),
@@ -193,7 +198,7 @@ export const profiles = pgTable(
   (table) => [
     check(
       "profiles_plan_tier_check",
-      sql`${table.planTier} in ('free', 'explorer', 'builder', 'serious_move')`,
+      sql`${table.planTier} in ('free', 'explorer')`,
     ),
   ],
 );

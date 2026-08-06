@@ -5,7 +5,9 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { UserPlan } from "@expat-atlas/types";
 import { SEED_COUNTRIES } from "@/lib/seed-countries";
-import { resolvePlan } from "@/lib/plan-store";
+import { persistPlan, resolvePlan } from "@/lib/plan-store";
+import type { SundayActionView } from "@/lib/sunday-action-types";
+import { isoWeekKey } from "@/lib/sunday-week";
 
 type PlanTask = {
   title: string;
@@ -14,9 +16,26 @@ type PlanTask = {
   status: "Next" | "Ready" | "Review";
 };
 
-export function AppDashboard() {
+function formatVerifiedDate(value?: string): string | null {
+  if (!value) return null;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return new Intl.DateTimeFormat("en", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  }).format(date);
+}
+
+export function AppDashboard({
+  sundayAction,
+}: {
+  sundayAction: SundayActionView | null;
+}) {
   const router = useRouter();
   const [plan, setPlan] = useState<UserPlan | null>(null);
+  const [markingDone, setMarkingDone] = useState(false);
+  const weekKey = isoWeekKey();
 
   useEffect(() => {
     let cancelled = false;
@@ -74,6 +93,32 @@ export function AppDashboard() {
     },
   ];
 
+  const doneThisWeek =
+    Boolean(sundayAction) &&
+    plan.sundayActionProgress?.completedWeekKey === weekKey &&
+    plan.sundayActionProgress?.actionSlug === sundayAction?.blockSlug;
+
+  const verifiedLabel = formatVerifiedDate(sundayAction?.lastVerifiedAt);
+
+  const markDoneThisWeek = async () => {
+    if (!sundayAction || markingDone) return;
+    setMarkingDone(true);
+    try {
+      const updated = await persistPlan({
+        ...plan,
+        sundayActionProgress: {
+          completedWeekKey: weekKey,
+          completedAt: new Date().toISOString(),
+          actionSlug: sundayAction.blockSlug,
+          countrySlug: sundayAction.countrySlug,
+        },
+      });
+      setPlan(updated);
+    } finally {
+      setMarkingDone(false);
+    }
+  };
+
   return (
     <div className="mx-auto max-w-5xl">
       <header className="border-b border-sand-200 pb-8 sm:flex sm:items-end sm:justify-between sm:gap-8 sm:pb-10">
@@ -88,21 +133,95 @@ export function AppDashboard() {
         </p>
       </header>
 
-      <section className="grid gap-8 border-b border-sand-200 py-9 lg:grid-cols-[minmax(0,1.5fr)_minmax(17rem,0.7fr)] lg:gap-14 lg:py-12">
+      <section
+        className="grid gap-8 border-b border-sand-200 py-9 lg:grid-cols-[minmax(0,1.5fr)_minmax(17rem,0.7fr)] lg:gap-14 lg:py-12"
+        aria-labelledby="sunday-action-heading"
+      >
         <div>
-          <p className="elsewhere-eyebrow">Next action</p>
-          <h2 className="mt-4 max-w-2xl text-2xl font-medium leading-tight text-cream sm:text-3xl">
-            {plan.readiness.nextStep}
-          </h2>
-          <p className="mt-4 max-w-2xl text-base leading-7 text-muted">
-            Work through the next decision first. Elsewhere will keep the rest of the move visible without asking you to solve everything at once.
-          </p>
-          <Link
-            href="/app/path"
-            className="mt-7 inline-flex min-h-12 items-center rounded-md bg-accent-sand px-5 text-sm font-medium text-accent-ink transition-colors duration-150 hover:bg-accent-sand-hover"
+          <p className="elsewhere-eyebrow">Sunday Action</p>
+          <h2
+            id="sunday-action-heading"
+            className="mt-4 max-w-2xl text-2xl font-medium leading-tight text-cream sm:text-3xl"
           >
-            Open your research path
-          </Link>
+            {sundayAction?.title ?? plan.readiness.nextStep}
+          </h2>
+          {sundayAction ? (
+            <div className="mt-4 max-w-2xl space-y-3 text-base leading-7 text-muted">
+              {sundayAction.paragraphs.map((paragraph, index) => (
+                <p key={`sunday-p-${index}`}>{paragraph}</p>
+              ))}
+            </div>
+          ) : (
+            <p className="mt-4 max-w-2xl text-base leading-7 text-muted">
+              Work through the next decision first. Elsewhere will keep the rest of the move visible without asking you to solve everything at once.
+            </p>
+          )}
+
+          <div
+            className="mt-6 max-w-2xl border-l border-sand-300 pl-4 text-xs leading-6 text-soft"
+            aria-label="Trust strip"
+          >
+            {sundayAction ? (
+              <>
+                <p>
+                  Source:{" "}
+                  {sundayAction.sourceUrl ? (
+                    <a
+                      href={sundayAction.sourceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-medium text-accent-cool hover:text-cream"
+                    >
+                      {sundayAction.sourceTitle ?? "Official source"}
+                    </a>
+                  ) : (
+                    <span className="font-medium text-cream">
+                      {sundayAction.sourceTitle ?? "Published corridor release"}
+                    </span>
+                  )}
+                  {verifiedLabel ? ` · Verified ${verifiedLabel}` : null}
+                  {sundayAction.releaseNumber
+                    ? ` · Release ${sundayAction.releaseNumber}`
+                    : null}
+                </p>
+                <p className="mt-1">
+                  Planning research only — not legal, immigration, or tax advice. Verify on the official page before acting.
+                </p>
+              </>
+            ) : (
+              <p>
+                Derived from your Fit Quiz answers until a published corridor next action is available for your path. Not legal advice.
+              </p>
+            )}
+          </div>
+
+          <div className="mt-7 flex flex-wrap items-center gap-3">
+            <Link
+              href={sundayAction?.portalHref ?? "/app/path"}
+              className="inline-flex min-h-12 items-center rounded-md bg-accent-sand px-5 text-sm font-medium text-accent-ink transition-colors duration-150 hover:bg-accent-sand-hover"
+            >
+              {sundayAction ? `Open ${sundayAction.countryName} Entry & Stay` : "Open your research path"}
+            </Link>
+            {sundayAction ? (
+              doneThisWeek ? (
+                <p role="status" className="text-sm font-medium text-success">
+                  Done this week
+                </p>
+              ) : (
+                <button
+                  type="button"
+                  disabled={markingDone}
+                  onClick={() => void markDoneThisWeek()}
+                  className="inline-flex min-h-12 items-center rounded-md border border-sand-300 px-5 text-sm font-medium text-cream transition-colors duration-150 hover:border-sand-200 disabled:cursor-wait disabled:opacity-50"
+                >
+                  {markingDone ? "Saving…" : "Done this week?"}
+                </button>
+              )
+            ) : null}
+          </div>
+          <p className="mt-4 max-w-2xl text-xs leading-6 text-soft">
+            Evidence boundary: Elsewhere saves research and plans. It does not file applications, decide eligibility, or replace official instructions.
+          </p>
         </div>
 
         <dl className="divide-y divide-sand-200 border-y border-sand-200">

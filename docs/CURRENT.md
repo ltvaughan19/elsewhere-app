@@ -1,21 +1,23 @@
 # Elsewhere — Current state (start here)
 
-**Updated:** 2026-08-05 (PH Release 1 **published**)  
+**Updated:** 2026-08-06 (Paid Step 1 Stripe + proof-scope lock + FX decision)  
 **Repo:** https://github.com/ltvaughan19/elsewhere-app  
 **Production:** https://elsewhereplan.com  
 **Canonical clone:** `C:\Users\brenden.vaughan\expat-atlas`
 
-Cursor = control tower. Codex = idle unless pasted a unit. Do not invent `.gov.ph` text.
+Cursor = control tower. Codex = idle unless pasted a unit. Do not invent `.gov.ph` text.  
+**Lengthy handoff:** [`docs/operations/HANDOFF_2026-08-06.md`](./operations/HANDOFF_2026-08-06.md)
 
 ---
 
 ## Tell Cursor (copy-paste)
 
 ```
-Read docs/CURRENT.md. PH Release 1 is published on
-https://elsewhereplan.com/countries/philippines — Entry and legal stay is live
-with next_action + claims A–C. Next focus: Phase B weekly Sunday Action habit
-on plan/dashboard with real warm users; do not reopen encyclopedia scope.
+Read docs/CURRENT.md and docs/operations/HANDOFF_2026-08-06.md.
+Proof scope: PH only; no TH/MX deepen; no extra portal sections; no AI/vault/partners/community.
+Stripe Step 1 is in code — finish test keys + Checkout smoke, then Step 2 feature gates only.
+Free Sunday Action stays un-gated. Corridor-agnostic FX rates are decided (scheduled API) —
+build after Stripe Step 1–2, not instead of them. Never commit .env.local.
 ```
 
 ---
@@ -24,7 +26,29 @@ on plan/dashboard with real warm users; do not reopen encyclopedia scope.
 
 > **“I’m actually going — and I know the one thing to do before Sunday.”**
 
-Include **`CEO Message:`** every response. Veto tool sprawl / vanity engagement / premature ecosystem before the weekly leaving habit is proven with real users.
+Include **`CEO Message:`** every response. Veto encyclopedia shelves / vanity
+engagement / premature ecosystem before the weekly leaving habit is proven.
+
+---
+
+## Proof scope (locked 2026-08-06)
+
+- Philippines corridor only  
+- Do not fill additional portal sections  
+- Do not build AI coach, document vault, partner directory, or community  
+- Never paywall Free Sunday Action  
+
+---
+
+## Free vs paid (proof ladder)
+
+**Free:** Fit Quiz → path; PH Entry/Stay + Sunday Action + trust strip + done this week; passport; basic budget; compare (published data); dashboard next action.
+
+**Explorer $19/mo:** history/streak, multi-device sync, living roadmap, PH source-change alerts, deeper budget/progress summary.
+
+**Serious Move $149 one-time:** 30/60/90 from quiz/plan + published PH claims; regenerable; stacks via `serious_move_purchased_at`.
+
+**Entitlements:** `plan_tier` = `free`|`explorer`; Serious Move = `serious_move_purchased_at`.
 
 ---
 
@@ -37,52 +61,31 @@ pnpm install
 pnpm --filter @expat-atlas/web dev
 ```
 
-Ignore `Documents\Codex\**\elsewhere-app`.
+Ignore `Documents\Codex\**\elsewhere-app`. Never commit `apps/web/.env.local`.
 
 ---
 
-## SHIPPED — PH v1 Entry/Stay (2026-08-05)
+## SHIPPED
 
-**Public:** https://elsewhereplan.com/countries/philippines  
+| When | What |
+|------|------|
+| 2026-08-05 | PH Release 1 public Entry/Stay |
+| 2026-08-05 | Free habit: Settings staff-gate, dashboard Sunday Action, done-this-week |
+| 2026-08-06 | Stripe Step 1 code + migration on Supabase; pricing Free/$19/$149 |
+| 2026-08-06 | Business plan + technical architecture docs |
 
-Smoke-verified:
-- Section **02 Entry and legal stay** → **Reviewed content available**
-- Next action: **Start with official entry and stay channels**
-- Claims A–C with official evidence + “Verify before acting”
-- Sources ledger shows DFA eVisa, BI visa-waiver, BI e-Services (verified Jul 31, 2026)
-- **Current public release: Release 1**
-- Other portal sections correctly still **In review** / waiting
-
-**Admin:** Release 1 is no longer a draft (readiness shows “No draft release” — expected after publish). AAL2 still required for future publishes.
-
-### What made it possible
-- 3 human-attested snapshots (001 / 003 / 010)
-- Admin self-attest for solo MFA publisher (`20260731143000_admin_source_self_attest`)
-- Claim C risk floor fix (`critical` for stay-options)
-- Always require Review notes on Approve (process rule)
-
-### Snapshot hashes
-| Ledger | Hash prefix |
-|--------|-------------|
-| PH-IMM-001 | `9dd656c35c` |
-| PH-IMM-003 | `da668e376b` |
-| PH-IMM-010 | `eb6f4697ac` |
-
-Paste files remain in `outputs/ph-v1-evidence/`.
+Migration: `supabase/migrations/20260806120000_profiles_stripe_entitlements.sql` (applied on Elsewhere project).
 
 ---
 
-## Next focus (Phase B — ruthless)
+## Next (ordered)
 
-1. Put the PH portal / Sunday Action in front of **warm real people** (5–10)
-2. Learn whether they take one official-source next step this week
-3. Wire weekly “one thing before Sunday” on plan/dashboard **only after** that feedback starts
-4. Source-monitor worker (detect → stale → re-attest) after the habit exists
-5. TH/MX / community / ads — **parked**
+1. Human: Stripe test products + fill `apps/web/.env.local` + webhook listen + smoke Checkout  
+2. Step 2: feature gates (paid only; Free Sunday Action untouched)  
+3. Steps 3–5: roadmap JSON UI → Serious Move generator → PH alerts MVP  
+4. **Later:** Corridor-agnostic FX (scheduled Open Exchange Rates / ECB / similar) — strategic placement on budget + corridor money surfaces  
 
-Do **not** bulk-fill other PH sections before proving use of Entry/Stay.
-
-Codex: idle unless Cursor pastes a unit.
+Parked: Overview MFA publish until habit feedback; TH/MX; Money/Housing bulk fill.
 
 ---
 
@@ -91,8 +94,10 @@ Codex: idle unless Cursor pastes a unit.
 | Path | Role |
 |------|------|
 | **`docs/CURRENT.md`** | **This file — start here** |
+| `docs/operations/HANDOFF_2026-08-06.md` | Lengthy decision + Stripe + FX handoff |
 | `HANDOFF.md` | Thin dual-PC pointer |
-| `docs/operations/PH_V1_ENTRY_STAY_RELEASE.md` | Claim package wording |
+| `docs/plans/ELSEWHERE_FULL_BUSINESS_PLAN.md` | Full business plan |
+| `docs/plans/ELSEWHERE_TECHNICAL_ARCHITECTURE.md` | Full tech architecture |
 | `docs/plans/PRODUCT_CLARITY_MAP.md` | North star + strategic edge |
 
-**CEO Message for resume:** First PH wedge is public — measure leaving actions this week, not more content shelves.
+**CEO Message for resume:** Finish Stripe smoke, then gates — FX is a platform add after paid proof, not a content shelf.

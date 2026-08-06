@@ -25,7 +25,8 @@
     "lenis": "^1.3.25",
     "next": "^15.3.4",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "stripe": "^22.4.0"
   },
   "devDependencies": {
     "@expat-atlas/config": "workspace:*",

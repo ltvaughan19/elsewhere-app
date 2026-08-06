@@ -30,7 +30,7 @@ function formatFactorDate(value: string): string {
   }).format(date);
 }
 
-export function AccountSecurity() {
+export function AccountSecurity({ isStaff = false }: { isStaff?: boolean }) {
   const router = useRouter();
   const [factors, setFactors] = useState<Factor[]>([]);
   const [currentLevel, setCurrentLevel] = useState<string | null>(null);
@@ -40,6 +40,30 @@ export function AccountSecurity() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+
+  const introCopy = isStaff
+    ? "Add a time-based one-time password to protect sensitive account and staff publishing actions."
+    : "Add a time-based one-time password to protect your login and sensitive account actions.";
+  const emptyFactorsCopy = isStaff
+    ? "No authenticator factors are enrolled. Add one before attempting staff publication."
+    : "No authenticator is enrolled yet. Add one to strengthen sign-in protection for this account.";
+  const sessionBadge =
+    currentLevel === "aal2"
+      ? isStaff
+        ? "AAL2 verified"
+        : "Protected session"
+      : isStaff
+        ? "AAL1 session"
+        : "Sign-in only";
+  const stepUpCopy = isStaff
+    ? "Step up to AAL2 before removing verified factors or using staff publish actions."
+    : "Confirm a current authenticator code before removing a verified factor from this account.";
+  const verifiedNotice = isStaff
+    ? "Authenticator verified. This session is now at AAL2."
+    : "Authenticator verified. This session is now protected.";
+  const stepUpNotice = isStaff
+    ? "Session verified at AAL2."
+    : "Session verified with your authenticator.";
 
   const loadSecurity = useCallback(async () => {
     if (!isSupabaseConfigured()) {
@@ -117,7 +141,7 @@ export function AccountSecurity() {
 
       setEnrollment(null);
       setEnrollmentCode("");
-      setNotice("Authenticator verified. This session is now at AAL2.");
+      setNotice(verifiedNotice);
       await loadSecurity();
       router.refresh();
     } catch {
@@ -164,12 +188,10 @@ export function AccountSecurity() {
         <div>
           <p className="text-xs font-medium uppercase tracking-wider text-navy-800/60">Account security</p>
           <h2 id="account-security-heading" className="mt-1 font-display text-2xl text-navy-950">Authenticator app MFA</h2>
-          <p className="mt-2 max-w-xl text-navy-800/70">
-            Add a time-based one-time password to protect sensitive account and staff publishing actions.
-          </p>
+          <p className="mt-2 max-w-xl text-navy-800/70">{introCopy}</p>
         </div>
         <span className={`w-fit rounded-full border px-3 py-1 text-xs font-medium ${currentLevel === "aal2" ? "border-success/40 bg-success/15 text-success" : "border-warning/40 bg-warning/15 text-warning"}`}>
-          {currentLevel === "aal2" ? "AAL2 verified" : "AAL1 session"}
+          {sessionBadge}
         </span>
       </div>
 
@@ -182,7 +204,7 @@ export function AccountSecurity() {
           <p className="mt-3 text-navy-800/60">Loading account security...</p>
         ) : factors.length === 0 ? (
           <p className="mt-3 rounded-lg border border-dashed border-sand-300 px-4 py-5 text-navy-800/70">
-            No authenticator factors are enrolled. Add one before attempting staff publication.
+            {emptyFactorsCopy}
           </p>
         ) : (
           <ul className="mt-3 divide-y divide-sand-200 rounded-lg border border-sand-200">
@@ -215,9 +237,9 @@ export function AccountSecurity() {
       {currentLevel === "aal1" && verifiedFactors.length > 0 ? (
         <div className="mt-6 rounded-xl border border-warning/35 bg-warning/10 p-4">
           <h3 className="font-medium text-cream">Verify this session</h3>
-          <p className="mt-1 text-xs text-muted">Step up to AAL2 before removing verified factors or using staff publish actions.</p>
+          <p className="mt-1 text-xs text-muted">{stepUpCopy}</p>
           <MfaChallengeForm factors={verifiedFactors} tone="dark" onVerified={async () => {
-            setNotice("Session verified at AAL2.");
+            setNotice(stepUpNotice);
             await loadSecurity();
             router.refresh();
           }} />

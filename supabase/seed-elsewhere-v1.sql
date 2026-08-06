@@ -21,7 +21,10 @@ create table if not exists public.profiles (
   id uuid primary key references auth.users on delete cascade,
   email text,
   plan_tier text not null default 'free'
-    check (plan_tier in ('free','explorer','builder','serious_move')),
+    check (plan_tier in ('free','explorer')),
+  stripe_customer_id text,
+  stripe_subscription_id text,
+  serious_move_purchased_at timestamptz,
   digest_opt_in boolean not null default true,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()

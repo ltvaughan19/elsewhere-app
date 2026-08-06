@@ -8,6 +8,14 @@ import {
   PH_V1_NEXT_ACTION,
   PH_V1_SOURCE_DRAFTS,
 } from "@/lib/editorial/ph-v1";
+import {
+  isPhOverviewBlockTemplate,
+  isPhOverviewClaimTemplate,
+  PH_OVERVIEW_CLAIM,
+  PH_OVERVIEW_LEDGER_ID,
+  PH_OVERVIEW_WATCHOUTS,
+  evaluatePhOverviewReadiness,
+} from "@/lib/editorial/ph-overview-v1";
 import type { Json, Tables } from "@/lib/supabase/database.types";
 import {
   AdminCard,
@@ -345,12 +353,15 @@ export default async function CountryEditorialWorkspacePage({
   const selectedTemplate =
     isPhV1 && isPhV1ClaimTemplateId(feedback.claim_template)
       ? PH_V1_CLAIM_TEMPLATES[feedback.claim_template]
-      : null;
+      : isPhV1 && isPhOverviewClaimTemplate(feedback.claim_template)
+        ? PH_OVERVIEW_CLAIM
+        : null;
   const templateSource = selectedTemplate
     ? phSources.find((item) => item.ledgerId === selectedTemplate.ledgerId)
     : null;
   const templateSnapshot = templateSource?.snapshots[0];
   const entryStaySection = sections.find((section) => section.slug === "entry-and-stay");
+  const overviewSection = sections.find((section) => section.slug === "overview");
   const templateCategory = selectedTemplate
     ? categories.find((category) => category.slug === selectedTemplate.categorySlug)
     : null;
@@ -369,6 +380,31 @@ export default async function CountryEditorialWorkspacePage({
     const claim = claims.find((candidate) => candidate.id === version.claim_id);
     return claim?.claim_slug === PH_V1_CLAIM_TEMPLATES.C.claimSlug;
   }) ?? claimVersions[0];
+  const overviewSupportVersion = claimVersions.find((version) => {
+    const claim = claims.find((candidate) => candidate.id === version.claim_id);
+    return claim?.claim_slug === PH_OVERVIEW_CLAIM.claimSlug;
+  });
+  const overviewSourceReady = phSources.some(
+    (item) => item.ledgerId === PH_OVERVIEW_LEDGER_ID && item.snapshots.length > 0,
+  );
+  const overviewClaimApprovedPinned = releaseClaims.some((item) => {
+    const version = claimVersions.find((candidate) => candidate.id === item.claim_version_id);
+    const claim = claims.find((candidate) => candidate.id === version?.claim_id);
+    return (
+      openReleaseIds.has(item.release_id) &&
+      claim?.claim_slug === PH_OVERVIEW_CLAIM.claimSlug &&
+      version?.workflow_state === "approved"
+    );
+  });
+  const overviewWatchoutsApprovedPinned = releaseBlocks.some((item) => {
+    const block = blocks.find((candidate) => candidate.id === item.content_block_id);
+    const version = blockVersions.find((candidate) => candidate.id === item.content_block_version_id);
+    return (
+      openReleaseIds.has(item.release_id) &&
+      block?.slug === PH_OVERVIEW_WATCHOUTS.blockSlug &&
+      version?.workflow_state === "approved"
+    );
+  });
   const phReadiness = evaluatePhV1Readiness({
     canAuthor,
     aal,
@@ -378,7 +414,56 @@ export default async function CountryEditorialWorkspacePage({
     approvedNextActionPinned,
     releaseState: latestOpenRelease?.state,
   });
-
+  const phOverviewReadiness = evaluatePhOverviewReadiness({
+    canAuthor,
+    aal,
+    sourceHasSnapshot: overviewSourceReady,
+    overviewClaimApprovedPinned,
+    overviewWatchoutsApprovedPinned,
+    releaseState: latestOpenRelease?.state,
+  });
+  const overviewBlockActive = isPhOverviewBlockTemplate(feedback.block_template);
+  const entryStayNextActionActive = feedback.block_template === "next_action";
+  const claimSectionDefault = isPhOverviewClaimTemplate(feedback.claim_template)
+    ? overviewSection?.id ?? ""
+    : selectedTemplate
+      ? entryStaySection?.id ?? ""
+      : "";
+  const blockSectionDefault = overviewBlockActive
+    ? overviewSection?.id ?? ""
+    : entryStayNextActionActive
+      ? entryStaySection?.id ?? ""
+      : "";
+  const blockSlugDefault = overviewBlockActive
+    ? PH_OVERVIEW_WATCHOUTS.blockSlug
+    : entryStayNextActionActive
+      ? PH_V1_NEXT_ACTION.blockSlug
+      : undefined;
+  const blockKindDefault = overviewBlockActive
+    ? PH_OVERVIEW_WATCHOUTS.kind
+    : entryStayNextActionActive
+      ? "next_action"
+      : "rich_text";
+  const blockRiskDefault = overviewBlockActive
+    ? PH_OVERVIEW_WATCHOUTS.riskLevel
+    : entryStayNextActionActive
+      ? "high"
+      : "low";
+  const blockTitleDefault = overviewBlockActive
+    ? PH_OVERVIEW_WATCHOUTS.title
+    : entryStayNextActionActive
+      ? PH_V1_NEXT_ACTION.title
+      : undefined;
+  const blockBodyDefault = overviewBlockActive
+    ? PH_OVERVIEW_WATCHOUTS.body
+    : entryStayNextActionActive
+      ? PH_V1_NEXT_ACTION.body
+      : undefined;
+  const supportingClaimDefault = overviewBlockActive
+    ? overviewSupportVersion?.id ?? ""
+    : entryStayNextActionActive
+      ? nextActionSupportVersion?.id ?? ""
+      : "";
   return (
     <div className="space-y-10">
       <div className="space-y-5">
@@ -459,6 +544,35 @@ export default async function CountryEditorialWorkspacePage({
               ))}
             </div>
             <p className="mt-4 text-xs text-warning">Stop point: a human must open each live official URL, inspect it, and paste the exact reviewed text. MFA and all existing review gates remain required before publishing.</p>
+          </AdminCard>
+        ) : null}
+        {isPhV1 ? (
+          <AdminCard>
+            <div>
+              <p className="elsewhere-eyebrow">PH Overview thin</p>
+              <h2 className="mt-2 font-display text-2xl text-cream">Release 2 readiness</h2>
+              <p className="mt-2 max-w-2xl text-sm text-muted">
+                One watchout claim + Overview CTA block, reusing attested PH-IMM-001. Do not invent new .gov.ph text. Publish only after warm-user habit feedback starts.
+              </p>
+            </div>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+              {[
+                { label: "Staff role", ready: phOverviewReadiness.staffRole, detail: canAuthor ? `${role} can draft` : `${role} cannot draft` },
+                { label: "MFA for publish", ready: phOverviewReadiness.mfa, detail: aal === "aal2" ? "AAL2 ready" : "Enable MFA before publish" },
+                { label: "PH-IMM-001 snapshot", ready: phOverviewReadiness.sourceSnapshot, detail: overviewSourceReady ? "Reuse Entry/Stay capture" : "Capture PH-IMM-001 first" },
+                { label: "Overview claim pinned", ready: phOverviewReadiness.claim, detail: overviewClaimApprovedPinned ? "Approved + pinned" : "Draft, approve, pin" },
+                { label: "Overview watchouts pinned", ready: phOverviewReadiness.watchouts, detail: overviewWatchoutsApprovedPinned ? "Approved + pinned" : "Draft, approve, pin" },
+                { label: "Release state", ready: phOverviewReadiness.release, detail: latestOpenRelease ? `Release ${latestOpenRelease.release_number} / ${latestOpenRelease.state}` : "Open a draft release" },
+              ].map((check) => (
+                <div key={check.label} className="rounded-xl border border-sand-200 bg-void-elevated p-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-xs font-medium text-cream">{check.label}</p>
+                    <StatusBadge value={check.ready ? "verified" : "changes_requested"} label={check.ready ? "Ready" : "Blocked"} />
+                  </div>
+                  <p className="mt-2 text-xs text-soft">{check.detail}</p>
+                </div>
+              ))}
+            </div>
           </AdminCard>
         ) : null}
         <nav className="flex gap-2 overflow-x-auto border-y border-sand-200 py-3 text-sm">
@@ -640,6 +754,15 @@ export default async function CountryEditorialWorkspacePage({
                   </span>
                 );
               })}
+              {overviewSourceReady ? (
+                <Link href="?claim_template=overview_watchout#claims" className={quietButtonClass}>
+                  Load Overview watchout / {PH_OVERVIEW_LEDGER_ID}
+                </Link>
+              ) : (
+                <span className="rounded-xl border border-sand-200 px-4 py-3 text-xs text-soft">
+                  Overview claim locked / capture {PH_OVERVIEW_LEDGER_ID}
+                </span>
+              )}
             </div>
           </AdminCard>
         ) : null}
@@ -663,7 +786,7 @@ export default async function CountryEditorialWorkspacePage({
               </div>
               <div>
                 <FieldLabel htmlFor="claim-section">Matching portal section</FieldLabel>
-                <select id="claim-section" name="portal_section_id" required defaultValue={selectedTemplate ? entryStaySection?.id ?? "" : ""} className={fieldClass}>
+                <select id="claim-section" name="portal_section_id" required defaultValue={claimSectionDefault} className={fieldClass}>
                   <option value="" disabled>Choose…</option>
                   {sections.map((section) => <option key={section.id} value={section.id}>{section.title}</option>)}
                 </select>
@@ -825,49 +948,56 @@ export default async function CountryEditorialWorkspacePage({
         <AdminCard>
           <h3 className="font-display text-xl text-cream">Draft a content block</h3>
           {isPhV1 ? (
-            nextActionSupportVersion ? (
-              <Link href="?block_template=next_action#content" className={`${quietButtonClass} mt-4`}>Load PH v1 next-action draft</Link>
-            ) : (
-              <p className="mt-3 text-xs text-warning">The next-action helper unlocks after a snapshot-backed PH v1 claim exists.</p>
-            )
+            <div className="mt-4 flex flex-wrap gap-3">
+              {nextActionSupportVersion ? (
+                <Link href="?block_template=next_action#content" className={quietButtonClass}>Load PH v1 next-action draft</Link>
+              ) : (
+                <p className="text-xs text-warning">The next-action helper unlocks after a snapshot-backed PH v1 claim exists.</p>
+              )}
+              {overviewSupportVersion ? (
+                <Link href="?block_template=overview_watchouts#content" className={quietButtonClass}>Load Overview watchouts draft</Link>
+              ) : (
+                <p className="text-xs text-soft">Overview watchouts unlock after the Overview claim draft exists.</p>
+              )}
+            </div>
           ) : null}
           <form action={createContentBlockDraftAction} className="mt-5">
             <input type="hidden" name="country_slug" value={countrySlug} />
             <fieldset disabled={!canAuthor || claimVersions.length === 0} className="grid gap-4 disabled:opacity-55 sm:grid-cols-2">
               <div>
                 <FieldLabel htmlFor="block-name" help="Internal identifier; spaces become hyphens.">Internal block name</FieldLabel>
-                <input id="block-name" name="block_slug" required minLength={2} maxLength={120} defaultValue={feedback.block_template === "next_action" ? PH_V1_NEXT_ACTION.blockSlug : undefined} className={fieldClass} />
+                <input id="block-name" name="block_slug" required minLength={2} maxLength={120} defaultValue={blockSlugDefault} className={fieldClass} />
               </div>
               <div>
                 <FieldLabel htmlFor="block-section">Portal section</FieldLabel>
-                <select id="block-section" name="portal_section_id" required defaultValue={feedback.block_template === "next_action" ? entryStaySection?.id ?? "" : ""} className={fieldClass}>
+                <select id="block-section" name="portal_section_id" required defaultValue={blockSectionDefault} className={fieldClass}>
                   <option value="" disabled>Choose…</option>
                   {sections.map((section) => <option key={section.id} value={section.id}>{section.title}</option>)}
                 </select>
               </div>
               <div>
                 <FieldLabel htmlFor="block-kind">Display format</FieldLabel>
-                <select id="block-kind" name="kind" required defaultValue={feedback.block_template === "next_action" ? "next_action" : "rich_text"} className={fieldClass}>
+                <select id="block-kind" name="kind" required defaultValue={blockKindDefault} className={fieldClass}>
                   {CONTENT_BLOCK_KINDS.map((kind) => <option key={kind.value} value={kind.value}>{kind.label}</option>)}
                 </select>
               </div>
               <div>
                 <FieldLabel htmlFor="block-risk">Content risk</FieldLabel>
-                <select id="block-risk" name="risk_level" required defaultValue={feedback.block_template === "next_action" ? "high" : "low"} className={fieldClass}>
+                <select id="block-risk" name="risk_level" required defaultValue={blockRiskDefault} className={fieldClass}>
                   {RISK_LEVELS.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
                 </select>
               </div>
               <div className="sm:col-span-2">
                 <FieldLabel htmlFor="block-title">Public heading</FieldLabel>
-                <input id="block-title" name="title" maxLength={500} defaultValue={feedback.block_template === "next_action" ? PH_V1_NEXT_ACTION.title : undefined} className={fieldClass} />
+                <input id="block-title" name="title" maxLength={500} defaultValue={blockTitleDefault} className={fieldClass} />
               </div>
               <div className="sm:col-span-2">
                 <FieldLabel htmlFor="block-body" help="Separate paragraphs with a blank line. Do not paste HTML.">Public content</FieldLabel>
-                <textarea id="block-body" name="body_text" required minLength={10} maxLength={20000} defaultValue={feedback.block_template === "next_action" ? PH_V1_NEXT_ACTION.body : undefined} className={`${textareaClass} min-h-48`} />
+                <textarea id="block-body" name="body_text" required minLength={10} maxLength={20000} defaultValue={blockBodyDefault} className={`${textareaClass} min-h-48`} />
               </div>
               <div className="sm:col-span-2">
                 <FieldLabel htmlFor="supporting-claim" help="Required for traceability on every public content block.">Supporting claim version</FieldLabel>
-                <select id="supporting-claim" name="supporting_claim_version_id" required defaultValue={feedback.block_template === "next_action" ? nextActionSupportVersion?.id ?? "" : ""} className={fieldClass}>
+                <select id="supporting-claim" name="supporting_claim_version_id" required defaultValue={supportingClaimDefault} className={fieldClass}>
                   <option value="" disabled>Choose…</option>
                   {claimVersions.map((version) => {
                     const claim = claims.find((item) => item.id === version.claim_id);

@@ -1,6 +1,7 @@
 # Elsewhere — Dual-PC handoff
 
 **Canonical current state:** [`docs/CURRENT.md`](./docs/CURRENT.md)  
+**Latest lengthy handoff:** [`docs/operations/HANDOFF_2026-08-06.md`](./docs/operations/HANDOFF_2026-08-06.md)  
 **Do not** maintain a second competing status narrative in this file.
 
 ---
@@ -28,26 +29,14 @@ pnpm --filter @expat-atlas/web dev
 
 Full smoke checklist and next priorities: **`docs/CURRENT.md`**.
 
-**2026-08-05 wrap:** **PH Release 1 published.** Entry/Stay + Sunday Action live
-on `/countries/philippines`. Next: warm users try the official next step;
-Phase B weekly habit after evidence of use. Say **“continue from CURRENT Phase B”**.
-Cursor = control tower; Codex idle. Full board: **`docs/CURRENT.md`**.
+**2026-08-06 wrap:** Proof scope locked (PH only). Stripe Step 1 in code —
+finish test keys + Checkout smoke, then feature gates. FX rates decided
+(scheduled API, all corridors) — build after Stripe Steps 1–2. Say
+**“continue from HANDOFF_2026-08-06”**. Cursor = control tower; Codex idle.
 
 ---
 
 ## Ignore on this PC
 
 - `Documents\Codex\**\elsewhere-app` — stale Codex worktrees, not the product
-- Any second clone that is not tracking `origin/main`
-
----
-
-## Ops deep-dives
-
-| Need | Doc |
-|------|-----|
-| Release checks | `docs/operations/QUALITY_GATES.md` |
-| Apple / Facebook enable | `docs/operations/SOCIAL_LOGIN_ACTIVATION.md` |
-| PH first claims | `docs/operations/PH_V1_ENTRY_STAY_RELEASE.md` |
-| Codex PH build brief | `docs/operations/CODEX_PH_V1_BUILD_PACKET.md` |
-| Source monitor | `docs/operations/SOURCE_MONITOR_RUNBOOK.md` |
+- `apps/web/.env.local` — secrets; never commit

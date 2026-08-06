@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { PricingGrid } from "@/components/pricing-grid";
-import { PRICING_TIERS } from "@/lib/pricing-tiers";
+import {
+  LATER_PRICING_TIERS,
+  PRIMARY_PRICING_TIERS,
+} from "@/lib/pricing-tiers";
 import { TrustDisclaimer } from "@expat-atlas/ui";
 
 export default function PricingPage() {
@@ -8,12 +11,12 @@ export default function PricingPage() {
     <div className="mx-auto max-w-6xl px-6 py-16">
       <h1 className="font-display text-4xl text-navy-950">Pricing</h1>
       <p className="mt-4 max-w-2xl text-navy-800/80">
-        Start free with the Fit Quiz. Upgrade to Explorer for the full Corridor
-        Digest and deeper planning tools. Checkout is not live yet — create an
-        account so you’re ready when it opens.
+        Free keeps the Sunday Action un-gated. Explorer adds continuity and depth
+        for the Philippines proof corridor. Serious Move is a one-time 30/60/90
+        pack that stacks with Free or Explorer.
       </p>
       <div className="mt-10">
-        <PricingGrid tiers={PRICING_TIERS} />
+        <PricingGrid tiers={PRIMARY_PRICING_TIERS} laterTiers={LATER_PRICING_TIERS} />
       </div>
       <p className="mt-8 text-center text-sm text-navy-800/70">
         Prefer the free research signal first?{" "}

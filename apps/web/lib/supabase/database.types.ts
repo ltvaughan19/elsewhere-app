@@ -1428,6 +1428,9 @@ export type Database = {
           email: string | null
           id: string
           plan_tier: string
+          serious_move_purchased_at: string | null
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
           updated_at: string
         }
         Insert: {
@@ -1436,6 +1439,9 @@ export type Database = {
           email?: string | null
           id: string
           plan_tier?: string
+          serious_move_purchased_at?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
           updated_at?: string
         }
         Update: {
@@ -1444,6 +1450,9 @@ export type Database = {
           email?: string | null
           id?: string
           plan_tier?: string
+          serious_move_purchased_at?: string | null
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
           updated_at?: string
         }
         Relationships: []
